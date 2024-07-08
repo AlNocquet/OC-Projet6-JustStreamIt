@@ -1,0 +1,205 @@
+
+/*********************************************************************************
+ * 
+ * Mise en page
+ * 
+ *********************************************************************************/
+
+
+
+body {
+    background-color: #d6d6d6;
+    font-family: 'Arial Narrow', Arial, sans-serif, sans-serif;
+    color:#000;
+    font-weight: normal;
+    font-style: normal;
+    /****word-wrap: break-word;***/
+}
+
+
+.container {
+    background-color: #ffffff;
+    border: 2px solid #186ea8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 65%;
+    margin: 0 auto;
+    padding: 0 auto;
+}
+
+header {
+    padding: 10px;
+}
+
+section {
+    padding: 10px;
+    margin-right: 80px;
+    margin-left: 80px;
+}
+
+.banner {
+    background-color: #ffffff;
+    display: flex;
+    justify-content: center;
+}
+
+h1 {
+    font-size: 3em;
+    font-weight: bold;
+    font-style: normal;
+}
+
+
+p {
+    font-size: 1.5em;
+    font-weight: bolder;
+    font-style: normal;
+    /** Voir si besoin : Gestion texte dans les sections : Voir max-width et max-height conteneur, overflow: auto ou overflow: scroll, box-sizing: border-box **/
+}
+
+
+.category-best-movie {
+    border: 3px solid #000000;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: auto auto auto;
+    gap: 10px;
+    padding: 20px;
+}
+
+
+.element {
+    padding: 20px;
+}
+
+.element-1 {
+    grid-column: 1 / 2;
+    grid-row: 1 / 4;
+}
+
+.element-2 {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+}
+
+.element-3 {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
+}
+
+.element-4 {
+    grid-column: 2 / 3;
+    grid-row: 3 / 4;
+    display: flex;
+    justify-content: right;
+}
+
+.element-1 img {
+    width:100%;
+    height: auto;
+}
+
+.best-movie-details-button {
+    justify-content: right;
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 0px 50px;
+    margin: 5px 45px;
+    font-size: 22px;
+    font-weight: normal;
+    border-radius: 20px;
+    cursor: pointer;
+    display: inline-block;
+    text-align: center;
+}
+
+.best-movie-details-button:hover {
+    background-color: darkred;
+}
+
+
+.categories {
+    width: 850px;
+    height: 400px;
+    max-width: 850px;
+    max-height: 400px;
+    overflow: auto;
+    border: 1px solid #1100ff;
+    display: flex;
+    /***display: table-cell;***/
+    /***display: table-row;***/
+   /***flex-wrap: wrap;***/
+    gap: 10px;
+    margin-bottom: 35px;
+}
+
+
+.category-item {
+    /***width: fit-content;***/
+    justify-content: center;
+    padding: 5px;
+    margin: 5px;
+}
+
+.category-item img {
+    width: 100%;
+    height: auto;
+}
+
+.category-item img:hover, .element-1 img:hover {
+	transform: scale(110%);
+}
+
+.details-button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #fff;
+    color: #000;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.details-button:hover {
+    background-color: #ddd;
+}
+
+
+/***.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: rgb(0, 0, 0);
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.overlay p {
+    margin: 0;
+    font-size: 24px;
+}***/
+
+
+.category-dropdown {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 35px;
+}
+
+.category-dropdown select {
+    width: 50%;
+    height: 25% ;
+    padding: 15px;
+    margin-top: 50px;
+}
