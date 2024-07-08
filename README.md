@@ -40,7 +40,7 @@ $ python manage.py runserver
 ## Installation des fichiers HTML, CSS, JavaScript :
 
 ```bash
-$ git clone 
+$ git clone https://github.com/AlNocquet/OC-Projet6-JustStreamIt.git
 ```
 
 ## UTILISATION :
