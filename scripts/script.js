@@ -13,6 +13,15 @@
 ///*** else : url = "http://localhost:8000/api/v1/titles/?sort_by=-imdb" + category
 
 
+let url;
+    if (category !== "Best_rating" && category !== "Best_movie") {
+        url = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score&genre=" + category
+    }
+    else {
+        url = "http://localhost:8000/api/v1/titles/?sort_by=-votes,-imdb_score"
+    }
+
+
 /// async function display(bestmovie)
 /// *** appel fonction async function getDatas(category)
 /// *** création HTML inner - voir version static HTML
