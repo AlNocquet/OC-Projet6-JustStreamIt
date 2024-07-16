@@ -4,38 +4,27 @@
  * 
  ****************************************************************************************/
 
-/// Gestion des erreurs
-///  Consulter API code erreurs associés pour message
+// A voir : 1) Gestion des erreurs - Consulter API code erreurs associés pour message
 
 
+// Dans config ?
 
 const categories = ["Films d'action", "Comédies", "Famille", "Films de fantasy", "Films d'horreur", "Science-fiction", "Westerns"];
-//*** Liste dans config ?
+
+const film = [
+    { titre: "Film", imageUrl: "style/test.jpg", detailsUrl: "details.html"}]
 
 const root = "http://localhost:8000/api/v1/"
 
 
 
-/// FONCTION GET DATA (fetch)
-///*** REQUETE API : Récupération des meilleurs films (sort_by=-imdb - ordre décroissant) depuis JSON 
-///*** Toutes catégories confondues // Meilleur film : url = "http://localhost:8000/api/v1/titles/?sort_by=-imdb"
-///*** else : url = "http://localhost:8000/api/v1/titles/?sort_by=-imdb" + category
-
-function getDatas(category){
-
-let url;
-    if (category !== "Best_rating" && category !== "Best_movie") {
-        url = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score&genre=" + category
-    }
-    else {
-        url = "http://localhost:8000/api/v1/titles/?sort_by=-votes,-imdb_score"
-    }
+// Fonction Obtenir datas des films:
+function getDatas(){
 
 }
 
 
-// AFFICHAGE MEILLEUR FILM
-//*** appel fonction function getDatas(category) ELSE
+// Fonction générer Catégorie Meilleur Film:
 function createBestMovieSection() {
 
     // Créer l'élément <section>
@@ -97,58 +86,47 @@ function createBestMovieSection() {
 }
 
 
-
-// AFFICHAGE CATEGORIE
-/// *** appel fonction async function getDatas(category)
-
-async function display(category) {
+// Fonction générer Catégorie de film :
+function generateFilmSection() {
 
     // Créer l'élément <section>
-    const sectionContainer = document.createElement('section');
+    const section = document.createElement('section');
+    // Créer l'élément <h1>
+    const title = document.createElement('h1');
+    // Gérer DYNAMIQUEMENT l'élément <h1>
+    title.textContent = "";
+    section.appendChild(title);
 
-    // Créer div "catégories"
+    // Créer div "category"
     const categoriesDiv = document.createElement('div');
-    categoriesDiv.className = 'categories';
+    categoriesDiv.className = 'category';
 
-    // Créer et ajouter "catégorie-items" x 6
+
+    // Créer et ajouter "category-item" x 6 avec const Film
     for (let i = 0; i < 6; i++) {
         const categoryItem = document.createElement('div');
         categoryItem.className = 'category-item';
 
-        const img = document.createElement('img');
-        img.src = 'style/test.jpg';
-        img.alt = 'Titre du film';
+        categoryItem.innerHTML = `
+            <img src="${film.imageUrl}" alt="${film.titre}">
+            <div class="overlay">
+                <h3>${film.titre}</h3>
+                <a href="${film.detailsUrl}" class="details-button">Détails</a>
+            </div>
+        `;
 
-        const overlay = document.createElement('div');
-        overlay.className = 'overlay';
-
-        const p = document.createElement('p');
-        p.textContent = 'Titre';
-
-        const a = document.createElement('a');
-        a.href = 'details.html';
-        a.className = 'details-button';
-        a.textContent = 'Détails';
-
-        overlay.appendChild(p);
-        overlay.appendChild(a);
-        categoryItem.appendChild(img);
-        categoryItem.appendChild(overlay);
         categoriesDiv.appendChild(categoryItem);
-    }
+    };
 
     // Ajouter div 'categories' à <section>
-    sectionContainer.appendChild(categoriesDiv);
-
-    // Ajouter <section> au conteneur <div class="container"> existant dans le document HTML
+    section.appendChild(categoriesDiv);
+    // Ajouter <section> au conteneur <div class="container">
     const container = document.getElementById('container');
     container.appendChild(section);
-
 }
 
 
-/// CREATION FORMULAIRE DROPDOWN
-
+// Fonction générer Catégorie Dropdown :
 function createCategoryDropdown() {
 
     // Créer div 'category-dropdown'
