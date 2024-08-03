@@ -2,4 +2,6 @@
 venv/
 .venv/
 
+# Ignorer ancien modèle CSS
+style - ancien.css
 

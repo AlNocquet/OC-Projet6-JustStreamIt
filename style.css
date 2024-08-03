@@ -1,110 +1,270 @@
 
+/* Site body management on desktop basis */
 
-body {
-    background-color: #d6d6d6;
-    font-family: 'Arial Narrow', Arial, sans-serif;
-    color: #000;
-    font-weight: normal;
-    font-style: normal;
+
+* {
+    /* Universal selector. It selects all elements on a page ( resets CSS), before applying specific rules */
     box-sizing: border-box;
+    align-items: center;
+  }
+
+
+html {
+    background-color: #c0c0c0;
 }
 
 
-.container {
-    background-color: #ffffff;
-    border: 2px solid #186ea8;
+
+/* Management of site banner on desktop basis */
+
+header {
+    border: 1px solid #000000;
+    background-color: #61787e;
     display: flex;
+    margin: 35px 100px;
+}
+
+.logo {
+    display: flex;
+    justify-content: left;
+}
+
+.title-banner{
+    display: flex;
+    justify-content: left;
+}
+
+
+body {
+    background-color: #e9e3e3;
+    border: 2px solid #186ea8;
+    font-family: 'Arial Narrow', Arial, sans-serif;
+    color: #000;
     flex-direction: column;
     justify-content: center;
-    width: 70%;
+    align-items: flex-start;
+    width: 1054px;
+    height: 4451px;
     margin: 0 auto;
     padding: 0 auto;
 }
 
 
-header {
-    background-color: #61787e;
-    display: flex;
-    margin: 35px 90px;
+/* Management of items (movies) on desktop basis */
+
+.container .item-grid {
+    width: 844px;
+    height: 558px;
 }
 
 
-section {
-    padding: 10px;
-    margin: 10px 75px;
+.container {
+    max-width: 1100px;
+    margin: 30px auto;
 }
 
 
-.category {
+.container-flex {
     display: flex;
-    flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
-    margin-bottom: 0px;
+    align-items: center;
 }
 
 
-.category-item {
+.item-grid {
+    display: grid;
+    grid-template-columns: 252px 252px 252px;
+    gap: 40px;
+    justify-content: center;
+}
+
+
+.item {
     position: relative;
+    text-align: center;
+    height: 252px;
 }
 
 
-.category-item img {
-    padding: 10px;
-    flex: 33%;
-    display: none;
+.item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 
-/* Scale hover*/
-.category-item img:hover, .element-1 img:hover {
-    transform: scale(103%);
+.item img:hover {
+    /* Scale hover*/
+    transform: scale(105%);
 }
 
 
-/* Overlay + Titre + bouton détails - sur affiche des films*/
-.overlay {
+.detail {
     position: absolute;
-    top: 55px;
-    left: 10px;
-    width: 93%;
-    height: 45%; /*de la hauteur de l'image */
+    top: 20px;
+    left: 0px;
+    width: 100%;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    color: white;
+    background-color: #303030a1;
+
+    h3 {
+        text-align: left;
+        padding: 1rem;
+    }
+
+    .btn {
+        background-color: rgba(43, 41, 41, 0.925);
+        cursor: pointer;
+        text-align: right;
+        float: right; 
+        border: none;    
+    }
+
+    .btn:hover {
+      background-color:rgb(43, 41, 41);
+    }
+}
+
+
+/*.btn-show {
+    display: none;
+}*/
+
+.show-three-more, .show-five-more {
+    /* Class to re-display the optional movies */
+    display: block !important;
+}
+
+
+.btn {
+    background: red;
+    cursor: pointer;
+    border: none; 
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 5px 30px;
+    border-radius: 25px;     
+}
+
+.btn:hover {
+    background-color: darkred;   
+}
+
+
+/* Management of “Best Film” category display on desktop basis */
+
+.best-movie {
+    border: 5px solid #000000;
+    width: 844px;
+    height: auto;
+    display: grid;
+    justify-items: auto;
+    grid-template-columns: 1fr 2fr;
+    grid-template-rows: auto auto auto;
+    padding: 0px;
+    margin: 0px;
+}
+
+.best-movie-img {
+    grid-column: 1 / 2;
+    grid-row: 1 / 4;
+    width: 100%;
+    height: auto;
+}
+
+.best-movie-img img {
+    display: block;
+    flex: 33%;
+    width: 100%;
+    height: auto;
+}
+
+.best-movie-title h2 {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+    margin: 5px;
+    padding: 5px;
+}
+
+.best-movie-summary p {
+    grid-column: 2 / 3;
+    grid-row: 2 / 3;
     display: flex;
-    flex-direction: column;
-    justify-content: center; /* Centré verticalement dans le premier tiers */
-    align-items: center; /* Centré horizontalement */
-    padding: 10px;
-    background: rgba(0, 0, 0, 0.5);
-    box-sizing: border-box;
-    transition: opacity 0.3s ease;
+    align-items: flex-start;
+    margin: 5px;
+    padding: 5px;
 }
 
-
-.overlay h3 {
-    color: rgb(255, 255, 255);
-    font-size: 22px;
-    font-weight: bold;
+.best-movie-details-button {
+    grid-column: 2 / 3;
+    grid-row: 3 / 4;
     margin: 0;
-    align-self: flex-start; /* Aligner à gauche */
-}
-
-
-.details-button {
-    align-self: flex-end; /* Aligner à droite */
-    padding: 10px 20px;
-    color: #ffffff;
-    background-color: #303030ee;
-    border-radius: 22px;
-    transition: background-color 0.3s ease;
-    font-size: 18px;
-    font-weight: bold;
+    padding: 0;
+    background-color: red;
+    color: white;
+    border: none;
+    padding: 15px 45px;
+    margin: 0px 25px;
+    font-size: 22px;
+    font-weight: normal;
+    border-radius: 45px;
+    cursor: pointer;
+    float: right; 
+    text-align: center;
     text-decoration: none;
 }
 
 
-.details-button:hover {
-    background-color: #ddd;
+.best-movie-details-button:hover {
+    background-color: darkred;
 }
+
+
+/* Management of "Dropdown" category on desktop basis */
+
+.selection {
+    position: relative;
+}
+
+select {
+    position: absolute;
+    top: 10px;
+    left: 300px;
+    width: 25%;
+    height: auto;
+    padding: 15px;
+}
+
+
+/* Management of various site elements on desktop basis */
+
+h1 {
+    font-size: 3.2em;
+    font-weight: bold;
+    font-style: normal;
+    text-indent: 105px;
+}
+
+
+h2 {
+    align-items: flex-start;
+    font-size: 3em;
+    font-weight: bold;
+    padding: 15px 0px;
+}
+
+
+p {
+    align-items: flex-start;
+    font-size: 1.8em;
+    font-weight: lighter;
+    padding-left: 15px;
+    padding: 15px 0px;
+}
+
 
 
 
@@ -115,672 +275,19 @@ section {
 
 /* Desktop */
 @media (min-width: 1281px) {
-
-
-    /* HEADER */
-
-    .logo {
-        display: flex;
-        justify-content: left;
-    }
-
-    .title-banner{
-        display: flex;
-        justify-content: left;
-    }
-
-
-    /* Category BEST MOVIE */
-
-    .category-best-movie {
-        border: 5px solid #000000;
-        display: grid;
-        grid-template-columns: 1fr 2fr;
-        grid-template-rows: auto auto auto;
-        gap: 3px;
-        padding: 3px;
-    }
-    
-    
-    .element-best-movie-img {
-        grid-column: 1 / 2;
-        grid-row: 1 / 4;
-    }
-    
-    
-    .element-best-movie-img img {
-        width: 100%;
-        height: auto;
-    }
-    
-    
-    .element-best-movie-title {
-        grid-column: 2 / 3;
-        grid-row: 1 / 2;
-        margin: 5px;
-        padding: 5px;
-    }
-    
-    
-    .element-best-movie-summary {
-        grid-column: 2 / 3;
-        grid-row: 2 / 3;
-        display: flex;
-        align-items: flex-start;
-        margin: 5px;
-        padding: 5px;
-    }
-    
-    
-    .element-best-movie-details-button {
-        grid-column: 2 / 3;
-        grid-row: 3 / 4;
-        display: flex;
-        justify-content: right;
-        margin: 0;
-        padding: 0;
-    }
-
-    .category-item img {
-        display: block;
-        flex: 33%;
-    }
-
-    
-    .best-movie-details-button {
-        justify-content: right;
-        background-color: red;
-        color: white;
-        border: none;
-        padding: 0px 45px;
-        margin: 25px 45px 25px 45px;
-        font-size: 22px;
-        font-weight: normal;
-        border-radius: 22px;
-        cursor: pointer;
-        display: inline-block;
-        text-align: center;
-        text-decoration: none;
-    }  
-
-    .best-movie-details-button:hover {
-        background-color: darkred;
-    }
-
-
-    /* Category*/
-
-    h1 {
-        font-size: 3em;
-        font-weight: bolder;
-        font-style: normal;
-        display: flex;
-        align-items: flex-start;
-    }
-
-    p {
-        font-size: 2em;
-        font-weight: normal;
-        font-style: normal;
-    }
-
-
-    .category-item img {
-        display: block;
-        flex: 33%;
-    }
-
-
-    .category-dropdown {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 35px;
-    }
-    
-    
-    .category-dropdown select {
-        width: 47%;
-        height: 25%;
-        padding: 15px;
-        margin-top: 45px;
-    }
-
-
-    /* OPTIONS */
-
-    .voir-plus {
-        display: none;
-    }
-    
-    .voir-plus:hover {
-        display: none;
-    }
-
-    .voir-moins {
-        display: none;
-    }
-    
-    .voir-moins:hover {
-        display: none;
-    }
 }
-
-
-
 
 
 /* tablette (landscape) */
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
-
-    /* HEADER */
-
-    .logo {
-        display: flex;
-        justify-content: left;
-    }
-
-    .title-banner{
-        display: flex;
-        justify-content: left;
-    }
-
-
-    /* Category BEST MOVIE */
-
-    .category-best-movie {
-        border: 5px solid #000000;
-        display: grid;
-        grid-template-columns: 1fr 2fr;
-        grid-template-rows: auto auto auto;
-        gap: 5px;
-        padding: 25px;
-    }
-    
-    
-    .element-best-movie-img {
-        grid-column: 1 / 2;
-        grid-row: 1 / 4;
-    }
-    
-    
-    .element-best-movie-img img {
-        width: 100%;
-        height: auto;
-    }
-    
-    
-    .element-best-movie-title {
-        grid-column: 2 / 3;
-        grid-row: 1 / 2;
-        margin: 5px;
-        padding: 5px;
-    }
-    
-    
-    .element-best-movie-summary {
-        grid-column: 2 / 3;
-        grid-row: 2 / 3;
-        display: flex;
-        align-items: flex-start;
-        margin: 5px;
-        padding: 5px;
-    }
-    
-    
-    .element-best-movie-details-button {
-        grid-column: 2 / 3;
-        grid-row: 3 / 4;
-        display: flex;
-        justify-content: right;
-        margin: 0;
-        padding: 0;
-    }
-
-    .category-item img {
-        display: block;
-        flex: 33%;
-    }
-
-
-    .best-movie-details-button {
-        justify-content: right;
-        background-color: red;
-        color: white;
-        border: none;
-        padding: 0px 45px;
-        margin: 25px 45px 25px 45px;
-        font-size: 22px;
-        font-weight: normal;
-        border-radius: 22px;
-        cursor: pointer;
-        display: inline-block;
-        text-align: center;
-        text-decoration: none;
-        }  
-    
-    
-    .best-movie-details-button:hover {
-        background-color: darkred;
-    }
-
-
-    /* Category*/
-
-    h1 {
-        font-size: 2em;
-        font-weight: bolder;
-        font-style: normal;
-        display: flex;
-        align-items: flex-start;
-    }
-
-
-    p {
-        font-size: 2em;
-        font-weight: normal;
-        font-style: normal;
-    }
-
-    .category-item img:nth-child(-n+4) {
-        flex: 50%;
-        display: block;
-    }
-
-
-    .category-dropdown {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 35px;
-    }
-    
-    
-    .category-dropdown select {
-        width: 50%;
-        height: 25%;
-        padding: 15px;
-        margin-top: 45px;
-    }
-
-    
-    /* OPTIONS */
-
-    .voir-plus {
-        display: block;
-        background-color: red; 
-        color: white; 
-        padding: 10px 20px;
-        border: none; 
-        border-radius: 25px; 
-        cursor: pointer; 
-        font-size: 20px; 
-        font-style: bold;
-        transition: background-color 0.3s;
-    }
-
-    
-    .voir-plus:hover {
-        background-color: darkred;
-    }
-
 }
 
 
 /* tablette (portrait) */
 @media (min-width: 1025px) and (max-width: 1280px) {
-
-    /* HEADER */
-
-    .logo {
-        display: flex;
-        justify-content: center;
-    }
-
-    .title-banner{
-        display: flex;
-        justify-content: left;
-    }
-
-
-    /* Category BEST MOVIE */
-
-    .category-best-movie {
-        border: 5px solid #000000;
-        display: grid;
-        grid-template-columns: 1fr 2fr;
-        grid-template-rows: auto auto auto;
-        gap: 5px;
-        padding: 25px;
-    }
-        
-        
-    .element-best-movie-img {
-        grid-column: 1 / 2;
-        grid-row: 1 / 4;
-    }
-        
-        
-    .element-best-movie-img img {
-        width: 100%;
-        height: auto;
-    }
-        
-        
-    .element-best-movie-title {
-        grid-column: 2 / 3;
-        grid-row: 1 / 2;
-        margin: 5px;
-        padding: 5px;
-    }
-        
-        
-    .element-best-movie-summary {
-        grid-column: 2 / 3;
-        grid-row: 2 / 3;
-        display: flex;
-        align-items: flex-start;
-        margin: 5px;
-        padding: 5px;
-    }
-        
-        
-    .element-best-movie-details-button {
-        grid-column: 2 / 3;
-        grid-row: 3 / 4;
-        display: flex;
-        justify-content: right;
-        margin: 0;
-        padding: 0;
-    }
-    
-
-    .best-movie-details-button {
-        justify-content: right;
-        background-color: red;
-        color: white;
-        border: none;
-        padding: 0px 45px;
-        margin: 25px 45px 25px 45px;
-        font-size: 22px;
-        font-weight: normal;
-        border-radius: 22px;
-        cursor: pointer;
-        display: inline-block;
-        text-align: center;
-        text-decoration: none;
-        }  
-    
-    
-    .best-movie-details-button:hover {
-        background-color: darkred;
-    }
-
-    
-    /* Category*/
-
-    h1 {
-        font-size: 2em;
-        font-weight: bolder;
-        font-style: normal;
-        display: flex;
-        align-items: flex-start;
-    }
-
-
-    p {
-        font-size: 2em;
-        font-weight: normal;
-        font-style: normal;
-    }
-
-
-    .category-item img {
-        display: block;
-        flex: 33%;
-    }
-
-    .category-item:nth-child(-n+4) {
-        flex: 100%;
-        display: block;
-    }
-
-
-    .category-dropdown {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 35px;
-    }
-    
-    
-    .category-dropdown select {
-        width: 50%;
-        height: 25%;
-        padding: 15px;
-        margin-top: 45px;
-    }
-
-    
-    /* OPTIONS */
-
-    .voir-plus {
-        display: block;
-        background-color: red; 
-        color: white; 
-        padding: 10px 20px;
-        border: none; 
-        border-radius: 25px; 
-        cursor: pointer; 
-        font-size: 20px; 
-        font-style: bold;
-        transition: background-color 0.3s;
-    }
-
-    
-    .voir-plus:hover {
-        background-color: darkred;
-    }
-
-
-    .voir-moins {
-        display: block;
-        background-color: red; 
-        color: white; 
-        padding: 10px 20px;
-        border: none; 
-        border-radius: 25px; 
-        cursor: pointer; 
-        font-size: 20px; 
-        font-style: bold;
-        transition: background-color 0.3s;
-    }
-
-    
-    .voir-moins:hover {
-        background-color: darkred;
-    }
-
-}
+}   
 
 
 /* Smartphone */
 @media (min-width: 481px) and (max-width: 767px) {
-
-    /* HEADER */
-    
-    header {
-        background-color: #61787e;
-        display: flex;
-        justify-content: center;
-        margin: 25px 90px 25px 90px;
-    }
-
-    .logo {
-        display: flex;
-        justify-content: center;
-    }
-
-    .title-banner{
-        display: none;
-    }
-
-
-    /* Category BEST MOVIE */
-
-    .category-best-movie {
-        border: 5px solid #000000;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 0px;
-        padding: 10px;
-        margin-bottom: 0px;
-    }
-            
-            
-    .element-best-movie-img {
-        margin: 0px;
-        padding: 0px;
-        width: 100%; /* Ajustez la largeur selon besoins */
-        height: 300px
-    }
-            
-            
-    .element-best-movie-img img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover; /* Couvre le conteneur et découpe les bords */
-        object-position: center; /* Centrage de l'image */
-    }
-            
-            
-    .element-best-movie-title {
-        margin: 5px;
-        padding: 5px;
-    }
-            
-
-    .element-best-movie-summary {
-        display: flex;
-        align-items: flex-start;
-        margin: 5px;
-        padding: 5px;
-    }
-            
-            
-    .element-best-movie-details-button {
-        display: flex;
-        justify-content: center;
-        margin: 0px;
-        padding: 0px;
-    }
-
-
-    .best-movie-details-button {
-        justify-content: right;
-        background-color: red;
-        color: white;
-        border: none;
-        padding: 10px 25px;
-        margin: 0px 75px;
-        font-size: 14px;
-        font-weight: bolder;
-        border-radius: 22px;
-        cursor: pointer;
-        display: inline-block;
-        text-align: center;
-        text-decoration: none;
-        }  
-    
-    
-    .best-movie-details-button:hover {
-        background-color: darkred;
-    }
-        
-        
-    /* Category*/
-
-    h1 {
-        font-size: 1.8em;
-        font-weight: bold;
-        font-style: normal;
-        display: flex;
-        justify-content: center;
-        margin: 0px;
-        padding: 0px;
-    }
-
-
-    p {
-        font-size: 1em;
-        font-weight: normal;
-        font-style: normal;
-    }
-
-
-    .category-item img {
-        display: block;
-        flex: 33%;
-    }
-
-    .category-item:nth-child(-n+2) {
-        flex: 100%;
-        display: block;
-    }
-
-
-    .category-dropdown {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 10px;
-        margin-bottom: 35px;
-    }
-    
-    
-    .category-dropdown select {
-        width: 60%;
-        height: 18%;
-        padding: 15px;
-    }
-
-
-    /* OPTIONS */
-
-    .voir-plus {
-        display: inline-block;
-        background-color: red; 
-        color: white; 
-        padding: 10px 20px;
-        border: none; 
-        border-radius: 25px; 
-        cursor: pointer; 
-        font-size: 20px; 
-        font-style: bold;
-        transition: background-color 0.3s;
-    }
-    
-    .voir-plus:hover {
-        background-color: darkred;
-    }
-
-
-    .voir-moins {
-        display: block;
-        background-color: red; 
-        color: white; 
-        padding: 10px 20px;
-        border: none; 
-        border-radius: 25px; 
-        cursor: pointer; 
-        font-size: 20px; 
-        font-style: bold;
-        transition: background-color 0.3s;
-    }
-
-    
-    .voir-moins:hover {
-        background-color: darkred;
-    }
-
 }
