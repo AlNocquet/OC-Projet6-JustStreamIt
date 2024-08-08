@@ -2,6 +2,10 @@
 venv/
 .venv/
 
+# Ignorer Font style
+oswald/
+.oswald/
+
 # Ignorer ancien modèle CSS
 style - ancien.css
 

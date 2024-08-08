@@ -1,4 +1,5 @@
 
+
 /* Site body management on desktop basis */
 
 
@@ -14,53 +15,46 @@ html {
 }
 
 
+/* Management of site banner */
 
-/* Management of site banner on desktop basis */
 
 header {
     border: 1px solid #000000;
     background-color: #61787e;
-    display: flex;
+    display: none;
     margin: 35px 100px;
 }
 
 .logo {
-    display: flex;
+    display: none;
     justify-content: left;
 }
 
 .title-banner{
-    display: flex;
+    display: none;
     justify-content: left;
 }
 
 
 body {
     background-color: #e9e3e3;
-    border: 2px solid #186ea8;
+    border: 2px solid #000000;
     font-family: 'Arial Narrow', Arial, sans-serif;
     color: #000;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
-    width: 1054px;
-    height: 4451px;
     margin: 0 auto;
     padding: 0 auto;
 }
 
 
-/* Management of items (movies) on desktop basis */
-
-.container .item-grid {
-    width: 844px;
-    height: 558px;
-}
+/* Management of items (movies) */
 
 
 .container {
     max-width: 1100px;
-    margin: 30px auto;
+    margin: 20px;
 }
 
 
@@ -71,18 +65,9 @@ body {
 }
 
 
-.item-grid {
-    display: grid;
-    grid-template-columns: 252px 252px 252px;
-    gap: 40px;
-    justify-content: center;
-}
-
-
 .item {
     position: relative;
     text-align: center;
-    height: 252px;
 }
 
 
@@ -95,31 +80,34 @@ body {
 
 .item img:hover {
     /* Scale hover*/
-    transform: scale(105%);
+    transform: scale(101%);
 }
 
 
 .detail {
     position: absolute;
-    top: 20px;
-    left: 0px;
+    top: 40px;
     width: 100%;
-    padding-right: 10px;
-    padding-bottom: 10px;
-    color: white;
+    height: 102px;
     background-color: #303030a1;
 
     h3 {
+        color: white;
         text-align: left;
-        padding: 1rem;
+        padding: 1rem;;
     }
 
     .btn {
         background-color: rgba(43, 41, 41, 0.925);
+        color: white;
+        font-size: 16px;
+        font-weight: normal;
         cursor: pointer;
-        text-align: right;
         float: right; 
-        border: none;    
+        border: none;
+        border-radius: 25px;    
+        width: 84px;
+        height: 26px;
     }
 
     .btn:hover {
@@ -128,93 +116,36 @@ body {
 }
 
 
-/*.btn-show {
+.btn-show {
     display: none;
-}*/
-
-.show-three-more, .show-five-more {
-    /* Class to re-display the optional movies */
-    display: block !important;
-}
-
-
-.btn {
     background: red;
     cursor: pointer;
     border: none; 
     color: white;
     font-size: 16px;
-    font-weight: bold;
-    padding: 5px 30px;
-    border-radius: 25px;     
+    width: 214px;
+    height: 36px;
+    top: 873px;
+    left: 158px;
+    padding: 2px 4px 2px 4px;
+    gap: 10px;
+    border-radius: 25px;
 }
 
-.btn:hover {
+.btn-show:hover {
     background-color: darkred;   
 }
 
 
-/* Management of “Best Film” category display on desktop basis */
+/* Management of “Best Film” category display */
 
 .best-movie {
-    border: 5px solid #000000;
-    width: 844px;
-    height: auto;
-    display: grid;
-    justify-items: auto;
-    grid-template-columns: 1fr 2fr;
-    grid-template-rows: auto auto auto;
-    padding: 0px;
-    margin: 0px;
-}
-
-.best-movie-img {
-    grid-column: 1 / 2;
-    grid-row: 1 / 4;
-    width: 100%;
-    height: auto;
-}
-
-.best-movie-img img {
-    display: block;
-    flex: 33%;
-    width: 100%;
-    height: auto;
-}
-
-.best-movie-title h2 {
-    grid-column: 2 / 3;
-    grid-row: 1 / 2;
-    margin: 5px;
-    padding: 5px;
-}
-
-.best-movie-summary p {
-    grid-column: 2 / 3;
-    grid-row: 2 / 3;
+    border: 6px solid #000000;
+    width: none;
+    height: none;
     display: flex;
-    align-items: flex-start;
-    margin: 5px;
-    padding: 5px;
-}
+    grid-template-columns: 1fr 2fr;
 
-.best-movie-details-button {
-    grid-column: 2 / 3;
-    grid-row: 3 / 4;
-    margin: 0;
-    padding: 0;
-    background-color: red;
-    color: white;
-    border: none;
-    padding: 15px 45px;
-    margin: 0px 25px;
-    font-size: 22px;
-    font-weight: normal;
-    border-radius: 45px;
-    cursor: pointer;
-    float: right; 
-    text-align: center;
-    text-decoration: none;
 }
 
 
@@ -223,48 +154,29 @@ body {
 }
 
 
-/* Management of "Dropdown" category on desktop basis */
+/* Management of "Dropdown" category */
 
 .selection {
     position: relative;
 }
 
-select {
+.selection select {
     position: absolute;
-    top: 10px;
-    left: 300px;
-    width: 25%;
+    top: none;
+    left: none;
+    width: none;
     height: auto;
-    padding: 15px;
+    padding: none;
 }
 
 
-/* Management of various site elements on desktop basis */
+/* Management of various site elements */
 
 h1 {
-    font-size: 3.2em;
-    font-weight: bold;
-    font-style: normal;
-    text-indent: 105px;
+    display: flex;
+    font-weight: bolder;
+    text-indent: none;
 }
-
-
-h2 {
-    align-items: flex-start;
-    font-size: 3em;
-    font-weight: bold;
-    padding: 15px 0px;
-}
-
-
-p {
-    align-items: flex-start;
-    font-size: 1.8em;
-    font-weight: lighter;
-    padding-left: 15px;
-    padding: 15px 0px;
-}
-
 
 
 
@@ -275,19 +187,548 @@ p {
 
 /* Desktop */
 @media (min-width: 1281px) {
+
+    header {
+        display: flex;
+        width: 844px;
+        height: 122px;
+        margin: 35px 110px;
+    }
+    
+    .logo {
+        display: flex;
+    }
+    
+    .title-banner{
+        display: flex;
+    }
+
+
+
+    body {
+        width: 1054px;
+        height: 4451px;
+    }
+
+
+
+    .container .item-grid {
+        width: 844px;
+        height: 558px;
+    }
+
+    .item-grid {
+        display: grid;
+        grid-template-columns: 252px 252px 252px;
+        gap: 35px;
+        justify-content: center;
+    }
+
+    .item {
+        width: 252px;
+        height: 252px;
+    }
+
+
+
+    .best-movie {
+        display: grid;
+        width: 835px;
+        height: 369px;
+    }
+
+    .best-movie-img {
+        grid-column: 1 / 2;
+        grid-row: 1 / 4;
+    }
+    
+    .best-movie-img img {
+        display: block;
+        margin : auto;
+        width: 227px;
+        height: 334px; 
+    }
+    
+    
+    .best-movie-title h2 {
+        grid-column: 2 / 3;
+        grid-row: 1 / 2;
+        font-size: 48px;
+        font-weight: 600;
+        line-height: 71.14px;
+        text-align: left;
+        width: 463px;
+        height: 44px;
+    }
+    
+    .best-movie-summary p {
+        grid-column: 2 / 3;
+        grid-row: 2 / 3;
+        width: 501px;
+        height: 113px;
+        font-size: 28px;
+        font-weight: 200;
+        line-height: 41.5px;
+        text-align: justify;
+    }
+
+    .best-movie-details-button {
+        grid-column: 2 / 3;
+        grid-row: 3 / 4;
+        background-color: red;
+        color: white;
+        border: none;
+        font-size: 22px;
+        font-weight: normal;
+        width: 166px;
+        height: 68px;
+        border-radius: 25px;
+        cursor: pointer;
+        float: right; 
+        text-align: center;
+        text-decoration: none;
+        padding: 2px, 4px, 2px, 4px;
+        gap: 10px;
+    }
+
+
+
+    .from-third, .from-fifth{
+        /* Class to re-display the optional movies */
+        display: block !important;
+    }
+
+
+    .selection select {
+        font-size: 20px;
+        font-weight: bolder;
+        position: absolute;
+        top: 5px;
+        left: 270px;
+        width: 25%;
+        height: auto;
+        padding: 15px;
+    }
+ 
+
+    h1 {
+        font-size: 48px;
+        text-indent: 110px;
+    }
+
 }
+
 
 
 /* tablette (landscape) */
 @media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+
+    header {
+        display: flex;
+        width: 619px;
+        height: 137px;
+        margin: 35px 100px;
+    }
+    
+    .logo {
+        display: flex;
+    }
+    
+    .title-banner{
+        display: flex;
+    }
+
+
+
+    body {
+        width: 788px;
+        height: 3586px;
+    }
+
+
+    .container .item-grid {
+        width: 619px;
+        height: 417px;
+    }
+    
+    .item-grid {
+        display: grid;
+        grid-template-columns: 289px 289px;
+        gap: 15px;
+        justify-content: center;
+    }
+
+    .item {
+        width: 289px;
+        height: 289px;
+    }
+   
+
+
+    .best-movie {
+        display: grid;
+        width: 614px;
+        height: 271px;
+    }
+
+    .best-movie-img {
+        grid-column: 1 / 2;
+        grid-row: 1 / 4;
+    }
+    
+    .best-movie-img img {
+        display: block;
+        margin : auto;
+        grid-column: 1 / 2;
+        grid-row: 1 / 4;
+        width: 168px;
+        height: 246px;
+    }
+    
+    .best-movie-title h2 {
+        display: block;
+        grid-column: 2 / 3;
+        grid-row: 1 / 2;
+        font-size: 40px;
+        font-weight: 600;
+        line-height: 59.28px;
+        text-align: left;
+        width: 343px;
+        height: 32px;
+    }
+    
+    .best-movie-summary p {
+        display: block;
+        grid-column: 2 / 3;
+        grid-row: 2 / 3;
+        width: 371px;
+        height: 83px;
+        font-size: 24px;
+        font-weight: 200;
+        line-height: 35.57px;
+        text-align: justify;
+    }
+
+    .best-movie-details-button {
+        grid-column: 2 / 3;
+        grid-row: 3 / 4;
+        background-color: red;
+        color: white;
+        border: none;
+        font-size: 20px;
+        font-weight: normal;
+        width: 123px;
+        height: 49px;
+        border-radius: 25px;
+        cursor: pointer;
+        float: right; 
+        text-align: center;
+        text-decoration: none;
+        padding: 2px, 4px, 2px, 4px;
+        gap: 10px;
+    }
+
+
+
+    .btn-show {
+        display: block !important;
+    }
+
+    .from-fifth {
+        display: none;
+    }
+
+
+    .selection select {
+        font-size: 20px;
+        font-weight: bolder;
+        position: absolute;
+        top: 0px;
+        left: 250px;
+        width: 25%;
+        height: auto;
+        padding: 15px;
+    }
+
+
+    h1 {
+        font-size: 40px;
+        text-indent: 100px;
+    }
+
 }
 
 
 /* tablette (portrait) */
 @media (min-width: 1025px) and (max-width: 1280px) {
-}   
+
+    header {
+        display: flex;
+        width: 619px;
+        height: 137px;
+        margin: 35px 100px;
+    }
+    
+    .logo {
+        display: flex;
+    }
+    
+    .title-banner{
+        display: flex;
+    }
+
+    
+
+    body {
+        width: 788px;
+        height: 3586px;
+    }
+
+
+    .container .item-grid {
+        width: 619px;
+        height: 417px;
+    }
+    
+    .item-grid {
+        display: grid;
+        grid-template-columns: 289px 289px;
+        gap: 15px;
+        justify-content: center;
+    }
+
+    .item {
+        width: 289px;
+        height: 289px;
+    }
+
+
+    .best-movie {
+        display: grid;
+        width: 614px;
+        height: 271px;
+    }
+
+    .best-movie-img {
+        grid-column: 1 / 2;
+        grid-row: 1 / 4;
+    }
+    
+    .best-movie-img img {
+        display: block;
+        margin : auto;
+        width: 168px;
+        height: 246px;
+        margin-left: 5px;
+    }
+    
+    .best-movie-title h2 {
+        display: block;
+        grid-column: 2 / 3;
+        grid-row: 1 / 2;
+        font-size: 40px;
+        font-weight: 600;
+        line-height: 59.28px;
+        text-align: left;
+        width: 343px;
+        height: 32px;
+    }
+    
+    .best-movie-summary p {
+        display: block;
+        grid-column: 2 / 3;
+        grid-row: 2 / 3;
+        width: 371px;
+        height: 83px;
+        font-size: 24px;
+        font-weight: 200;
+        line-height: 35.57px;
+        text-align: justify;
+    }
+
+    .best-movie-details-button {
+        grid-column: 2 / 3;
+        grid-row: 3 / 4;
+        background-color: red;
+        color: white;
+        border: none;
+        font-size: 20px;
+        font-weight: normal;
+        width: 123px;
+        height: 49px;
+        border-radius: 25px;
+        cursor: pointer;
+        float: right; 
+        text-align: center;
+        text-decoration: none;
+        padding: 2px, 4px, 2px, 4px;
+        gap: 10px;
+    }
+   
+
+    .btn-show {
+        display: block !important;
+    }
+
+    .from-fifth {
+        display: none;
+    }
+
+
+    .selection select {
+        font-size: 20px;
+        font-weight: bolder;
+        position: absolute;
+        top: 0px;
+        left: 250px;
+        width: 25%;
+        height: auto;
+        padding: 15px;
+    }
+
+
+    h1 {
+        font-size: 40px;
+        text-indent: 100px;
+    }
+
+}
 
 
 /* Smartphone */
 @media (min-width: 481px) and (max-width: 767px) {
+
+    header {
+        display: flex;
+        justify-content: center;
+        width : 329px;
+        height : 137px;
+        margin: 35px 65px;
+    }
+    
+    .logo {
+        display: flex;
+    } 
+
+
+    .title-banner{
+        display: none;
+    }
+
+    
+    body {
+        width: 456px;
+        height: 5487px;
+    }
+
+    .container .item-grid {
+        width: 339px;
+        height: 423px;
+    }
+
+    .item-grid {
+        display: grid;
+        grid-template-columns: 329px;
+        gap: 35px;
+        justify-content: center;
+        padding-top: 35px;
+    }
+
+    .item {
+        width: 329px;
+        height: 325.05px;
+    }
+
+    .btn-show {
+        display: block !important;
+    }
+
+    .from-third {
+        display: none;
+    }
+
+
+    .selection select {
+        font-size: 20px;
+        font-weight: bolder;
+        position: absolute;
+        top: 5px;
+        left: 115px;
+        width: 50%;
+        height: auto;
+        padding: 15px;
+    }
+
+
+    .best-movie {
+        display: grid;
+        grid-template-columns: 329px;
+        height: 463px;
+    }
+    
+    .best-movie-img {
+        display: block;
+        margin: auto;
+        width: 298px;
+        height: 241px;
+        /*width: px; /* Largeur de l'image visible */
+        /*height: px; /* Hauteur de l'image visible */
+        clip-path: inset(20px 0 20px 0); /* Couper 50px en haut et 50px en bas */
+        object-fit: cover; /* Optionnel, pour ajuster l'image dans le conteneur */
+        overflow: hidden;
+    }
+    
+    .best-movie-title h2 {
+        display: block;
+        font-size: 32px;
+        font-weight: 600;
+        line-height: 47.42px;
+        width: 293px;
+        height: 47px;
+        margin: auto;
+    }
+    
+    .best-movie-summary p {
+        display: block;
+        font-size: 16px;
+        width: 293px;
+        height: 114px;
+        font-size: 16px;
+        font-weight: 200;
+        line-height: 23.71px;
+        margin: auto;
+    }
+
+
+    .best-movie-details-button {
+        display: block;
+        margin: auto;
+        background-color: red;
+        color: white;
+        border: none;
+        font-size: 16px;
+        font-weight: normal;
+        width: 91px;
+        height: 40px;
+        border-radius: 25px;
+        cursor: pointer;
+        padding: 2px, 4px, 2px, 4px;
+        gap: 10px;
+    }
+
+
+    h1 {
+        font-size: 32px;
+        justify-content: center;
+    }
+
+    .selection{
+        padding-top: 35px;
+    }
+
+    .selection h1 {
+        display: none;
+    }
+
+
 }
