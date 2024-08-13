@@ -666,7 +666,7 @@ h1 {
         height: 463px;
     }
     
-    .best-movie-img {
+    .best-movie-img img{
         display: block;
         margin: auto;
         width: 298px;
