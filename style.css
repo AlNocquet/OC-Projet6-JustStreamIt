@@ -88,7 +88,7 @@ body {
     position: absolute;
     top: 40px;
     width: 100%;
-    height: 102px;
+    height: 130px;
     background-color: #303030a1;
 
     h3 {
@@ -103,12 +103,14 @@ body {
         font-size: 16px;
         font-weight: normal;
         cursor: pointer;
-        float: right; 
         border: none;
+        float: right;
+        margin-right: 10px;
         border-radius: 25px;    
         width: 84px;
         height: 26px;
     }
+
 
     .btn:hover {
       background-color:rgb(43, 41, 41);
@@ -125,10 +127,7 @@ body {
     font-size: 16px;
     width: 214px;
     height: 36px;
-    top: 873px;
-    left: 158px;
     padding: 2px 4px 2px 4px;
-    gap: 10px;
     border-radius: 25px;
 }
 
@@ -141,8 +140,6 @@ body {
 
 .best-movie {
     border: 6px solid #000000;
-    width: none;
-    height: none;
     display: flex;
     grid-template-columns: 1fr 2fr;
 
@@ -162,11 +159,6 @@ body {
 
 .selection select {
     position: absolute;
-    top: none;
-    left: none;
-    width: none;
-    height: auto;
-    padding: none;
 }
 
 
@@ -175,7 +167,7 @@ body {
 h1 {
     display: flex;
     font-weight: bolder;
-    text-indent: none;
+    margin: 0 auto;
 }
 
 
@@ -211,7 +203,6 @@ h1 {
     }
 
 
-
     .container .item-grid {
         width: 844px;
         height: 558px;
@@ -244,9 +235,9 @@ h1 {
     
     .best-movie-img img {
         display: block;
-        margin : auto;
         width: 227px;
         height: 334px; 
+        margin: 0 auto;
     }
     
     
@@ -259,6 +250,7 @@ h1 {
         text-align: left;
         width: 463px;
         height: 44px;
+        margin: 0px;
     }
     
     .best-movie-summary p {
@@ -270,6 +262,7 @@ h1 {
         font-weight: 200;
         line-height: 41.5px;
         text-align: justify;
+        margin : 0px;
     }
 
     .best-movie-details-button {
@@ -288,7 +281,8 @@ h1 {
         text-align: center;
         text-decoration: none;
         padding: 2px, 4px, 2px, 4px;
-        gap: 10px;
+        margin-right : 45px;
+        margin-bottom: 10px;
     }
 
 
@@ -321,7 +315,7 @@ h1 {
 
 
 /* tablette (landscape) */
-@media (min-width: 768px) and (max-width: 1024px) and (orientation: landscape) {
+@media (min-width: 1025px) and (max-width: 1280px) {
 
     header {
         display: flex;
@@ -378,11 +372,9 @@ h1 {
     
     .best-movie-img img {
         display: block;
-        margin : auto;
-        grid-column: 1 / 2;
-        grid-row: 1 / 4;
         width: 168px;
         height: 246px;
+        margin: 0 auto;
     }
     
     .best-movie-title h2 {
@@ -395,6 +387,7 @@ h1 {
         text-align: left;
         width: 343px;
         height: 32px;
+        margin: 0px;
     }
     
     .best-movie-summary p {
@@ -407,6 +400,7 @@ h1 {
         font-weight: 200;
         line-height: 35.57px;
         text-align: justify;
+        margin: 0px;
     }
 
     .best-movie-details-button {
@@ -425,7 +419,7 @@ h1 {
         text-align: center;
         text-decoration: none;
         padding: 2px, 4px, 2px, 4px;
-        gap: 10px;
+        margin-right : 20px;
     }
 
 
@@ -460,7 +454,7 @@ h1 {
 
 
 /* tablette (portrait) */
-@media (min-width: 1025px) and (max-width: 1280px) {
+@media (min-width: 768px) and (max-width: 1024px) {
 
     header {
         display: flex;
@@ -477,7 +471,7 @@ h1 {
         display: flex;
     }
 
-    
+
 
     body {
         width: 788px;
@@ -501,6 +495,7 @@ h1 {
         width: 289px;
         height: 289px;
     }
+   
 
 
     .best-movie {
@@ -516,10 +511,9 @@ h1 {
     
     .best-movie-img img {
         display: block;
-        margin : auto;
         width: 168px;
         height: 246px;
-        margin-left: 5px;
+        margin: 0 auto;
     }
     
     .best-movie-title h2 {
@@ -532,6 +526,7 @@ h1 {
         text-align: left;
         width: 343px;
         height: 32px;
+        margin: 0px;
     }
     
     .best-movie-summary p {
@@ -544,6 +539,7 @@ h1 {
         font-weight: 200;
         line-height: 35.57px;
         text-align: justify;
+        margin: 0px;
     }
 
     .best-movie-details-button {
@@ -562,9 +558,9 @@ h1 {
         text-align: center;
         text-decoration: none;
         padding: 2px, 4px, 2px, 4px;
-        gap: 10px;
+        margin-right : 20px;
     }
-   
+
 
     .btn-show {
         display: block !important;
@@ -591,8 +587,8 @@ h1 {
         font-size: 40px;
         text-indent: 100px;
     }
-
 }
+
 
 
 /* Smartphone */
@@ -624,14 +620,15 @@ h1 {
     .container .item-grid {
         width: 339px;
         height: 423px;
+        margin-top: 135px;
     }
 
     .item-grid {
         display: grid;
         grid-template-columns: 329px;
-        gap: 35px;
+        gap: 25px;
         justify-content: center;
-        padding-top: 35px;
+        margin-bottom: 25px;
     }
 
     .item {
@@ -639,6 +636,7 @@ h1 {
         height: 325.05px;
     }
 
+    
     .btn-show {
         display: block !important;
     }
@@ -668,14 +666,12 @@ h1 {
     
     .best-movie-img img{
         display: block;
-        margin: auto;
         width: 298px;
         height: 241px;
-        /*width: px; /* Largeur de l'image visible */
-        /*height: px; /* Hauteur de l'image visible */
         clip-path: inset(20px 0 20px 0); /* Couper 50px en haut et 50px en bas */
         object-fit: cover; /* Optionnel, pour ajuster l'image dans le conteneur */
         overflow: hidden;
+        margin: auto;
     }
     
     .best-movie-title h2 {
@@ -713,22 +709,23 @@ h1 {
         border-radius: 25px;
         cursor: pointer;
         padding: 2px, 4px, 2px, 4px;
-        gap: 10px;
+        margin-bottom : 20px;
     }
 
 
     h1 {
         font-size: 32px;
         justify-content: center;
+        margin-top: 40px;
     }
 
     .selection{
-        padding-top: 35px;
+        padding-top: 55px;
+        margin-top: 40px;
     }
 
     .selection h1 {
         display: none;
     }
-
 
 }
