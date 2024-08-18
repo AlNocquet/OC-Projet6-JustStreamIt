@@ -171,13 +171,20 @@ h1 {
 }
 
 
-
-/*************************************/
-/*********** MEDIA QUERIES ***********/
-/*************************************/
+/* Management of Modal (Desktop, Tablet & Mobile) */
 
 
-/* Desktop */
+/*.modal {
+    display: none;
+}*/
+
+
+/************************************************************************/
+/**************************** MEDIA QUERIES *****************************/
+/************************************************************************/
+
+
+/******************************* Desktop *******************************/
 @media (min-width: 1281px) {
 
     header {
@@ -196,12 +203,10 @@ h1 {
     }
 
 
-
     body {
         width: 1054px;
         height: 4451px;
     }
-
 
     .container .item-grid {
         width: 844px;
@@ -221,7 +226,6 @@ h1 {
     }
 
 
-
     .best-movie {
         display: grid;
         width: 835px;
@@ -239,7 +243,6 @@ h1 {
         height: 334px; 
         margin: 0 auto;
     }
-    
     
     .best-movie-title h2 {
         grid-column: 2 / 3;
@@ -286,7 +289,6 @@ h1 {
     }
 
 
-
     .from-third, .from-fifth{
         /* Class to re-display the optional movies */
         display: block !important;
@@ -310,11 +312,147 @@ h1 {
         text-indent: 110px;
     }
 
+
+
+    .modal {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        /*position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+    }
+
+    .modal-content{
+        border: 6px solid #000000;
+        background-color: #ffffff;
+        width: 778px;
+        height: 939px;
+        overflow: auto; /* Enable scroll if needed */
+    }
+
+
+    .modal-grid-container{
+        display: grid;
+        grid-template-areas: 
+            "a b";
+        grid-template-columns: 2fr 1fr; /* La première colonne fait 423px de large, la deuxième 227px */
+        gap: 10px;
+    }
+
+    .grid-item {
+        display: flex;
+        flex-direction: column; /* Ajouté pour gérer l'alignement des enfants à l'intérieur */
+    }
+
+    .content-area-a {
+        grid-area: a;
+        text-align: left;
+    }
+
+    .content-area-b {
+        grid-area: b;
+        text-align: left;
+    }
+    
+    .title{ 
+        text-align: left;
+        font-size: 48px;
+        font-weight: 600;
+        line-height: 71.14px;
+        font-weight: bold;
+        text-indent: 35px;
+        margin-top : 35px;
+    }
+
+    .year, 
+    .category, 
+    .age-pg, 
+    .time, 
+    .country, 
+    .imdb-score, 
+    .box-office, 
+    .label {
+        font-size: 24px;
+        font-weight: 400;
+        line-height: 35.57px;
+        font-weight: bold;
+        text-align: left;
+        text-indent: 35px;
+    }
+
+    .label {
+        margin-top: 55px;
+    }    
+
+    .director {
+        font-size: 24px;
+        font-weight: 400;
+        line-height: 35.57px;
+        font-weight: normal;
+        text-align: left;  
+        text-indent: 35px;
+    }
+
+    .movie-img {
+        width: 227px;
+        height: 334px;
+    }
+
+
+    .modal-summary {
+        display: flex;
+        align-items: center;
+        width: 698px;
+        height: 457px;
+        font-size: 24px;
+        font-weight: 300;
+        line-height: 35.57px;
+        font-weight: lighter;
+        text-align: justify;
+        margin: 0 auto;
+
+    }
+
+    .modal-actors{
+        display: flex;
+        align-items: center;
+        width: 692px;
+        height: 248px;
+        font-size: 20px;
+        font-weight: 400;
+        line-height: 29.64px;
+        font-weight: lighter;
+        text-align: left;        
+        margin: 0 auto;
+
+    }
+    
+
+    .container-flex .btn-close {
+        border: 2px #ff0000;
+        display: block;
+        margin: auto;
+        background: red;
+        cursor: pointer;
+        border: none; 
+        color: white;
+        font-size: 16px;
+        width: 214px;
+        height: 36px;
+        padding: 2px 4px 2px 4px;
+        gap: 10px;
+        border-radius: 25px;
+    }
+
+    .btn-close:hover {
+        background-color: darkred;   
+    }
+
 }
 
 
 
-/* tablette (landscape) */
+/******************************* tablette (landscape) *******************************/
 @media (min-width: 1025px) and (max-width: 1280px) {
 
     header {
