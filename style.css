@@ -313,139 +313,138 @@ h1 {
     }
 
 
-
     .modal {
         display: flex;
         justify-content: center;
         align-items: center;
-        /*position: fixed; /* Stay in place */
+        position: fixed; /* Stay in place */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.315); /* Background overlay */
         z-index: 1; /* Sit on top */
     }
-
-    .modal-content{
+    
+    .modal-content {
         border: 6px solid #000000;
         background-color: #ffffff;
         width: 778px;
-        height: 939px;
-        overflow: auto; /* Enable scroll if needed */
-    }
-
-
-    .modal-grid-container{
-        display: grid;
-        grid-template-areas: 
-            "a b";
-        grid-template-columns: 2fr 1fr; /* La première colonne fait 423px de large, la deuxième 227px */
-        gap: 10px;
-    }
-
-    .grid-item {
+        height: auto; /* 939px mais en auto du navigateur en phase test - voir après concaténation block main movie infos */
         display: flex;
-        flex-direction: column; /* Ajouté pour gérer l'alignement des enfants à l'intérieur */
-    }
-
-    .content-area-a {
-        grid-area: a;
-        text-align: left;
-    }
-
-    .content-area-b {
-        grid-area: b;
-        text-align: left;
+        flex-direction: column; /* Organise les enfants en colonne */
     }
     
-    .title{ 
+    .modal-grid-container {
+        display: grid;
+        grid-template-columns: 2fr 1fr; 
+        grid-template-areas:  
+            "a b"
+            "c c"
+            "d d"
+            "e e"; 
+        gap: 10px;
+    }
+    
+    .modal-main-infos-movie{
+        grid-area: a;
         text-align: left;
-        font-size: 48px;
-        font-weight: 600;
-        line-height: 71.14px;
-        font-weight: bold;
-        text-indent: 35px;
-        margin-top : 35px;
+        width: 423px;
+        height: 450px; /* 359px mais en auto du navigateur en phase test - voir après concaténation block main movie infos */
+
+        .title{ 
+            text-align: left;
+            font-size: 48px;
+            font-weight: 600;
+            line-height: 71.14px;
+        }
+
+        .year, 
+        .category, 
+        .age-pg, 
+        .time, 
+        .country, 
+        .imdb-score, 
+        .box-office { 
+            text-align: left;
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 35.57px;
+        }
+
+        .label {
+            margin-top: 15px;
+            text-align: left;
+            font-size: 24px;
+            font-weight: 400;
+            line-height: 35.57px;
+        }      
+
+        .director {
+            text-align: left;
+            font-size: 24px;
+            font-weight: 300;
+            line-height: 35.57px;
+        }    
     }
 
-    .year, 
-    .category, 
-    .age-pg, 
-    .time, 
-    .country, 
-    .imdb-score, 
-    .box-office, 
-    .label {
-        font-size: 24px;
-        font-weight: 400;
-        line-height: 35.57px;
-        font-weight: bold;
-        text-align: left;
-        text-indent: 35px;
-    }
-
-    .label {
-        margin-top: 55px;
-    }    
-
-    .director {
-        font-size: 24px;
-        font-weight: 400;
-        line-height: 35.57px;
-        font-weight: normal;
-        text-align: left;  
-        text-indent: 35px;
-    }
-
-    .movie-img {
+ 
+    .modal-image-movie {
+        background-color: 3px rgb(0, 0, 0);
+        grid-area: b;
         width: 227px;
-        height: 334px;
+        height: 359px;
     }
-
 
     .modal-summary {
-        display: flex;
-        align-items: center;
-        width: 698px;
-        height: 457px;
+        grid-area: c;
         font-size: 24px;
         font-weight: 300;
         line-height: 35.57px;
-        font-weight: lighter;
         text-align: justify;
-        margin: 0 auto;
-
-    }
-
-    .modal-actors{
-        display: flex;
-        align-items: center;
-        width: 692px;
-        height: 248px;
-        font-size: 20px;
-        font-weight: 400;
-        line-height: 29.64px;
-        font-weight: lighter;
-        text-align: left;        
-        margin: 0 auto;
-
+        width: 698px;
+        height: 150px; /* 457px - voir après concaténation block main movie infos */
     }
     
-
-    .container-flex .btn-close {
+    .modal-with {
+        grid-area: d;
+        text-align: left;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 29.64px;
+    }
+    
+    .modal-actors {
+        grid-area: e;
+        text-align: left;
+        width: 100%;
+        font-size: 20px;
+        font-weight: 300;
+        line-height: 29.64px;
+        width: 692px ;
+        height: 50px; /* 248px voir après concaténation block main movie infos */
+    }
+    
+    .container-flex {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .btn-close {
         border: 2px #ff0000;
-        display: block;
-        margin: auto;
         background: red;
         cursor: pointer;
-        border: none; 
+        border: none;
         color: white;
         font-size: 16px;
         width: 214px;
         height: 36px;
-        padding: 2px 4px 2px 4px;
-        gap: 10px;
+        padding: 2px 4px;
         border-radius: 25px;
     }
-
+    
     .btn-close:hover {
-        background-color: darkred;   
+        background-color: darkred;
     }
 
 }
@@ -586,6 +585,131 @@ h1 {
     h1 {
         font-size: 40px;
         text-indent: 100px;
+    }
+
+
+    p {
+        font-style: bold;
+    }
+
+
+    .modal {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: fixed; /* Stay in place */
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5); /* Background overlay */
+        z-index: 1; /* Sit on top */
+    }
+    
+    .modal-content {
+        border: 6px solid #000000;
+        background-color: #ffffff;
+        width: 778px;
+        height: auto;
+        max-height: 90%; /* Limite la hauteur pour éviter de dépasser la fenêtre */
+        overflow: auto; /* Enable scroll if needed */
+    }
+    
+    .modal-grid-container {
+        display: grid;
+        grid-template-areas: 
+            "a a"
+            "summary summary"
+            "b b"
+            "actors actors";
+        grid-template-columns: 1fr; /* Une colonne unique pour l'empilement vertical */
+        gap: 10px;
+        padding: 20px;
+    }
+    
+    .modal-main-infos-movie{
+        grid-area: a;
+        text-align: left;
+    }
+    
+    .modal-summary {
+        grid-area: summary;
+        text-align: justify;
+        width: 100%;
+    }
+    
+    .modal-image-movie {
+        grid-area: b;
+        text-align: left;
+    }
+    
+    .modal-actors {
+        grid-area: actors;
+        text-align: left;
+    }
+    
+    /* Autres styles inchangés */
+    .title{ 
+        text-align: left;
+        font-size: 48px;
+        font-weight: 600;
+        line-height: 71.14px;
+        font-weight: bold;
+        margin-top : 35px;
+    }
+
+    .year, 
+    .category, 
+    .age-pg, 
+    .time, 
+    .country, 
+    .imdb-score, 
+    .box-office, 
+    .label {
+        font-size: 24px;
+        font-weight: 400;
+        line-height: 35.57px;
+        font-weight: bold;
+        text-align: left;
+    }
+
+    .label {
+        margin-top: 55px;
+    }    
+
+    .director {
+        font-size: 24px;
+        font-weight: 400;
+        line-height: 35.57px;
+        font-weight: normal;
+        text-align: left;  
+    }
+
+    .modal-movie-img {
+        width: 227px;
+        height: 334px;
+    }
+    
+    .container-flex {
+        display: flex;
+        justify-content: center;
+    }
+    
+    .btn-close {
+        border: 2px #ff0000;
+        background: red;
+        cursor: pointer;
+        border: none;
+        color: white;
+        font-size: 16px;
+        width: 214px;
+        height: 36px;
+        padding: 2px 4px;
+        border-radius: 25px;
+    }
+    
+    .btn-close:hover {
+        background-color: darkred;
     }
 
 }
