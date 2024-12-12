@@ -1,7 +1,12 @@
-# Ignorer VENV
-venv/
-.venv/
+# Ignorer API
+OCMovies-API-EN-FR/
 
-# Ignorer Font style
+# Ignorer Font style Oswald
 oswald/
-.oswald/
+
+# Ignorer Version statique site
+JustStreamIt - static version.html
+
+# Ignorer dossier Style (Version statique site)
+Style/
+
