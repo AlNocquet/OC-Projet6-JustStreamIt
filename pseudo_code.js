@@ -38,9 +38,11 @@
 
         // async function getTop6Movies() : renvoyer directement 6 films avec page_size=6&start=1 pour éviter à l'API de gérer pagination + slice côté client. OK
 
-        // async function getTop6MoviesByCategory(category) : Extract dynamique liste catégories de l'API + gestion dynamique de la pagination. OK
+        // async function getTop6MoviesByCategory(category) : 
+            // Extract dynamique liste catégories de l'API + gestion dynamique de la pagination. OK
+            // Refactorisation de getTop6MoviesByCategory(category) / Single Responsibility Principle. OK
 
- // A TRAVAILLER : Optimisation requête API dans async function getTop6MoviesByCategory(category) : créer fonction qui récupère une fois tous les genres, puis    réutiliser ces données dans les appels suivants.
+ 
 
 
     // FETCH et GET -------------------------------------------------------------------------------------------------------------------------
