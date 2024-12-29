@@ -38,8 +38,9 @@
 
         // async function getTop6Movies() : renvoyer directement 6 films avec page_size=6&start=1 pour éviter à l'API de gérer pagination + slice côté client. OK
 
-        // async function getTop6MoviesByCategory(category) : Voir Tableau catégories à remplacer par consult dynamique liste catégories  de l'API ?
+        // async function getTop6MoviesByCategory(category) : Extract dynamique liste catégories de l'API + gestion dynamique de la pagination. OK
 
+ // A TRAVAILLER : Optimisation requête API dans async function getTop6MoviesByCategory(category) : créer fonction qui récupère une fois tous les genres, puis    réutiliser ces données dans les appels suivants.
 
 
     // FETCH -------------------------------------------------------------------------------------------------------------------------
@@ -91,37 +92,47 @@
 
 
         async function getTop6MoviesByCategory(category) {
-        // Fonction async pour récupérer les 6 Meilleurs Films par Catégorie via fetchMovies(apiUrl) et l'afficher :
+        // Fonction async pour récupérer les 6 Meilleurs Films par Catégorie (récup via url API) et via fetchMovies(apiUrl), puis l'afficher :
                 // A venir : Elle utilisera displayMovieList() pour l’affichage. 
 
-            
-            // 1) Définir les catégories valides (tableau);
 
-            // 2) Vérifier la validité de la catégorie avec +sieurs conditions :
-                // a) !category : Si la catégorie est undefined, null, ou une valeur falsy (comme "").
-                // b) typeof category !== "string" : Si la catégorie n'est pas une chaîne de caractères.
-                // c) category.trim() === "" : Si la catégorie est une chaîne vide (après avoir enlevé les espaces inutiles).
-                // d) !validCategories.includes(category) : Si la catégorie n'est pas dans la liste des catégories valides définie précédemment.
-                    // Si catégorie non valide, message d'avertissement dans la console + Return (arrêt immédiat de l'exécution)
+            // A. Définir dynamiquement les catégories (gestion pagination): 
 
+                // 1) Définir tableau vide allGenres pour stocker tous les genres récupérés à partir de l'API ;
+                // 2) Initialiser nextPageUrl à l'URL de la première page des genres : "http://localhost:8000/api/v1/genres/";
+                // 3) Boucle pour récupérer toutes les pages de genres :
+                    // Vérifier la réponse de l'API : si  OK (status 2xx) SINON une erreur est levée (message console : "Erreur lors de la récupération des genres");
+                    // Parser en Json + Ajouter au tableau les genres de la page courante;
+                    // Vérifier s'il y a une page suivante.
 
-            // 3) Définir CONST apiUrl avec encodeURIComponent : liste de films de la catégorie triés par leur score IMDb (décroissant) +
-                    // page_size=6 : L'API renverra 6 films de la liste 
+                // 4) Extraire les noms des genres en minuscule ;  
 
-                // Bonne pratique gestion utilisateur : utilisation encodeURIComponent, converti en une séquence sûre en remplaçant chaque caractère non sûr par son équivalent en pourcentage (%) suivi du code hexadécimal du caractère.
-                    
-                        // Caratères spéciaux comme &, ?, = qui ne font pas partis de la construction URL ;
-                        // Caractères non ASCII comme les accents (é, è, â) ;
-                        // Espaces utilisé par le client comme "Sci fi", bloquant sans encodage.
+                // 5) Vérifier la validité de la catégorie avec +sieurs conditions :
+                    // a) typeof category !== "string" : Si la catégorie n'est pas une chaîne de caractères.
+                    // b) category.trim() === "" : Si la catégorie est une chaîne vide (après avoir enlevé les espaces inutiles).
+                    // c) !validCategories.includes(category) : Si la catégorie n'est pas dans la liste des catégories valides définie précédemment.
+                        // Si catégorie non valide, message d'avertissement dans la console + Return (arrêt immédiat de l'exécution)
 
 
-            // 3) Appeler la fonction fetchMoviesavec paramètre apiUrl ; 
+            // B. Construire dynamiquement l'URL de l'API pour récupérer les films par catégorie spécifiée : 
 
-            // 4) Traiter les données : 
-                // a) Si la réponse contient des films dans data.results ;
-                // b) Elle l'affiche dans la console SINON "Aucun film trouvé pour la catégorie '' ".
+                // Définir CONST apiUrl avec encodeURIComponent + paramètre category : liste de films triés par leur score IMDb (décroissant) + page_size=6
 
-            // 5) Gestion des erreurs : Si échec appel à fetchMovies (problème réseau ou API indisponible, ...), elle est interceptée dans le bloc catch, message d'erreur.
+                    // Bonne pratique gestion utilisateur : utilisation encodeURIComponent, converti en une séquence sûre en remplaçant chaque caractère non sûr par son équivalent en pourcentage (%) suivi du code hexadécimal du caractère.
+                        
+                            // Caratères spéciaux comme &, ?, = qui ne font pas partis de la construction URL ;
+                            // Caractères non ASCII comme les accents (é, è, â) ;
+                            // Espaces utilisé par le client comme "Sci fi", bloquant sans encodage.
+
+            // C. Récupération des films pour la catégorie valide :
+                
+                // 1) Appeler la fonction fetchMovies avec paramètre apiUrl ; 
+                // 2) Traiter les données : 
+                    // a) Si la réponse contient des films dans data.results ;
+                    // b) Elle l'affiche dans la console SINON "Aucun film trouvé pour la catégorie '' ".
+
+            // D. Gestion des erreurs : 
+                // Si échec appel à fetchMovies (problème réseau ou API indisponible, ...), elle est interceptée dans le bloc catch, message d'erreur.
 
             }
         
