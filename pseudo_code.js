@@ -27,85 +27,106 @@
             // S’assurer que le site fonctionne de manière réactive (même sur différents navigateurs).
 
 
-// PSEUDO CODE - 12/12/2024
+// PSEUDO CODE - 29/12/2024
+
+ // OPTIMISATION DU CODE : 
+
+        // Centralisation / Réduction redondance du code / Robustesse :
+            // Créer une fonction générique pour effectuer la requête API (fetchMovies(apiUrl)).
+            // Fonctions spécifiques qui appellent cette fonction générique pour obtenir les films sous différentes conditions : meilleur film, top 6 films, films par catégorie. OK
+            // Gestion des erreurs et propagation. OK
+
+        // async function getTop6Movies() : renvoyer directement 6 films avec page_size=6&start=1 pour éviter à l'API de gérer pagination + slice côté client. OK
+
+        // async function getTop6MoviesByCategory(category) : Voir Tableau catégories à remplacer par consult dynamique liste catégories  de l'API ?
+
+
 
     // FETCH -------------------------------------------------------------------------------------------------------------------------
 
-    async function getBestMovie() {
-
-        // Fonction pour récupérer le Meilleur Film
-                // Elle utilisera displayBestMovie() pour l’affichage. 
+        async function fetchMovies(apiUrl) {
+        // Fonction async pour fetch :
         
+            // 1) Effectuer une requête à l'API : paramètre apiUrl
+            // 2) Vérifier la réponse : la réponse est correcte (code 2xx) ; Si la réponse HTTP n'est pas valide (code 4xx ou 5xx), une erreur est levée ; 
+            // 3) Conversion en JSON : Conversion en objet JavaScript expoitable ; Lève exception si le format de la réponse n'est pas du JSON valide ;
+            // 4) Si ok, Retourne ;
+            // 5) Propagation des erreurs (Erreur réseau, réponse non valide, problème de conversion JSON) : catch et trow, relance l'erreur vers fonction appelante (getBestMovie, etc.) // chaque fonction appelée gère ses erreurs avec message approprié ou essai autre Url.
 
-        // 1) Effectuer une requête à l'API : liste de films triés par leur score IMDb (décroissant) ;
+            }
 
-        // 2) Vérifier la réponse : la réponse est correcte (code 2xx) ; Si la réponse HTTP n'est pas valide (code 4xx ou 5xx), une erreur est levée ; 
-
-        // 3) Traiter les données : 
-          // a) Si la réponse contient des films dans data.results ;
-          // b) Elle récupère le premier (le mieux noté selon IMDb) ;
-          // c) Elle l'affiche dans la console (ou envoyé à une fonction d'affichage dans l'interface utilisateur via appel de fonction displayBestMovie(bestMovie)) sinon un message d'erreur si aucun film n'est trouvé ;
-
-        // 4) Si une erreur se produit (par exemple, réseau ou parsing), elle est capturée et affichée dans la console.
-
-        }
-
-
-    async function getTop6Movies() {
-
-        // Fonction pour récupérer les 6 Meilleurs Films (exclusion du premier (result bestMovie)) 
-                // Elle utilisera displayMovieList() pour l’affichage. 
-
-
-        // 1) Effectuer une requête à l'API : récupérer une liste de films triés par leur score IMDb (décroissant) +
-                // page_size=7 : L'API renverra 7 films dont meilleur film (le premier de la liste) ainsi que les 6 suivants.
-                // start=0 : Récupération commence à partir du premier élément de la liste.
-
-        // 2) Vérifier la réponse : la réponse est correcte (code 2xx) ; Si la réponse HTTP n'est pas valide (code 4xx ou 5xx), une erreur est levée ; 
-
-        // 3) Traiter les données :
-          // a) Si la réponse contient des films dans data.results ;
-          // b) Elle extrait les 6 films suivants (excluant le premier film) : const topMovies = data.results.slice(1, 7)
-          // c) Elle l'affiche dans la console (ou envoyé à une fonction d'affichage dans l'interface utilisateur via appel de fonction displayMovieList(topMovies)) sinon un message d'erreur si aucun film n'est trouvé ;
-
-        // 4) En cas d'erreur (soit dans l'appel API, soit dans la gestion des données), elle affiche un message d'erreur dans la console.
-        
-
-        // OPTIMISATION 1) 3) 4) : renvoyer directement 6 films en passant page_size=6&start=1 pour éviter à l'API de gérer la pagination + slice côté client.
-    
-        }
-
-
-    async function getTop6MoviesByCategory(category) {
-
-        // Fonction pour Récupérer les 6 Meilleurs Films par Catégorie en passant le genre de film (fantasy, sci-fi)
-                // Elle utilisera displayMovieList() pour l’affichage.
-              
-                
-        // 1) Effectuer une requête à l'API : avec le paramètre genre égal à la catégorie donnée + triée par score IMDb +  limite la réponse à 6 films.
-                // genre=${category} : Le paramètre genre est remplacé par la variable category passée à la fonction.
-        
-        // 2) Vérifier la réponse : la réponse est correcte (code 2xx) ; Si la réponse HTTP n'est pas valide (code 4xx ou 5xx), une erreur est levée.
-
-        // 3) Traiter les données : Si la réponse contient des films dans data.results, ils sont affichés dans la console (et pourraient être envoyés à une fonction d'affichage dans l'interface utilisateur via appel de fonction displayMovieList(category)) sinon un message d'erreur si aucun film n'est trouvé ;
-        
-        // 4) Gestion des erreurs : Si la réponse est invalide ou si un problème survient lors du traitement des données, un message d'erreur est affiché dans la console.
-
-        // AMELIORATION : Liste de catégories valides : vide ou undefined comme ?genre=&...// ?genre=undefined&... = Levée d'erreur sans explication + Appel API inutile
-
-            // Bonne pratique :  utilisation encodeURIComponent encodeURIComponent, converti en une séquence sûre en remplaçant chaque caractère non sûr par son équivalent en pourcentage (%) suivi du code hexadécimal du caractère.
+        async function getBestMovie() {
+        // Fonction async pour récupérer le Meilleur Film via fetchMovies(apiUrl) et l'afficher :
+                // A venir : Elle utilisera displayBestMovie() pour l’affichage. 
             
-                // Caratères spéciaux comme &, ?, = qui ne font pas partis de la construction URL ;
-                // Caractères non ASCII comme les accents (é, è, â) ;
-                // Espaces utilisé par le client comme "Sci fi", bloquant sans encodage.
 
-        }
-    
+            // 1) Définir CONST apiUrl : liste de films triés par leur score IMDb (décroissant);
+            // 2) Appeler la fonction fetchMovies avec paramètre apiUrl ; 
+            // 3) Traiter les données : 
+                // a) Si la réponse contient des films dans data.results ;
+                // b) Elle l'affiche dans la console SINON "Aucun film trouvé"
+            // 4) Gestion des erreurs : Si échec appel à fetchMovies (problème réseau ou API indisponible, ...), elle est interceptée dans le bloc catch, message d'erreur.
 
-    // OPTIMISATION DU CODE A VENIR: 
-        // 1 ) Créer une fonction générique pour effectuer la requête API (fetchMovies).
-        // 2 ) Fonctions spécifiques qui appellent cette fonction générique pour obtenir les films sous différentes conditions : meilleur film, top 6 films, films par catégorie.
+            }
 
+
+        async function getTop6Movies() {
+        // Fonction async pour récupérer les 6 Meilleurs Films via fetchMovies(apiUrl) et l'afficher :
+                // A venir : Elle utilisera displayMovieList() pour l’affichage. 
+
+
+            // 1) Définir CONST apiUrl : liste de films triés par leur score IMDb (décroissant) +
+                    // page_size=6 : L'API renverra 6 films de la liste + 
+                    // start=1 : Récupération commence à partir du 2ième élément de la liste.
+
+            // 2) Appeler la fonction fetchMoviesavec paramètre apiUrl ; 
+
+            // 3) Traiter les données : 
+                // a) Si la réponse contient des films dans data.results ;
+                // b) Elle l'affiche dans la console SINON "Aucun film trouvé".
+
+            // 4) Gestion des erreurs : Si échec appel à fetchMovies (problème réseau ou API indisponible, ...), elle est interceptée dans le bloc catch, message d'erreur.
+            
+            }
+
+
+        async function getTop6MoviesByCategory(category) {
+        // Fonction async pour récupérer les 6 Meilleurs Films par Catégorie via fetchMovies(apiUrl) et l'afficher :
+                // A venir : Elle utilisera displayMovieList() pour l’affichage. 
+
+            
+            // 1) Définir les catégories valides (tableau);
+
+            // 2) Vérifier la validité de la catégorie avec +sieurs conditions :
+                // a) !category : Si la catégorie est undefined, null, ou une valeur falsy (comme "").
+                // b) typeof category !== "string" : Si la catégorie n'est pas une chaîne de caractères.
+                // c) category.trim() === "" : Si la catégorie est une chaîne vide (après avoir enlevé les espaces inutiles).
+                // d) !validCategories.includes(category) : Si la catégorie n'est pas dans la liste des catégories valides définie précédemment.
+                    // Si catégorie non valide, message d'avertissement dans la console + Return (arrêt immédiat de l'exécution)
+
+
+            // 3) Définir CONST apiUrl avec encodeURIComponent : liste de films de la catégorie triés par leur score IMDb (décroissant) +
+                    // page_size=6 : L'API renverra 6 films de la liste 
+
+                // Bonne pratique gestion utilisateur : utilisation encodeURIComponent, converti en une séquence sûre en remplaçant chaque caractère non sûr par son équivalent en pourcentage (%) suivi du code hexadécimal du caractère.
+                    
+                        // Caratères spéciaux comme &, ?, = qui ne font pas partis de la construction URL ;
+                        // Caractères non ASCII comme les accents (é, è, â) ;
+                        // Espaces utilisé par le client comme "Sci fi", bloquant sans encodage.
+
+
+            // 3) Appeler la fonction fetchMoviesavec paramètre apiUrl ; 
+
+            // 4) Traiter les données : 
+                // a) Si la réponse contient des films dans data.results ;
+                // b) Elle l'affiche dans la console SINON "Aucun film trouvé pour la catégorie '' ".
+
+            // 5) Gestion des erreurs : Si échec appel à fetchMovies (problème réseau ou API indisponible, ...), elle est interceptée dans le bloc catch, message d'erreur.
+
+            }
+        
+
+//-----------------------------------------------------------------------------------------------------------------------------------------
 
 
 
