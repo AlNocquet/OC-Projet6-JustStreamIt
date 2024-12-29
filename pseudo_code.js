@@ -43,29 +43,36 @@
  // A TRAVAILLER : Optimisation requête API dans async function getTop6MoviesByCategory(category) : créer fonction qui récupère une fois tous les genres, puis    réutiliser ces données dans les appels suivants.
 
 
-    // FETCH -------------------------------------------------------------------------------------------------------------------------
+    // FETCH et GET -------------------------------------------------------------------------------------------------------------------------
 
         async function fetchMovies(apiUrl) {
         // Fonction async pour fetch :
         
             // 1) Effectuer une requête à l'API : paramètre apiUrl
+
             // 2) Vérifier la réponse : la réponse est correcte (code 2xx) ; Si la réponse HTTP n'est pas valide (code 4xx ou 5xx), une erreur est levée ; 
+
             // 3) Conversion en JSON : Conversion en objet JavaScript expoitable ; Lève exception si le format de la réponse n'est pas du JSON valide ;
+
             // 4) Si ok, Retourne ;
+
             // 5) Propagation des erreurs (Erreur réseau, réponse non valide, problème de conversion JSON) : catch et trow, relance l'erreur vers fonction appelante (getBestMovie, etc.) // chaque fonction appelée gère ses erreurs avec message approprié ou essai autre Url.
 
             }
+
 
         async function getBestMovie() {
         // Fonction async pour récupérer le Meilleur Film via fetchMovies(apiUrl) et l'afficher :
                 // A venir : Elle utilisera displayBestMovie() pour l’affichage. 
             
-
             // 1) Définir CONST apiUrl : liste de films triés par leur score IMDb (décroissant);
+
             // 2) Appeler la fonction fetchMovies avec paramètre apiUrl ; 
+
             // 3) Traiter les données : 
                 // a) Si la réponse contient des films dans data.results ;
                 // b) Elle l'affiche dans la console SINON "Aucun film trouvé"
+
             // 4) Gestion des erreurs : Si échec appel à fetchMovies (problème réseau ou API indisponible, ...), elle est interceptée dans le bloc catch, message d'erreur.
 
             }
@@ -74,7 +81,6 @@
         async function getTop6Movies() {
         // Fonction async pour récupérer les 6 Meilleurs Films via fetchMovies(apiUrl) et l'afficher :
                 // A venir : Elle utilisera displayMovieList() pour l’affichage. 
-
 
             // 1) Définir CONST apiUrl : liste de films triés par leur score IMDb (décroissant) +
                     // page_size=6 : L'API renverra 6 films de la liste + 
@@ -92,50 +98,76 @@
 
 
         async function getTop6MoviesByCategory(category) {
-        // Fonction async pour récupérer les 6 Meilleurs Films par Catégorie (récup via url API) et via fetchMovies(apiUrl), puis l'afficher :
+        // Fonction async pour récupérer les 6 Meilleurs Films par Catégorie, puis l'afficher :
                 // A venir : Elle utilisera displayMovieList() pour l’affichage. 
 
+            // 1) Récupérer tous les genres via la fonction fetchAllGenres ;
 
-            // A. Définir dynamiquement les catégories (gestion pagination): 
+            // 2) Vérifier si la catégorie est valide en appelant isValidCategory ;
+                // Arrêter la fonction si la catégorie n'est pas valide.
 
-                // 1) Définir tableau vide allGenres pour stocker tous les genres récupérés à partir de l'API ;
-                // 2) Initialiser nextPageUrl à l'URL de la première page des genres : "http://localhost:8000/api/v1/genres/";
-                // 3) Boucle pour récupérer toutes les pages de genres :
-                    // Vérifier la réponse de l'API : si  OK (status 2xx) SINON une erreur est levée (message console : "Erreur lors de la récupération des genres");
-                    // Parser en Json + Ajouter au tableau les genres de la page courante;
-                    // Vérifier s'il y a une page suivante.
+            // 3) Si la catégorie est valide, elle effectue une requête pour récupérer les films correspondants en appelant fetchMoviesByCategory ;
+                // La promesse sera stocké dans data.
 
-                // 4) Extraire les noms des genres en minuscule ;  
+            // 4) Traiter les données : 
+                    // a) Extraire les résultats de la réponse API ou un tableau vide par défaut ;
+                        // Si data est défini et contient la clé results, alors la valeur de results sera assignée à la variable results.
+                        // Si data ou data.results est undefined (par exemple, en cas d'erreur ou de réponse vide), alors results sera un tableau vide ([]).
+                    // b) Si la réponse contient des films dans data.results ;
+                    // c) Elle l'affiche dans la console SINON "Aucun film trouvé pour la catégorie '' ".
 
-                // 5) Vérifier la validité de la catégorie avec +sieurs conditions :
+            // 5) Gestion des erreurs : 
+                // Toute erreur qui pourrait survenir dans le bloc try, capturée et message d'erreur.
+
+            }
+
+        
+        async function fetchAllGenres() {
+        // Fonction async pour récupérer dynamiquement les genres depuis l'API ("http://localhost:8000/api/v1/genres/") + Gestion pagination :
+
+            // 1) Définir tableau vide allGenres pour stocker tous les genres récupérés à partir de l'API ;
+
+            // 2) Initialiser nextPageUrl à l'URL de la première page des genres : "http://localhost:8000/api/v1/genres/";
+
+            // 3) Boucle pour récupérer toutes les pages de genres :
+                // Vérifier la réponse de l'API : si  OK (status 2xx) SINON une erreur est levée (message console : "Erreur lors de la récupération des genres");
+                // Parser en Json + Ajouter au tableau les genres de la page courante;
+                // Vérifier s'il y a une page suivante;
+
+            // 4) Retourner
+   
+        }
+        
+        function isValidCategory(category, allGenres) {
+        // Fonction pour vérifier si une catégorie donnée existe dans la liste des genres disponibles récupérés depuis l'API :
+
+            // 1) Vérifier la validité de la catégorie avec +sieurs conditions :
                     // a) typeof category !== "string" : Si la catégorie n'est pas une chaîne de caractères.
                     // b) category.trim() === "" : Si la catégorie est une chaîne vide (après avoir enlevé les espaces inutiles).
-                    // c) !validCategories.includes(category) : Si la catégorie n'est pas dans la liste des catégories valides définie précédemment.
-                        // Si catégorie non valide, message d'avertissement dans la console + Return (arrêt immédiat de l'exécution)
 
+            // 2) Création d'un tableau 'validCategories' (.map) contenant les noms des genres en minuscules ;
+                // Extrait chaque genre (genre.name) et le transforme en minuscules pour la rendre insensible à la casse.
 
-            // B. Construire dynamiquement l'URL de l'API pour récupérer les films par catégorie spécifiée : 
+            // 3) Vérification si la catégorie donnée existe dans le tableau 'validCategories'.
+                // Retourne true or false
 
+        }
+
+        async function fetchMoviesByCategory(category) {
+        // Fonction async pour récupérer les films par catégorie :
+
+            // 1) Construire dynamiquement l'URL de l'API pour récupérer les films par catégorie spécifiée : 
                 // Définir CONST apiUrl avec encodeURIComponent + paramètre category : liste de films triés par leur score IMDb (décroissant) + page_size=6
 
                     // Bonne pratique gestion utilisateur : utilisation encodeURIComponent, converti en une séquence sûre en remplaçant chaque caractère non sûr par son équivalent en pourcentage (%) suivi du code hexadécimal du caractère.
                         
-                            // Caratères spéciaux comme &, ?, = qui ne font pas partis de la construction URL ;
-                            // Caractères non ASCII comme les accents (é, è, â) ;
-                            // Espaces utilisé par le client comme "Sci fi", bloquant sans encodage.
+                        // Caratères spéciaux comme &, ?, = qui ne font pas partis de la construction URL ;
+                        // Caractères non ASCII comme les accents (é, è, â) ;
+                        // Espaces utilisé par le client comme "Sci fi", bloquant sans encodage.
 
-            // C. Récupération des films pour la catégorie valide :
-                
-                // 1) Appeler la fonction fetchMovies avec paramètre apiUrl ; 
-                // 2) Traiter les données : 
-                    // a) Si la réponse contient des films dans data.results ;
-                    // b) Elle l'affiche dans la console SINON "Aucun film trouvé pour la catégorie '' ".
+             // 2) Retourner avec Appel async fetchMovies avec l'URL générée (apiUrl).
 
-            // D. Gestion des erreurs : 
-                // Si échec appel à fetchMovies (problème réseau ou API indisponible, ...), elle est interceptée dans le bloc catch, message d'erreur.
-
-            }
-        
+        }
 
 //-----------------------------------------------------------------------------------------------------------------------------------------
 

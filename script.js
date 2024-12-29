@@ -56,40 +56,54 @@ async function getTop6Movies() {
 
 async function getTop6MoviesByCategory(category) {
     try {
-        let allGenres = []; 
-        let nextPageUrl = "http://localhost:8000/api/v1/genres/";
+        const allGenres = await fetchAllGenres();
 
-
-        while (nextPageUrl) {
-            const genresResponse = await fetch(nextPageUrl);
-
-            if (!genresResponse.ok) {
-                throw new Error("Erreur lors de la récupération des genres");
-            }
-
-            const genresData = await genresResponse.json(); 
-            allGenres = allGenres.concat(genresData.results); 
-
-            nextPageUrl = genresData.next || null; 
+        if (!isValidCategory(category, allGenres)) {
+            console.warn("Catégorie non valide :", category);
+            return;
         }
 
-        const validCategories = allGenres.map(genre => genre.name.toLowerCase()); 
+        const data = await fetchMoviesByCategory(category);
 
-        if (!category || typeof category !== "string" || category.trim() === "" || !validCategories.includes(category.toLowerCase())) {
-            console.warn("Catégorie non reconnue ou invalide :", category);
-            return; 
-        }
-
-        const apiUrl = `http://localhost:8000/api/v1/titles/?genre=${encodeURIComponent(category)}&sort_by=-imdb_score&page_size=6`;
-
-        const data = await fetchMovies(apiUrl);
-
-        if (data?.results?.length > 0) {
-            console.log(`${category} :`, data.results);
+        const results = data?.results || []; 
+        if (results.length > 0) {
+            console.log(`${category} :`, results);
         } else {
             console.log(`Aucun film trouvé pour la catégorie ${category}`);
         }
     } catch (error) {
         console.error(`Erreur lors de la récupération des films pour la catégorie ${category} :`, error);
     }
+}
+
+
+async function fetchAllGenres() {
+    let allGenres = [];
+    let nextPageUrl = "http://localhost:8000/api/v1/genres/";
+
+    while (nextPageUrl) {
+        const response = await fetch(nextPageUrl);
+        const data = await response.json();
+        allGenres = allGenres.concat(data.results);
+        nextPageUrl = data.next || null;
+    }
+
+    return allGenres;
+}
+
+function isValidCategory(category, allGenres) {
+
+    if (typeof category !== "string" || category.trim() === "") {
+        console.warn("Catégorie invalide : elle doit être une chaîne non vide.");
+        return false;  // Retourne false si la catégorie est invalide
+    }
+
+    const validCategories = allGenres.map(genre => genre.name.toLowerCase());
+    return validCategories.includes(category.toLowerCase());
+}
+
+
+async function fetchMoviesByCategory(category) {
+    const apiUrl = `http://localhost:8000/api/v1/titles/?genre=${encodeURIComponent(category)}&sort_by=-imdb_score&page_size=6`;
+    return await fetchMovies(apiUrl);
 }
