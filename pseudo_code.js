@@ -17,8 +17,7 @@
 
             // Organiser et filtrer les films en catégories (meilleur film, top 6, fantasy, sci-fi). OK
 
-            // Affichage des films
-            // Afficher les informations du "meilleur film".
+            // Afficher les informations du "meilleur film". EN COURS
             // Afficher les 6 meilleurs films dans chaque catégorie (général, fantasy, sci-fi).
             // Gérer la section choix "Dropdown"
 
@@ -27,25 +26,15 @@
             // S’assurer que le site fonctionne de manière réactive (même sur différents navigateurs).
 
 
-// PSEUDO CODE - 29/12/2024
 
- // OPTIMISATION DU CODE : 
-
-        // Centralisation / Réduction redondance du code / Robustesse :
-            // Créer une fonction générique pour effectuer la requête API (fetchMovies(apiUrl)).
-            // Fonctions spécifiques qui appellent cette fonction générique pour obtenir les films sous différentes conditions : meilleur film, top 6 films, films par catégorie. OK
-            // Gestion des erreurs et propagation. OK
-
-        // async function getTop6Movies() : renvoyer directement 6 films avec page_size=6&start=1 pour éviter à l'API de gérer pagination + slice côté client. OK
-
-        // async function getTop6MoviesByCategory(category) : 
-            // Extract dynamique liste catégories de l'API + gestion dynamique de la pagination. OK
-            // Refactorisation de getTop6MoviesByCategory(category) / Single Responsibility Principle. OK
-
- 
+// PSEUDO CODE - MAJ 31/12/2024 ; TRAVAIL EN COURS SECTION "MEILLEUR FILM"
 
 
-    // FETCH et GET -------------------------------------------------------------------------------------------------------------------------
+// FETCH et GET -------------------------------------------------------------------------------------------------------------------------
+
+ // RECUPERER RESUME VIA NODE.js ??
+ // SECTION A CHOIX DIT "DROPDOWN" à coder
+
 
         async function fetchMovies(apiUrl) {
         // Fonction async pour fetch :
@@ -171,36 +160,54 @@
 
         }
 
-//-----------------------------------------------------------------------------------------------------------------------------------------
+    
+    
+// DISPLAY ------------------------------------------------------------------------------------------------------------------------------
+
+
+ // OPTIMISATION DU CODE : 
+        // CENTRER EN CSS LE MAIN CONTENEUR
+        // REVOIR CSS pour + clarté
+        // Ajouter un événement `onclick` pour afficher plus d'infos sur le Meilleur film.
+
+
+        function createMainContainer() {
+        // Fonction Création conteneur : OK
+            // Single Responsibility Principle, Conteneur indépendant de la génération des sections d'affichage.
+            // Utilisation de main pour la sémantique, main sera le contenu principal de la page.
+        }
+
+
+            function createHeader() {
+            // Fonction Création header : OK
+                // A rattacher au conteneur.
+            }
+
+            function createSection() {
+            // Fonction création section générique ( avec H1 dynamique) : OK
+                // Single Responsibility Principle, Section d'affichage indépendante et réutilisable.
+                // A rattacher au conteneur.
+            }
+
+            function displayBestMovie(bestMovie) {
+            // Fonction Affichage Meilleur film : 
+                // Créer génération HTML puis appel de cette fonction + function createSection() dans : async function getBestMovie()
+
+                // ATTENTION : 
+                    // Récupérer résumé et afficher correctement ;
+                    // Revoir CSS en conséquence ;
+                    // Ajouter un événement `onclick` pour afficher plus d'infos sur le film.
+            }
+
+
+
+
+
+
 
 
 
 // REFLEXIONS POUR PLUS TARD : 
-
-    // SECTION A CHOIX DIT "DROPDOWN" à coder
-    
-    
-    // DISPLAY -------------------------------------------------------------------------------------------------------------------------
-
-
-        // Fonction pour Afficher le Meilleur Film dans le DOM (Affichage "type A") : reçoit les données du meilleur film et les injecte dans la section dédiée de l’HTML.
-
-            function displayBestMovie(movieData) {
-            // Sélectionner la section HTML pour le "Meilleur Film"
-            // Injecter le titre, l'image, la description du film à partir des données `movieData` - dico JSON
-            // Ajouter un événement `onclick` pour afficher plus d'infos sur le film
-            }
-
-
-        // Fonction pour Afficher une Liste de Films (Affichage "type B") : gère l’affichage d’une liste de films pour une catégorie donnée. Elle boucle sur movieList et affiche chaque film dans la section associée.
-
-            function displayMovieList(movieList, category) {
-                // Sélectionner la section HTML correspondant à la catégorie (Top 6, Fantasy, Sci-Fi)
-                // Boucler sur `movieList` pour afficher chaque film avec son titre, image, et description - dico JSON
-                // Ajouter un événement `onclick` pour afficher plus d'infos sur chaque film
-                // Ajouter un événement `onclick` pour afficher plus de films
-            }
-
 
     // DISPLAY MODALES -------------------------------------------------------------------------------------------------------------------
 
@@ -212,19 +219,4 @@
                 // Afficher ces informations dans une modale
             }
 
-    
-    // INIT -------------------------------------------------------------------------------------------------------------------------------
 
-        // Fonction d'Initialisation pour Charger les Données lors du Chargement de la Page : lors du chargement de la page, appelle toutes les fonctions nécessaires pour récupérer et afficher les différentes catégories de films.
-
-            async function init() {
-                // Appeler `getBestMovie()` pour récupérer et afficher le meilleur film
-                // Appeler `getTop6Movies()` pour récupérer et afficher les 6 meilleurs films suivants
-                // Appeler `getTopMoviesByCategory('fantasy')` pour les films de catégorie Fantasy
-                // Appeler `getTopMoviesByCategory('sci-fi')` pour les films de catégorie Sci-Fi
-                // Assurer que chaque appel de fonction affiche les films correspondants dans le DOM (catch error)
-            }
-
-    
-    // Appeler la fonction d'initialisation sans attendre chargement de tous les éléments :
-    document.addEventListener("DOMContentLoaded", init); 
