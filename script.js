@@ -1,4 +1,5 @@
 
+
 // FETCH ET CHECK :
 
 async function fetchMovies(apiUrl) {
@@ -91,7 +92,6 @@ async function getBestMovie() {
 
 
 async function getTop6Movies() {
-
     const apiUrl = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score&page_size=7"; 
     try {
         const data = await fetchMovies(apiUrl);
@@ -103,8 +103,16 @@ async function getTop6Movies() {
             // Exclure le meilleur film, on récupère les 6 suivants
             const filteredMovies = data.results.slice(1, 7); // Prendre les films après le premier
 
+            // Récupérer les détails complets de chaque film pour Modal
+            const detailedMoviesPromises = filteredMovies.map(async (movie) => {
+                return await fetchMovieDetails(movie.id);
+            });
+            
+            // Attendre que tous les détails des films soient récupérés
+            const detailedMovies = await Promise.all(detailedMoviesPromises);
+
             // Afficher les films
-            displayMovies(filteredMovies, "Top films toutes catégories");
+            displayMovies(detailedMovies, "Top films toutes catégories");
         } else {
             console.log("Aucun film trouvé");
         }
@@ -115,7 +123,6 @@ async function getTop6Movies() {
 
 
 async function getTop6MoviesByCategory(category) {
-
     try {
         const allGenres = await fetchAllGenres();
 
@@ -128,11 +135,19 @@ async function getTop6MoviesByCategory(category) {
         const results = data?.results || [];
 
         if (results.length > 0) {
-            displayMovies(results, `${category}`);
+            // Récupérer les détails complets de chaque film
+            const detailedMoviesPromises = results.map(async (movie) => {
+                return await fetchMovieDetails(movie.id);
+            });
+            
+            // Attendre que tous les détails des films soient récupérés pour Modal
+            const detailedMovies = await Promise.all(detailedMoviesPromises);
+
+            // Afficher les films de la catégorie
+            displayMovies(detailedMovies, category);
         } else {
             console.log(`Aucun film trouvé pour la catégorie ${category}`);
         }
-
     } catch (error) {
         console.error(`Erreur lors de la récupération des films pour la catégorie ${category} :`, error);
     }
@@ -170,6 +185,180 @@ function createSection(title) {
     section.appendChild(h1);
 
     return section;
+}
+
+
+function createShowMoreButton(section) {
+    // Créer le conteneur flex pour le bouton
+    const containerFlex = document.createElement('div');
+    containerFlex.classList.add('container', 'container-flex');
+
+    // Créer le bouton "Voir plus"
+    const showMoreButton = document.createElement('button');
+    showMoreButton.classList.add('btn', 'btn-show');
+    showMoreButton.textContent = "Voir plus";
+
+    // Ajouter le bouton au conteneur
+    containerFlex.appendChild(showMoreButton);
+
+    // Ajouter le conteneur à la section
+    section.appendChild(containerFlex);
+}
+
+
+function createMovieModal(movieData) {
+    // REVOIR LES SEPARATIONS DE RESPONSABILITE AVEC LE BOUTTON CLOSE A APPELER
+
+    console.log("Création du modal avec les données : ", movieData);
+
+    // Création de <section class="modal">
+    const modal = document.createElement("section");
+    modal.className = "modal";
+
+    // Création de <div class="modal-content">
+    const modalContent = document.createElement("div");
+    modalContent.className = "modal-content";
+
+    // Création de <!-- Modal grid content -->
+    const modalGrid = document.createElement("div");
+    modalGrid.className = "modal-grid-container";
+
+    
+    // PARTIE : Informations principales du film
+
+    // Création de <div class="modal-main-infos-movie">
+    const mainInfos = document.createElement("div");
+    mainInfos.className = "modal-main-infos-movie";
+
+    // 1ère ligne : TITLE
+    const title = document.createElement("div");
+    title.className = "title";
+    title.textContent = movieData.title;
+    mainInfos.appendChild(title);
+
+    // 2ème ligne : YEAR et CATEGORY
+    const infoRow2 = document.createElement("div");
+    infoRow2.className = "info-row";
+
+    const year = document.createElement("div");
+    year.className = "year";
+    year.textContent = `${movieData.year} -`;  // Ajout du trait d'union
+    infoRow2.appendChild(year);
+
+    const category = document.createElement("div");
+    category.className = "category";
+    category.textContent = movieData.genres.join(", ");
+    infoRow2.appendChild(category);
+
+    mainInfos.appendChild(infoRow2);
+
+    // 3ème ligne : AGE-PG, TIME, COUNTRY
+    const infoRow3 = document.createElement("div");
+    infoRow3.className = "info-row";
+
+    const agePg = document.createElement("div");
+    agePg.className = "age-pg";
+    // Si la note PG est "Not rated or unkown rating", afficher "N/A" pour gestion espace Modal
+    const rating = movieData.rated;
+    agePg.textContent = `PG: ${rating === "Not rated or unkown rating" ? "N/A" : rating} -`;  // Ajout du trait d'union
+    infoRow3.appendChild(agePg);
+
+    const time = document.createElement("div");
+    time.className = "time";
+    time.textContent = `${movieData.duration} minutes -`;  // Ajout du trait d'union
+    infoRow3.appendChild(time);
+
+    const country = document.createElement("div");
+    country.className = "country";
+    country.textContent = `${movieData.countries.join(", ") || "N/A"}`;
+    infoRow3.appendChild(country);
+
+    mainInfos.appendChild(infoRow3);
+
+    // 4ème ligne : IMDB-SCORE (Ajout manuel / 10)
+    const imdbScore = document.createElement("div");
+    imdbScore.className = "imdb-score";
+    const imdbScoreValue = movieData.imdb_score ? `${movieData.imdb_score} /10` : "N/A"; // (Valeur numérique, si = 0, False > donc pas || )
+    imdbScore.textContent = `IMDb Score : ${imdbScoreValue}`;
+    mainInfos.appendChild(imdbScore);
+
+    // 5ème ligne : BOX OFFICE (Conversion Dollars)
+    const boxOffice = document.createElement("div");
+    boxOffice.className = "box-office";
+    const boxOfficeValue = movieData.worldwide_gross_income 
+    ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(movieData.worldwide_gross_income) : "N/A";
+    // (Valeur numérique, si = 0, False > donc pas || )
+    boxOffice.textContent = `Box Office : ${boxOfficeValue}`;
+    mainInfos.appendChild(boxOffice);
+
+    // Espace
+    const space = document.createElement("div");
+    space.className = "space";
+    mainInfos.appendChild(space);
+
+    // 6ème ligne : LABEL
+    const directorLabel = document.createElement("div");
+    directorLabel.className = "label";
+    directorLabel.textContent = "Réalisé par :";
+    mainInfos.appendChild(directorLabel);
+
+    // 7ème ligne : DIRECTOR
+    const director = document.createElement("div");
+    director.className = "director";
+    director.textContent = movieData.directors.join(", ");
+    mainInfos.appendChild(director);
+
+    modalGrid.appendChild(mainInfos);
+
+    // PARTIE : Image du film ; Création de <div class="modal-image-movie"> avec <img src="(En dynamique)" class="modal-img">
+    const modalImage = document.createElement("div");
+    modalImage.className = "modal-image-movie";
+    const img = document.createElement("img");
+    img.src = movieData.image_url;
+    img.className = "modal-img";
+    modalImage.appendChild(img);
+    modalGrid.appendChild(modalImage);
+
+    // PARTIE : Résumé ; Création de <span class="modal-summary"> (En dynamique)
+    const modalSummary = document.createElement("span");
+    modalSummary.className = "modal-summary";
+    modalSummary.textContent = movieData.long_description || "Résumé non disponible";
+    modalGrid.appendChild(modalSummary);
+
+    // PARTIE : Acteurs ; Création de <span class="modal-with"> avec <span class="modal-actors"> (En dynamique)
+    const modalWith = document.createElement("span");
+    modalWith.className = "modal-with";
+    modalWith.textContent = "Avec :";
+    modalGrid.appendChild(modalWith);
+
+    const modalActors = document.createElement("span");
+    modalActors.className = "modal-actors";
+    modalActors.textContent = `${movieData.actors.join(", ")}`;
+    modalGrid.appendChild(modalActors);
+
+    modalContent.appendChild(modalGrid);
+
+    // PARTIE : Bouton de fermeture <div class="container container-flex"> avec <button class="btn-close">Fermer</button>
+    const btnContainer = document.createElement("div");
+    btnContainer.className = "container container-flex";
+
+    const btnClose = document.createElement("button");
+    btnClose.className = "btn-close";
+    btnClose.textContent = "Fermer";
+    btnClose.addEventListener("click", () => {
+        modal.remove();
+    });
+    // Ajout du bouton à <div class="container container-flex">
+    btnContainer.appendChild(btnClose);
+
+    // Ajout de <div class="container container-flex"> à <div class="modal-content">
+    modalContent.appendChild(btnContainer);
+    // Ajout de <div class="modal-content"> à <section class="modal">
+    modal.appendChild(modalContent);
+
+    // Ajout du modal au body
+    document.body.appendChild(modal);
+    modal.style.display = 'block'; // Force l'affichage du modal qui en en display none par défaut en CSS
 }
 
 
@@ -216,11 +405,11 @@ function displayBestMovie(bestMovieData, section) {
     movieButton.textContent = 'Détails';
     movieButtonDiv.appendChild(movieButton);
     
-    // Lier le bouton à la page de détails avec l'URL dynamique // A REVOIR
+    // Lier le bouton à l'ouverture du modal
     movieButton.addEventListener('click', () => {
-        window.location.href = `details.html?movie_id=${bestMovieData.id}`; // URL dynamique avec ID du film
+        createMovieModal(bestMovieData); // Appel de la fonction qui crée le modal
     });
-    
+
     // Ajouter tous les éléments à bestMovieDiv ('best-movie')
     bestMovieDiv.appendChild(movieImgDiv);
     bestMovieDiv.appendChild(movieTitleDiv);
@@ -256,7 +445,7 @@ function displayMovies(movies, sectionTitle) {
         itemDiv.classList.add('item', 'from-third', 'from-fifth');
 
         const movieImg = document.createElement('img');
-        movieImg.src = movie.image_url;  
+        movieImg.src = movie.image_url;
         movieImg.alt = movie.title;
 
         const detailDiv = document.createElement('div');
@@ -269,9 +458,10 @@ function displayMovies(movies, sectionTitle) {
         detailButton.classList.add('btn');
         detailButton.textContent = "Détails";
 
-        // Event listener pour rediriger vers la page de détails // A REVOIR
+        // Lier le bouton à l'ouverture du modal
         detailButton.addEventListener('click', () => {
-            window.location.href = `details.html?movie_id=${movie.id}`;
+            console.log('Le bouton Détails a été cliqué');
+            createMovieModal(movie);  // Appel de la fonction qui crée le modal
         });
 
         // Construction de l'élément
@@ -285,16 +475,8 @@ function displayMovies(movies, sectionTitle) {
     // Ajouter le conteneur des films à la section
     section.appendChild(container);
 
-
-
-    // Ajouter le bouton "Voir plus" // FONCTION A SEPARER ET A APPELER ICI // NE S'AFFICHE PAS
-    const containerFlex = document.createElement('div');
-    containerFlex.classList.add('container', 'container-flex');
-
-    const showMoreButton = document.createElement('button');
-    showMoreButton.classList.add('btn', 'btn-show');
-    showMoreButton.textContent = "Voir plus";
-
-    containerFlex.appendChild(showMoreButton);
-    section.appendChild(containerFlex);
+    // Appeler fonction createShowMoreButton pour bouton "Voir plus"
+    createShowMoreButton(section);
 }
+
+
