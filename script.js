@@ -1,14 +1,4 @@
 
-(async () => {
-    await Promise.all([
-        getBestMovie(), 
-    ]);
-})();
-
-
-createHeader();
-
-
 // FETCH ET CHECK :
 
 async function fetchMovies(apiUrl) {
@@ -29,7 +19,7 @@ async function makeRequest(apiUrl) {
 
     await checkResponseStatus(response);
 
-    return response.json(); // Conversion directe
+    return response.json(); // Conversion directe en JSON
 }
 
 async function checkResponseStatus(response) {
@@ -60,7 +50,7 @@ function isValidCategory(category, allGenres) {
 
     if (typeof category !== "string" || category.trim() === "") {
         console.warn("Catégorie invalide : elle doit être une chaîne non vide.");
-        return false;  // Retourne false si la catégorie est invalide
+        return false;  // Retourne false si catégorie invalide
     }
 
     const validCategories = allGenres.map(genre => genre.name.toLowerCase());
@@ -81,9 +71,12 @@ async function fetchMoviesByCategory(category) {
 
 let isSectionCreated = false;
 
+
 async function getBestMovie() {
 
     // console.log('Appel à getBestMovie') DEUX APPELS // SECTION GÉNÉREE DEUX FOIS
+    // Voir si on doit éviter la multiplication d'appel ?
+
     // Si la section est déjà créée, on arrête l'exécution de la fonction
     if (isSectionCreated) return;
 
@@ -116,12 +109,17 @@ async function getBestMovie() {
 
 
 async function getTop6Movies() {
-    const apiUrl = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score&page_size=6&start=1";
+    // console.log('Appel à getTop6Movies()) DEUX APPELS // SECTION GÉNÉREE DEUX FOIS
+    // Voir si on doit éviter la multiplication d'appel ?
+
+    // Si la section est déjà créée, on arrête l'exécution de la fonction
+
+    const apiUrl = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score&page_size=6";
     try {
         const data = await fetchMovies(apiUrl);
 
         if (data?.results?.length > 0) {
-            console.log("6 Meilleurs films :", data.results);
+            displayMovies(data.results, "Top films toutes catégories");
         } else {
             console.log("Aucun film trouvé");
         }
@@ -132,6 +130,9 @@ async function getTop6Movies() {
 
 
 async function getTop6MoviesByCategory(category) {
+    // console.log('Appel à getTop6MoviesByCategory(category)) DEUX APPELS // SECTION GÉNÉREE DEUX FOIS
+    // Si la section est déjà créée, on arrête l'exécution de la fonction
+
     try {
         const allGenres = await fetchAllGenres();
 
@@ -141,13 +142,14 @@ async function getTop6MoviesByCategory(category) {
         }
 
         const data = await fetchMoviesByCategory(category);
+        const results = data?.results || [];
 
-        const results = data?.results || []; 
         if (results.length > 0) {
-            console.log(`${category} :`, results);
+            displayMovies(results, `${category}`);
         } else {
             console.log(`Aucun film trouvé pour la catégorie ${category}`);
         }
+
     } catch (error) {
         console.error(`Erreur lors de la récupération des films pour la catégorie ${category} :`, error);
     }
@@ -161,7 +163,7 @@ function createHeader() {
     const header = document.createElement('header');
 
     const titleBannerDiv = document.createElement('div');
-    titleBannerDiv.classList.add('banner'); // gestion CSS
+    titleBannerDiv.classList.add('banner'); // gestion CSS ancre
     const titleBannerImg = document.createElement('img');
     titleBannerImg.src = 'style/banner.jpg';
     titleBannerDiv.appendChild(titleBannerImg);
@@ -175,7 +177,7 @@ function createHeader() {
 
 function createSection(title) {
     const section = document.createElement('section');
-    section.classList.add('section-container'); // gestion CSS
+    section.classList.add('section-container'); // gestion CSS ancre
 
     const mainContainer = document.querySelector('main');
     mainContainer.appendChild(section);
@@ -192,39 +194,38 @@ function createSection(title) {
 
 
 function displayBestMovie(bestMovieData, section) {
-    // Crée le conteneur grille pour les éléments du film
+    // Créer le conteneur grille pour les éléments du meilleur film
     const container = document.createElement('div');
     container.classList.add('container', 'item-grid');
     
     const bestMovieDiv = document.createElement('div');
     bestMovieDiv.classList.add('best-movie');
     
-    // Crée la div 'best-movie' pour les éléments du film
+    // Créer la div 'best-movie' pour les éléments du meilleur film
     const movieImgDiv = document.createElement('div');
     movieImgDiv.classList.add('best-movie-img');
     const movieImg = document.createElement('img');
     movieImg.src = bestMovieData.image_url; // URL dynamique de l'image
-    movieImg.alt = bestMovieData.title;     // Alt dynamique (le titre du film)
     movieImgDiv.appendChild(movieImg);
     
-    // Crée le titre du film avec un <h2> - dynamique
+    // Créer le titre du meilleur film avec un <h2> - dynamique
     const movieTitleDiv = document.createElement('div');
     movieTitleDiv.classList.add('best-movie-title');
     const movieTitle = document.createElement('h2');
     movieTitle.textContent = bestMovieData.title; // Titre dynamique du film
     movieTitleDiv.appendChild(movieTitle);
     
-    // Crée le résumé du film - dynamique
+    // Créer le résumé du meilleur film film - dynamique
     const movieSummaryDiv = document.createElement('div');
     movieSummaryDiv.classList.add('best-movie-summary');
     
-    // Crée <p> pour afficher le résumé - dynamique, avec un texte par défaut si absent
+    // Créer <p> pour afficher le résumé du meilleur film - dynamique, avec un texte par défaut si absent
     const movieSummary = document.createElement('p');
     movieSummary.textContent = bestMovieData.description || bestMovieData.long_description || "Résumé non disponible"; 
     // Voir si dans FIGMA, on doit mettre la version courte, et la longue pour Modal.
     movieSummaryDiv.appendChild(movieSummary);
     
-    // Crée le bouton "Détails" - url dynamique
+    // Créer le bouton "Détails" du meilleur film - url dynamique
     const movieButtonDiv = document.createElement('div');
     movieButtonDiv.classList.add('best-movie-button');
     const movieButton = document.createElement('button');
@@ -232,20 +233,85 @@ function displayBestMovie(bestMovieData, section) {
     movieButton.textContent = 'Détails';
     movieButtonDiv.appendChild(movieButton);
     
-    // Lier le bouton à la page de détails avec l'URL dynamique
+    // Lier le bouton à la page de détails avec l'URL dynamique // A REVOIR
     movieButton.addEventListener('click', () => {
         window.location.href = `details.html?movie_id=${bestMovieData.id}`; // URL dynamique avec ID du film
     });
     
-    // Ajouter tous les éléments à la structure du film
+    // Ajouter tous les éléments à bestMovieDiv ('best-movie')
     bestMovieDiv.appendChild(movieImgDiv);
     bestMovieDiv.appendChild(movieTitleDiv);
     bestMovieDiv.appendChild(movieSummaryDiv);
     bestMovieDiv.appendChild(movieButtonDiv);
     
-    // Ajoute la structure du film au conteneur grille ('container', 'item-grid')
+    // Ajouter la structure du film au conteneur ('container', 'item-grid')
     container.appendChild(bestMovieDiv);
     
-    // Ajoute le conteneur grille à la section générée par createSection
+    // Ajouter le conteneur ('container', 'item-grid') à la section générée par createSection
     section.appendChild(container);
+}
+
+
+function displayMovies(movies, sectionTitle) {
+    // Gérer affichage Aucun film pour la section
+    if (!movies || movies.length === 0) {
+        console.warn(`Aucun film trouvé pour la section "${sectionTitle}".`);
+        return;
+    }
+
+    // Créer la section (appel createSection) et ajouter l'attribut ("data-title") pour l'identifier
+    const section = createSection(sectionTitle);
+    section.setAttribute("data-title", sectionTitle);
+
+    // Créer le conteneur principal des films
+    const container = document.createElement('div');
+    container.classList.add('container', 'item-grid');
+
+    // Boucler sur les films et générer leur affichage
+    movies.forEach(movie => {
+        const itemDiv = document.createElement('div');
+        itemDiv.classList.add('item', 'from-third', 'from-fifth');
+
+        const movieImg = document.createElement('img');
+        movieImg.src = movie.image_url;  
+        movieImg.alt = movie.title;
+
+        const detailDiv = document.createElement('div');
+        detailDiv.classList.add('detail');
+
+        const movieTitle = document.createElement('h3');
+        movieTitle.textContent = movie.title;
+
+        const detailButton = document.createElement('button');
+        detailButton.classList.add('btn');
+        detailButton.textContent = "Détails";
+
+        // Event listener pour rediriger vers la page de détails // A REVOIR
+        detailButton.addEventListener('click', () => {
+            window.location.href = `details.html?movie_id=${movie.id}`;
+        });
+
+        // Construction de l'élément
+        detailDiv.appendChild(movieTitle);
+        detailDiv.appendChild(detailButton);
+        itemDiv.appendChild(movieImg);
+        itemDiv.appendChild(detailDiv);
+        container.appendChild(itemDiv);
+    });
+
+    // Ajouter le conteneur des films à la section
+    section.appendChild(container);
+
+
+
+    // Ajouter le bouton "Voir plus" // FONCTION A SEPARER ET A APPELER ICI // NE S'AFFICHE PAS
+    const containerFlex = document.createElement('div');
+    containerFlex.classList.add('container', 'container-flex');
+
+    const showMoreButton = document.createElement('button');
+    showMoreButton.classList.add('btn', 'btn-show');
+    showMoreButton.textContent = "Voir plus";
+
+    containerFlex.appendChild(showMoreButton);
+    section.appendChild(containerFlex);
 }
