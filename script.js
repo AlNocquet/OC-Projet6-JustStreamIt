@@ -66,20 +66,9 @@ async function fetchMoviesByCategory(category) {
 
 
 
-
 // LES GETS :
 
-let isSectionCreated = false;
-
-
 async function getBestMovie() {
-
-    // console.log('Appel à getBestMovie') DEUX APPELS // SECTION GÉNÉREE DEUX FOIS
-    // Voir si on doit éviter la multiplication d'appel ?
-
-    // Si la section est déjà créée, on arrête l'exécution de la fonction
-    if (isSectionCreated) return;
-
     const apiUrl = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score";
     try {
         const data = await makeRequest(apiUrl);
@@ -88,17 +77,10 @@ async function getBestMovie() {
             const bestMovie = data.results[0];
             const detailedMovie = await fetchMovieDetails(bestMovie.id);
 
-            // Vérification si section "Meilleur film" existe déjà
-            let section = document.querySelector('section.best-movie-section');
+            const section = createSection("Meilleur film");
+            section.classList.add('best-movie-section');
 
-            if (!section) {
-                // Si la section n'existe pas encore, la créer
-                section = createSection("Meilleur film");
-                section.classList.add('best-movie-section');
-                isSectionCreated = true;  // Marquer la section comme créée
-            }
-
-            displayBestMovie(detailedMovie, section); // Passe la section existante ou venant d'être créée à displayBestMovie()
+            displayBestMovie(detailedMovie, section);
         } else {
             console.log("Aucun film trouvé");
         }
@@ -109,17 +91,20 @@ async function getBestMovie() {
 
 
 async function getTop6Movies() {
-    // console.log('Appel à getTop6Movies()) DEUX APPELS // SECTION GÉNÉREE DEUX FOIS
-    // Voir si on doit éviter la multiplication d'appel ?
 
-    // Si la section est déjà créée, on arrête l'exécution de la fonction
-
-    const apiUrl = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score&page_size=6";
+    const apiUrl = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score&page_size=7"; 
     try {
         const data = await fetchMovies(apiUrl);
 
         if (data?.results?.length > 0) {
-            displayMovies(data.results, "Top films toutes catégories");
+            // Récupérer le meilleur film (le premier dans le tableau)
+            const bestMovie = data.results[0];
+
+            // Exclure le meilleur film, on récupère les 6 suivants
+            const filteredMovies = data.results.slice(1, 7); // Prendre les films après le premier
+
+            // Afficher les films
+            displayMovies(filteredMovies, "Top films toutes catégories");
         } else {
             console.log("Aucun film trouvé");
         }
@@ -130,8 +115,6 @@ async function getTop6Movies() {
 
 
 async function getTop6MoviesByCategory(category) {
-    // console.log('Appel à getTop6MoviesByCategory(category)) DEUX APPELS // SECTION GÉNÉREE DEUX FOIS
-    // Si la section est déjà créée, on arrête l'exécution de la fonction
 
     try {
         const allGenres = await fetchAllGenres();
