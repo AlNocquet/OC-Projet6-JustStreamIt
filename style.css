@@ -1,8 +1,5 @@
 
 
-/* Site body management on desktop basis */
-
-
 * {
     box-sizing: border-box;
     align-items: center;
@@ -12,166 +9,6 @@
 html {
     background-color: #c0c0c0;
 }
-
-
-.main-container  {
-    background-color: #ffffff;
-    border: 1px solid #000000;
-    font-family: 'Arial Narrow', Arial, sans-serif;
-    color: #000;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-
-
-}
-
-.section-container {
-    border: 1px solid rgba(255, 255, 255, 0);
-
-}
-
-
-/* Management of site banner */
-
-
-header {
-    display: none;
-}
-
-
-.logo {
-    display: none;
-}
-
-.title-banner {
-    display: none;
-}
-
-
-/* Management of items (movies) */
-
-
-.container {
-    max-width: 1100px;
-    margin: 20px;
-}
-
-
-.container-flex {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-
-.item {
-    position: relative;
-    text-align: center;
-}
-
-
-.item img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-
-.item img:hover {
-    /* Scale hover*/
-    transform: scale(101%);
-}
-
-
-.detail {
-    position: absolute;
-    top: 40px;
-    width: 100%;
-    height: 130px;
-    background-color: #303030a1;
-
-    h3 {
-        color: white;
-        text-align: left;
-        padding: 1rem;;
-    }
-
-    .btn {
-        background-color: rgba(43, 41, 41, 0.925);
-        color: white;
-        font-size: 16px;
-        font-weight: normal;
-        cursor: pointer;
-        border: none;
-        float: right;
-        margin-right: 10px;
-        border-radius: 25px;    
-        width: 84px;
-        height: 26px;
-    }
-
-
-    .btn:hover {
-      background-color:rgb(43, 41, 41);
-    }
-}
-
-
-.btn-show {
-    display: none;
-    background: red;
-    cursor: pointer;
-    border: none; 
-    color: white;
-    font-size: 16px;
-    width: 214px;
-    height: 36px;
-    padding: 2px 4px 2px 4px;
-    border-radius: 25px;
-}
-
-.btn-show:hover {
-    background-color: darkred;   
-}
-
-
-/* Management of “Best Film” category display */
-
-.best-movie {
-    border: 6px solid #000000;
-    display: flex;
-    grid-template-columns: 1fr 2fr;
-
-}
-
-
-.best-movie-details-button:hover {
-    background-color: darkred;
-}
-
-
-/* Management of "Dropdown" category */
-
-.selection {
-    position: relative;
-}
-
-.selection select {
-    position: absolute;
-}
-
-
-/* Management of various site elements */
-
-h1 {
-    display: flex;
-    font-weight: bolder;
-    margin: 0 auto;
-}
-
-
-/* Management of Modal (Desktop, Tablet & Mobile) */
 
 
 /*.modal {
@@ -187,6 +24,51 @@ h1 {
 /******************************* Desktop *******************************/
 @media (min-width: 1281px) {
 
+    /* Site body management on desktop basis */
+
+    body {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        display: flex; /* Utilisation de Flexbox pour faciliter le centrage */
+        justify-content: center; /* Centrer le contenu horizontalement */
+    }
+    
+    .main-container {
+        background-color: #ffffff;
+        border: 1px solid #000000;
+        font-family: 'Arial Narrow', Arial, sans-serif;
+        color: #000;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        width: 1100px; /* Largeur fixe */
+        margin-top: 20px; /* Marge pour l'espacement au dessus */
+        padding: 20px; /* Espace intérieur de la section */
+    }
+
+
+    h1 {
+        display: flex;
+        font-weight: bolder;
+        margin: 0 auto;
+        font-size: 48px;
+        text-indent: 110px;
+    }
+
+
+    .container {
+        background-color: rgb(43, 255, 0);
+        max-width: 1100px;
+        margin: 20px;
+    }
+
+    .section-container {
+        border: 1px solid rgb(255, 0, 0);
+    }
+
+    /* Management of site banner */
+
     header {
         background-color: #61787e;
         border: 1px solid #000000;
@@ -196,7 +78,6 @@ h1 {
         margin: 35px 105px;
     }
 
-      
     .logo {
         display: flex;
     }
@@ -205,33 +86,13 @@ h1 {
         display: flex;
     }
 
-
-    body {
-        width: 1054px;
-        height: 4451px;
-    }
     
-
-    .container .item-grid {
-        width: 844px;
-        height: 558px;
-    }
-
-    .item-grid {
-        display: grid;
-        grid-template-columns: 252px 252px 252px;
-        gap: 35px;
-        justify-content: center;
-    }
-
-    .item {
-        width: 252px;
-        height: 252px;
-    }
-
+    /* Management of “Best Film” category display */
 
     .best-movie {
+        border: 6px solid #000000;
         display: grid;
+        grid-template-columns: 1fr 2fr;
         width: 835px;
         height: 369px;
     }
@@ -272,6 +133,13 @@ h1 {
         margin : 0px;
     }
 
+    .container-flex {
+        background-color: rgb(0, 255, 221);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
     .best-movie-details-button {
         grid-column: 2 / 3;
         grid-row: 3 / 4;
@@ -292,6 +160,96 @@ h1 {
         margin-bottom: 10px;
     }
 
+    .best-movie-details-button:hover {
+        background-color: darkred;
+    }
+
+
+    /* Management of items from Categories */
+    
+    .container .item-grid {
+        width: 844px;
+        height: 558px;
+    }
+
+    .item-grid {
+        display: grid;
+        grid-template-columns: 252px 252px 252px;
+        gap: 35px;
+        justify-content: center;
+    }
+
+    .item {
+        position: relative;
+        text-align: center;
+        width: 252px;
+        height: 252px;
+    }
+    
+    .item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .item img:hover {
+        /* Scale hover*/
+        transform: scale(101%);
+    }
+
+    .detail {
+        position: absolute;
+        top: 40px;
+        width: 100%;
+        height: 130px;
+        background-color: #303030a1;
+    
+        h3 {
+            color: white;
+            text-align: left;
+            padding: 1rem;;
+        }
+    
+        .btn {
+            background-color: rgba(43, 41, 41, 0.925);
+            color: white;
+            font-size: 16px;
+            font-weight: normal;
+            cursor: pointer;
+            border: none;
+            float: right;
+            margin-right: 10px;
+            border-radius: 25px;    
+            width: 84px;
+            height: 26px;
+        }
+    
+    
+        .btn:hover {
+          background-color:rgb(43, 41, 41);
+        }
+    }
+    
+
+    /* Management of "Show more" from Categories */
+    
+    .btn-show {
+        display: none;
+        background: red;
+        cursor: pointer;
+        border: none; 
+        color: white;
+        font-size: 16px;
+        width: 214px;
+        height: 36px;
+        padding: 2px 4px 2px 4px;
+        border-radius: 25px;
+    }
+    
+    .btn-show:hover {
+        background-color: darkred;   
+    }
+    
 
     .from-third, .from-fifth{
         /* Class to re-display the optional movies */
@@ -311,10 +269,18 @@ h1 {
     }
  
 
-    h1 {
-        font-size: 48px;
-        text-indent: 110px;
+    /* Management of "Dropdown" category */
+
+    .selection {
+        position: relative;
     }
+
+    .selection select {
+        position: absolute;
+    }
+    
+    
+    /* Management of Modal (Desktop, Tablet & Mobile) */
 
 
     .modal {
@@ -429,10 +395,10 @@ h1 {
         height: 50px; /* 248px voir après concaténation block main movie infos */
     }
     
-    .container-flex {
+    /*/.container-flex {
         display: flex;
         justify-content: center;
-    }
+    */}
     
     .btn-close {
         border: 2px #ff0000;
@@ -451,5 +417,5 @@ h1 {
         background-color: darkred;
     }
 
-}
+
 
