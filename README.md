@@ -1,6 +1,6 @@
 # Just_Stream_It
 
-Cette page HTML affiche des données de films provenant d'une API, triés par catégories et par meilleurs imbd.
+Cette page HTML affiche des données de films provenant d'une API, triés par catégories et par meilleurs imbd_score.
 
 
 ## Technologie :
