@@ -1,19 +1,12 @@
 
-
 * {
     box-sizing: border-box;
-    align-items: center;
-}
 
+}
 
 html {
     background-color: #c0c0c0;
 }
-
-
-/*.modal {
-    display: none;
-}*/
 
 
 /************************************************************************/
@@ -21,8 +14,10 @@ html {
 /************************************************************************/
 
 
-/******************************* Desktop *******************************/
+/************************************************************************/
+/******************************* DESKTOP *******************************/
 @media (min-width: 1281px) {
+
 
     /* Site body management on desktop basis */
 
@@ -103,10 +98,11 @@ html {
     }
     
     .best-movie-img img {
-        display: block;
+        display: flex;
+        justify-content: center;
         width: 227px;
         height: 334px; 
-        margin: 0 auto;
+        margin: 10px;
     }
     
     .best-movie-title h2 {
@@ -234,6 +230,208 @@ html {
     
     .btn-show {
         display: none;
+    }
+    
+    /* Management of "Dropdown" category */
+
+    .selection {
+        position: relative;
+    }
+
+    .selection select {
+        position: absolute;
+    }
+    
+    
+    /* Management of Modal (Desktop) */
+
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 9999;
+        left: 50%;
+        top: 0%;
+        height: 939px; /* Hauteur spécifiée */
+        width: 778px; /* Largeur spécifiée */
+        border: 5px solid #000000; 
+        transform: translate(-50%, 0); /* Centrage horizontal */
+    }
+    
+    .modal-content {
+        background-color: white;
+        width: 100%; /* Prend toute la largeur du modal */
+        height: 100%; /* Prend toute la hauteur du modal */
+        padding: 20px;
+        text-align: center;
+        overflow: auto;  /* Permet le défilement si le contenu dépasse la hauteur du modal */
+    }
+    
+    .modal-grid-container {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        grid-template-areas: 
+            "a b"
+            "c c"
+            "d d"
+            "e e";
+    }
+
+    /* Styles pour les lignes d'informations, alignement de chaque ligne */
+    .info-row {
+        display: flex;
+        justify-content: flex-start;
+    }
+    
+    .info-row > div {
+        text-align: left;
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 35px;
+        margin-inline-end: 10px;
+    }
+
+    .space {
+        margin-top: 15px; /* Ajout d'espace pour séparer les sections */
+    }
+
+    }
+
+    /* Style de la section des infos principales du film */
+    .modal-main-infos-movie {
+        display: flex;
+        flex-direction: column; /* Flex column : Aligner verticalement les éléments */
+        width: 100%;
+        max-width: 778px; /* Limiter la largeur du modal */
+        grid-area: a;
+        text-align: left;
+        /*height: 450px; /* Taille a ajuster selon les tests */
+    }
+
+    /* Titre du film */
+    .title { 
+        font-size: 48px;
+        font-weight: 600;
+        /*line-height: 71.14px;*/
+    }
+
+    /* Année, Catégorie, PG Rating, Temps, Pays, imdb-score, box-office */
+    .year, 
+    .category, 
+    .age-pg, 
+    .time, 
+    .country, 
+    .imdb-score, 
+    .box-office { 
+        font-size: 24px;
+        font-weight: 600;
+        /*line-height: 35.57px;*/
+    }
+
+    /* label "Réalisé par" */
+    .label {
+        font-size: 24px;
+        font-weight: 600;
+        /*line-height: 35.57px;*/
+        margin-top: 35px;
+    }
+
+    /* Réalisateur */
+    .director {
+        font-size: 24px;
+        font-weight: 300;
+        line-height: 35.57px;
+    }
+
+    /* Image du film */
+    .modal-image-movie {
+        display: flex;
+        justify-content: center;
+        object-fit: contain;  /* Conserver l'image entière sans la déformer */
+        max-width: 100%; /* L'image ne dépassera pas la largeur de son conteneur */
+        max-height: 300px;
+    }
+
+    /* Résumé du film */
+    .modal-summary {
+        grid-area: c;
+        font-size: 24px;
+        font-weight: 300;
+        line-height: 35.57px;
+        text-align: justify;
+        width: 698px;
+        margin-top: 30px;
+        height: 100px;
+        max-height: 100px; /* Hauteur limite du résumé */
+        overflow-y: auto;  /* Scroll si besoin */
+    }
+
+    /* "Avec" */
+    .modal-with {
+        grid-area: d;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 29.64px;
+        text-align: left;
+        margin-top: 35px;
+    }
+
+    /* Noms des acteurs */
+    .modal-actors {
+        grid-area: e;
+        text-align: left;
+        font-size: 20px;
+        font-weight: 300;
+        line-height: 29.64px;
+        width: 692px;
+        height: 100px;
+        max-height: 100px; /* Hauteur limite de la liste des acteurs */
+        overflow-y: auto;  /* Scroll si besoin */
+    }
+
+    /* Bouton de fermeture */
+    .btn-close {
+        float: right;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        border: none;
+        background-color: red;
+        color: white;
+        width: 214px;
+        height: 36px;
+        padding: 2px 4px;
+        border-radius: 25px;
+        margin-top: 20px; /* Marge bouton Fermer */
+    }
+
+    .btn-close:hover {
+        background-color: darkred;
+    }
+
+
+
+    /************************************************************************/
+    /******************************* TABLET *******************************/
+    @media (min-width: 768px) and (max-width: 1024px) {
+
+
+    /*.modal {
+        display: none;
+    }*/
+
+    /* Site body management on desktop basis */
+
+    /* Management of site banner */
+    
+    /* Management of “Best Film” category display */
+
+    /* Management of items from Categories */
+
+
+    /* Management of "Show more" from Categories */
+    
+    .btn-show {
+        display: inline;
         background: red;
         cursor: pointer;
         border: none; 
@@ -270,151 +468,69 @@ html {
 
     /* Management of "Dropdown" category */
 
-    .selection {
-        position: relative;
-    }
+    
 
-    .selection select {
-        position: absolute;
-    }
-    
-    
-    /* Management of Modal (Desktop, Tablet & Mobile) */
+}
 
 
-    .modal {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        position: fixed; /* Stay in place */
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.315); /* Background overlay */
-        z-index: 1; /* Sit on top */
-    }
-    
-    .modal-content {
-        border: 6px solid #000000;
-        background-color: #ffffff;
-        width: 778px;
-        height: auto; /* 939px mais en auto du navigateur en phase test - voir après concaténation block main movie infos */
-        display: flex;
-        flex-direction: column; /* Organise les enfants en colonne */
-    }
-    
-    .modal-grid-container {
-        display: grid;
-        grid-template-columns: 2fr 1fr; 
-        grid-template-areas:  
-            "a b"
-            "c c"
-            "d d"
-            "e e"; 
-        gap: 10px;
-    }
-    
-    .modal-main-infos-movie{
-        grid-area: a;
-        text-align: left;
-        width: 423px;
-        height: 450px; /* 359px mais en auto du navigateur en phase test - voir après concaténation block main movie infos */
+    /************************************************************************/
+    /******************************* MOBILE *******************************/
+    @media (max-width: 767px) {
 
-        .title{ 
-            text-align: left;
-            font-size: 48px;
-            font-weight: 600;
-            line-height: 71.14px;
+
+        /*.modal {
+            display: none;
+        }*/
+    
+        /* Site body management on desktop basis */
+    
+        /* Management of site banner */
+        
+        /* Management of “Best Film” category display */
+    
+        /* Management of items from Categories */
+    
+    
+        /* Management of "Show more" from Categories */
+        
+        .btn-show {
+            display: inline;
+            background: red;
+            cursor: pointer;
+            border: none; 
+            color: white;
+            font-size: 16px;
+            width: 214px;
+            height: 36px;
+            padding: 2px 4px 2px 4px;
+            border-radius: 25px;
         }
-
-        .year, 
-        .category, 
-        .age-pg, 
-        .time, 
-        .country, 
-        .imdb-score, 
-        .box-office { 
-            text-align: left;
-            font-size: 24px;
-            font-weight: 600;
-            line-height: 35.57px;
+        
+        .btn-show:hover {
+            background-color: darkred;   
         }
-
-        .label {
-            margin-top: 15px;
-            text-align: left;
-            font-size: 24px;
-            font-weight: 400;
-            line-height: 35.57px;
-        }      
-
-        .director {
-            text-align: left;
-            font-size: 24px;
-            font-weight: 300;
-            line-height: 35.57px;
-        }    
-    }
-
- 
-    .modal-image-movie {
-        background-color: 3px rgb(0, 0, 0);
-        grid-area: b;
-        width: 227px;
-        height: 359px;
-    }
-
-    .modal-summary {
-        grid-area: c;
-        font-size: 24px;
-        font-weight: 300;
-        line-height: 35.57px;
-        text-align: justify;
-        width: 698px;
-        height: 150px; /* 457px - voir après concaténation block main movie infos */
-    }
+        
     
-    .modal-with {
-        grid-area: d;
-        text-align: left;
-        font-size: 20px;
-        font-weight: 600;
-        line-height: 29.64px;
-    }
+        .from-third, .from-fifth{
+            /* Class to re-display the optional movies */
+            display: block !important;
+        }
     
-    .modal-actors {
-        grid-area: e;
-        text-align: left;
-        width: 100%;
-        font-size: 20px;
-        font-weight: 300;
-        line-height: 29.64px;
-        width: 692px ;
-        height: 50px; /* 248px voir après concaténation block main movie infos */
-    }
     
-    /*/.container-flex {
-        display: flex;
-        justify-content: center;
-    */}
+        .selection select {
+            font-size: 20px;
+            font-weight: bolder;
+            position: absolute;
+            top: 5px;
+            left: 270px;
+            width: 25%;
+            height: auto;
+            padding: 15px;
+        }
+     
     
-    .btn-close {
-        border: 2px #ff0000;
-        background: red;
-        cursor: pointer;
-        border: none;
-        color: white;
-        font-size: 16px;
-        width: 214px;
-        height: 36px;
-        padding: 2px 4px;
-        border-radius: 25px;
-    }
+        /* Management of "Dropdown" category */
     
-    .btn-close:hover {
-        background-color: darkred;
-    }
-
-
-
+        
+        /* Management of Modal (Mobile) */
+}
