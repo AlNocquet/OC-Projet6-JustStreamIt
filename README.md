@@ -1,6 +1,6 @@
 # Just_Stream_It
 
-Cette page HTML affiche des données de films provenant d'une API, triés par catégories et par meilleurs imbd_score.
+Cette page HTML affiche les données des films provenant d'une API, triés  par meilleurs imbd_score et par catégories, avec possibilité de choisir celle-ci.
 
 
 ## Technologie :
@@ -49,9 +49,9 @@ L’interface du site est responsive et est donc utilisable sur tous supports : 
 
 Cliquez sur le fichier JustStreamIt.html pour l'ouvrir avec votre navigateur.
 
-Le site est organisé en 5 sections, avec accès aux détails d'une catégorie ou d'un film en les sélectionnant : 
+Le site est organisé en 4 sections, avec accès aux détails d'un film en sélectionnant : 
 
  - En tête d'affiche, le film le mieux noté, toutes catégories confondues avec résumé;
  - Les 6 films les mieux notés toutes catégories confondues ;
- - Les 6 films les mieux notés des catégories suivantes : Fantastique, SCI-FI ;
- - Les 6 films les mieux notés selon la catégories de votre choix.
+ - Les 6 films les mieux notés des catégories suivantes : Fantasy, Sci-Fi ;
+ - Les 6 films les mieux notés selon la catégorie de votre choix.
