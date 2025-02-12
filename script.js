@@ -662,12 +662,11 @@ document.querySelector('.main-container').appendChild(section);
 selectElement.addEventListener('change', async (e) => {
 const selectedCategory = e.target.value;
 
-if (selectedCategory !== 'Genre en dynamique') {
-    const movies = await getMoviesByCategory(selectedCategory);
-    console.log("Films récupérés :", movies); // Vérifier que des films sont bien récupérés
+const movies = await getTop6MoviesByCategory(selectedCategory);
+console.log("Films récupérés :", movies); // Vérifier que des films sont bien récupérés
 
-    displayMovies(movies, selectedCategory, containerDiv);
-}
+displayMovies(movies, selectedCategory, containerDiv);
+
 });
 
 }
