@@ -620,3 +620,54 @@ function createShowMoreButton(section) {
     // Ajouter le conteneur à la section
     section.appendChild(containerFlex);
 }
+
+
+
+
+/////////////////////////////////////////EN COURS/////////////EN COURS/////////////EN COURS/////////////////////////////////////////
+
+
+// CATEGORIE A CHOIX "AUTRES :" 
+async function createOtherCategory() {
+const allGenres = await fetchAllGenres(); // Récupère tous les genres
+const section = createSection("Autres :");
+section.classList.add('other-category-section');
+
+const selectionDiv = document.createElement('div');
+selectionDiv.classList.add('selection');
+
+const selectElement = document.createElement('select');
+
+// Ajouter les options dynamiquement selon les genres récupérés
+allGenres.forEach(genre => {
+    const option = document.createElement('option');
+    option.textContent = genre.name;
+    option.value = genre.name;
+    selectElement.appendChild(option);
+});
+
+// Ajouter le sélecteur au DOM
+selectionDiv.appendChild(selectElement);
+section.appendChild(selectionDiv);
+
+// Créer le conteneur des films réutilisable
+const containerDiv = document.createElement('div');
+containerDiv.classList.add('container', 'item-grid');
+section.appendChild(containerDiv);
+
+// Ajouter la nouvelle section au DOM
+document.querySelector('.main-container').appendChild(section);
+
+// Gérer le changement de catégorie
+selectElement.addEventListener('change', async (e) => {
+const selectedCategory = e.target.value;
+
+if (selectedCategory !== 'Genre en dynamique') {
+    const movies = await getMoviesByCategory(selectedCategory);
+    console.log("Films récupérés :", movies); // Vérifier que des films sont bien récupérés
+
+    displayMovies(movies, selectedCategory, containerDiv);
+}
+});
+
+}
