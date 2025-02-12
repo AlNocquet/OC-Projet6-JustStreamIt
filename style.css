@@ -197,7 +197,7 @@ html {
         top: 40px;
         width: 100%;
         height: 130px;
-        background-color: #303030a1;
+        background-color: #00000075;
     
         h3 {
             color: white;
@@ -206,7 +206,7 @@ html {
         }
     
         .btn {
-            background-color: rgba(43, 41, 41, 0.925);
+            background-color: rgba(46, 44, 44, 0.925);
             color: white;
             font-size: 16px;
             font-weight: normal;
