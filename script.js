@@ -1,28 +1,31 @@
 
+// Single Responsibility Principle (SRP) :
+
+// FETCH : Récupération des données de l’API ;
+// CHECK : Gestion des erreurs HTTP centralisée ;
+// GET : Responsabilité de la logique métier, orchestration ;
+// CREATE : création dynamique du HTML ;
+// DISPLAY : Affichage des datas.
+
+
 
 // FETCH ET CHECK :
 
+// Récupère une liste de films depuis une URL donnée
 async function fetchMovies(apiUrl) {
     return await makeRequest(apiUrl);
 }
 
-async function fetchMovieDetails(movieId) {
-    const apiUrl = `http://localhost:8000/api/v1/titles/${movieId}`;
-    const movieDetails = await makeRequest(apiUrl);
-    
-    console.log(movieDetails);
-
-    return movieDetails;
-}
-
+// Effectue la requête HTTP et gère la conversion en JSON + vérification des erreurs
 async function makeRequest(apiUrl) {
     const response = await fetch(apiUrl);
 
     await checkResponseStatus(response);
 
-    return response.json(); // Conversion directe en JSON
+    return response.json(); 
 }
 
+// Vérifie le statut HTTP et lève une erreur en cas de problème
 async function checkResponseStatus(response) {
     if (response.status === 404) {
         throw new Error("Ressource non trouvée (404)");
@@ -33,55 +36,71 @@ async function checkResponseStatus(response) {
     }
 }
 
-async function fetchAllGenres() {
-    let allGenres = [];
-    let nextPageUrl = "http://localhost:8000/api/v1/genres/";
-
-    while (nextPageUrl) {
-        const response = await fetch(nextPageUrl);
-        const data = await response.json();
-        allGenres = allGenres.concat(data.results);
-        nextPageUrl = data.next || null;
-    }
-
-    return allGenres;
-}
-
-function isValidCategory(category, allGenres) {
-
-    if (typeof category !== "string" || category.trim() === "") {
-        console.warn("Catégorie invalide : elle doit être une chaîne non vide.");
-        return false;  // Retourne false si catégorie invalide
-    }
-
-    const validCategories = allGenres.map(genre => genre.name.toLowerCase());
-    return validCategories.includes(category.toLowerCase());
-}
-
-
+// Récupère les 6 meilleurs films d’une catégorie donnée
 async function fetchMoviesByCategory(category) {
-
+    // Encodage valide caractères spéciaux et espaces :
     const apiUrl = `http://localhost:8000/api/v1/titles/?genre=${encodeURIComponent(category)}&sort_by=-imdb_score&page_size=6`;
     return await fetchMovies(apiUrl);
+}
+
+// Récupère toutes les catégories de films disponibles (gestion de la pagination) ; API : "v1/genres/"
+    // Appel dans createOtherCategory() pour <select>
+    // Appel dans getTop6MoviesByCategory() pour les catégories existantes
+    async function fetchAllGenres() {
+        try {
+            let allGenres = [];
+            let nextPageUrl = "http://localhost:8000/api/v1/genres/";
+    
+            while (nextPageUrl) {
+                const response = await fetch(nextPageUrl);
+    
+                // Vérification du statut :
+                await checkResponseStatus(response);
+    
+                const data = await response.json();
+                allGenres = allGenres.concat(data.results);
+                nextPageUrl = data.next || null;
+            }
+    
+            return allGenres;
+            
+        } catch (error) {
+            console.error('Erreur lors de la récupération des catégories:', error);
+            return [];
+        }
+    }
+
+
+// Récupère les détails d’un film spécifique via son ID ; API : "/v1/titles/"
+async function fetchMovieDetails(movieId) {
+    const apiUrl = `http://localhost:8000/api/v1/titles/${movieId}`;
+    const movieDetails = await makeRequest(apiUrl);
+    
+    return movieDetails;
 }
 
 
 
 // LES GETS :
 
+// Récupère le meilleur film (le premier film trié par score IMDb) et affiche ses détails
 async function getBestMovie() {
     const apiUrl = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score";
     try {
-        const data = await makeRequest(apiUrl);
+        const data = await fetchMovies(apiUrl);
 
         if (data?.results?.length > 0) {
+            // Récupérer le meilleur film (le premier dans le tableau) :
             const bestMovie = data.results[0];
+            // Récupérer les détails du meilleur film :
             const detailedMovie = await fetchMovieDetails(bestMovie.id);
 
             const section = createSection("Meilleur film");
             section.classList.add('best-movie-section');
 
+            // Afficher :
             displayBestMovie(detailedMovie, section);
+
         } else {
             console.log("Aucun film trouvé");
         }
@@ -91,27 +110,25 @@ async function getBestMovie() {
 }
 
 
+// Récupère les 6 meilleurs films (après le meilleur film) triés par score IMDb et affiche leurs détails
 async function getTop6Movies() {
     const apiUrl = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score&page_size=7"; 
     try {
         const data = await fetchMovies(apiUrl);
 
         if (data?.results?.length > 0) {
-            // Récupérer le meilleur film (le premier dans le tableau)
             const bestMovie = data.results[0];
-
-            // Exclure le meilleur film, on récupère les 6 suivants
-            const filteredMovies = data.results.slice(1, 7); // Prendre les films après le premier
-
-            // Récupérer les détails complets de chaque film pour Modal
+            // Exclure le meilleur film, récupérer les 6 suivants :
+            const filteredMovies = data.results.slice(1, 7);
+            // Récupérer les détails de chaque film pour Modal :
             const detailedMoviesPromises = filteredMovies.map(async (movie) => {
                 return await fetchMovieDetails(movie.id);
             });
             
-            // Attendre que tous les détails des films soient récupérés
+            // Attendre TOUS les détails de TOUS les films pour Modal :
             const detailedMovies = await Promise.all(detailedMoviesPromises);
 
-            // Afficher les films
+            // Afficher :
             displayMovies(detailedMovies, "Top films toutes catégories");
         } else {
             console.log("Aucun film trouvé");
@@ -122,29 +139,28 @@ async function getTop6Movies() {
 }
 
 
+// Récupère les 6 meilleurs films d'une catégorie donnée dans main.js et affiche leurs détails.
 async function getTop6MoviesByCategory(category) {
     try {
+        // Définir toutes les catégories disponibles dans l'API:
         const allGenres = await fetchAllGenres();
 
-        if (!isValidCategory(category, allGenres)) {
-            console.warn("Catégorie non valide :", category);
-            return;
-        }
-
+        // Définir les 6 meilleurs films d’une catégorie :
         const data = await fetchMoviesByCategory(category);
         const results = data?.results || [];
 
         if (results.length > 0) {
-            // Récupérer les détails complets de chaque film
+            // Récupérer les détails complets de chaque film :
             const detailedMoviesPromises = results.map(async (movie) => {
                 return await fetchMovieDetails(movie.id);
             });
             
-            // Attendre que tous les détails des films soient récupérés pour Modal
+            // Attendre TOUS les détails de TOUS les films pour Modal :
             const detailedMovies = await Promise.all(detailedMoviesPromises);
 
-            // Afficher les films de la catégorie
+            // Afficher les 6 meilleurs films de la catégorie :
             displayMovies(detailedMovies, category);
+
         } else {
             console.log(`Aucun film trouvé pour la catégorie ${category}`);
         }
@@ -155,13 +171,81 @@ async function getTop6MoviesByCategory(category) {
 
 
 
+// LES DISPLAY :
+
+// Affiche les informations du meilleur film dans une section :
+function displayBestMovie(bestMovieData, section) {
+    // Créer la div 'container item-grid':
+    const container = document.createElement('div');
+    container.classList.add('container', 'item-grid');
+
+    // Créer la div 'best-movie'
+    const bestMovieDiv = document.createElement('div');
+    bestMovieDiv.classList.add('best-movie');
+
+    // Ajouter les éléments dynamiques : ( Entrées : Titre, Img, Résumé, Bouton "Détails")
+    bestMovieDiv.appendChild(createMovieImage(bestMovieData.image_url));
+    bestMovieDiv.appendChild(createMovieTitle(bestMovieData.title));
+    bestMovieDiv.appendChild(createMovieSummary(bestMovieData.description, bestMovieData.long_description));
+    bestMovieDiv.appendChild(createMovieButton(bestMovieData)); // (Inclus ouverture Modal : createMovieItem() appelée dans createMovieButton())
+
+    // Ajouter la div 'best-movie' à 'container item-grid' :
+    container.appendChild(bestMovieDiv);
+    // Ajouter 'container item-grid' à <section> (createSection()) :
+    section.appendChild(container);
+}
+
+
+// Affiche les informations de films dans une section (Entrées : Titre de section (sectionTitle) ; tableau de films (movies))
+function displayMovies(movies, sectionTitle, container = null) {
+    // Entrées des films : Titre, Img, Bouton "Détails" (> Ouverture Modal)
+    // Section : MEDIA QUERIES - Bouton "Voir Plus"
+
+    // Gérer affichage Aucun film pour la section :
+    if (!movies || movies.length === 0) {
+        console.warn(`Aucun film trouvé pour la section "${sectionTitle}".`);
+        return;
+    }
+
+    // Vérifier si la section existe ou la créer :
+    let section = getOrCreateSection(sectionTitle);
+
+    // Récupérer ou créer un conteneur :
+    container = getOrCreateContainer(section, container);
+
+    // Vider le conteneur avant de le remplir :
+    container.innerHTML = '';
+
+    // Boucler sur les films et afficher chaque film :
+    movies.forEach(movie => {
+        const itemDiv = createMovieItem(movie); // (Inclus ouverture Modal appelé dans createMovieItem())
+        container.appendChild(itemDiv);
+    });
+
+    // Ajouter la section à <main class="main-container"> si elle a été créée :
+    appendSectionToPage(section);
+
+     // Ajouter le bouton "Voir plus" - MEDIA QUERIES :
+    createShowMoreButton(section);
+}
+
+
+// Ajoute la section dans le DOM si elle n'existe pas déjà (<main class="main-container">)
+function appendSectionToPage(section) {
+    if (!section.parentElement) {
+        document.querySelector('.main-container').appendChild(section);
+    }
+}
+
+
 // LES CREATE :
 
+// Créer <header>
 function createHeader() {
     const header = document.createElement('header');
 
     const titleBannerDiv = document.createElement('div');
-    titleBannerDiv.classList.add('banner'); // gestion CSS ancre
+    titleBannerDiv.classList.add('banner');
     const titleBannerImg = document.createElement('img');
     titleBannerImg.src = 'style/banner.jpg';
     titleBannerDiv.appendChild(titleBannerImg);
@@ -173,9 +257,10 @@ function createHeader() {
 }
 
 
+// Créer <section>
 function createSection(title) {
     const section = document.createElement('section');
-    section.classList.add('section-container'); // gestion CSS ancre
+    section.classList.add('section-container');
 
     const mainContainer = document.querySelector('main');
     mainContainer.appendChild(section);
@@ -188,43 +273,186 @@ function createSection(title) {
 }
 
 
-function createShowMoreButton(section) {
-    // Créer le conteneur flex pour le bouton
-    const containerFlex = document.createElement('div');
-    containerFlex.classList.add('container', 'container-flex');
+// Vérifier ou créer une section avec titre Nom Catégorie (Gestion doublon DisplayMovies())
+function getOrCreateSection(sectionTitle) {
+    const existingSection = document.querySelector(`section[data-title="${sectionTitle}"]`);
 
-    // Créer le bouton "Voir plus"
-    const showMoreButton = document.createElement('button');
-    showMoreButton.classList.add('btn', 'btn-show');
-    showMoreButton.textContent = "Voir plus";
+    if (existingSection) {
+        return existingSection;
 
-    // Ajouter le bouton au conteneur
-    containerFlex.appendChild(showMoreButton);
-
-    // Ajouter le conteneur à la section
-    section.appendChild(containerFlex);
+    } else {
+        const section = createSection(sectionTitle);
+        // Identifier avec un attribut "data-title" (Nom Catégorie)
+        section.setAttribute("data-title", sectionTitle);
+        return section;
+    }
 }
 
 
+// Récupérer ou créer le conteneur <container item-grid> des films (Gestion doublon DisplayMovies())
+function getOrCreateContainer(section, container) {
+    if (!container) {
+        container = document.createElement('div');
+        container.classList.add('container', 'item-grid');
+        section.appendChild(container);
+
+    } else {
+        container = section.querySelector('.container');
+    }
+    return container;
+}
+
+
+
+// (displayBestMovie()) Créer la div 'best-movie-img':
+function createMovieImage(imageUrl) {
+    const movieImgDiv = document.createElement('div');
+    movieImgDiv.classList.add('best-movie-img');
+    
+    const movieImg = document.createElement('img');
+    movieImg.src = imageUrl;
+    
+    movieImgDiv.appendChild(movieImg);
+    return movieImgDiv;
+}
+
+// (displayBestMovie()) Créer la div 'best-movie-title' - avec <h2> dynamique :
+function createMovieTitle(title) {
+    const movieTitleDiv = document.createElement('div');
+    movieTitleDiv.classList.add('best-movie-title');
+    
+    const movieTitle = document.createElement('h2');
+    movieTitle.textContent = title; // Titre dynamique
+    
+    movieTitleDiv.appendChild(movieTitle);
+    return movieTitleDiv;
+}
+
+// (displayBestMovie()) Créer la div 'best-movie-summary' - dynamique (avec un texte par défaut si absent) :
+function createMovieSummary(description, longDescription) {
+    const movieSummaryDiv = document.createElement('div');
+    movieSummaryDiv.classList.add('best-movie-summary');
+    
+    const movieSummary = document.createElement('p');
+    movieSummary.textContent = description || longDescription || "Résumé non disponible"; // Résumé dynamique
+    
+    movieSummaryDiv.appendChild(movieSummary);
+    return movieSummaryDiv;   
+}
+
+// MODAL : (displayBestMovie()) Créer le bouton "Détails" - url dynamique :
+function createMovieButton(movieData) {
+    const movieButtonDiv = document.createElement('div');
+    movieButtonDiv.classList.add('best-movie-button');
+    
+    const movieButton = document.createElement('button');
+    movieButton.classList.add('best-movie-details-button');
+    movieButton.textContent = 'Détails';
+    
+    // Ajout de l'EventListener pour afficher le modal
+    movieButton.addEventListener('click', () => createMovieModal(movieData)); 
+    
+    movieButtonDiv.appendChild(movieButton);
+    return movieButtonDiv;
+}
+
+
+// (DisplayMovies()) Créer un élément représentant un film :
+function createMovieItem(movie) {
+
+    // Créer la div 'item from-third from-fifth' (Un film):
+    const itemDiv = document.createElement('div');
+    itemDiv.classList.add('item', 'from-third', 'from-fifth');
+
+    // Img
+    const movieImg = document.createElement('img');
+    movieImg.src = movie.image_url;
+    movieImg.alt = movie.title;
+
+    // Détails (Zone grise Détails contenant : Titre h3 dynamique ; Bouton détails pour Modal)
+    const detailDiv = document.createElement('div');
+    detailDiv.classList.add('detail');
+
+    // h3
+    const movieTitle = document.createElement('h3');
+    movieTitle.textContent = movie.title;
+
+    const detailButton = document.createElement('button');
+    detailButton.classList.add('btn');
+    detailButton.textContent = "Détails";
+
+    // EventListener > ouverture du modal
+    detailButton.addEventListener('click', () => {
+        createMovieModal(movie); // Appel de la fonction création Modal
+    });
+
+    // Ajouter h3 et boutton détails à <div class ="détails" > :
+    detailDiv.appendChild(movieTitle);
+    detailDiv.appendChild(detailButton);
+
+    // Ajouter Img à <div class ="item from-third from-fifth"> :
+    itemDiv.appendChild(movieImg);
+    // Ajouter Zone détails à <div class ="item from-third from-fifth"> :
+    itemDiv.appendChild(detailDiv);
+
+    return itemDiv;
+}
+
+
+
+// MODAL : 
+
+// Fonction principale de création et d'affichage du modal :
 function createMovieModal(movieData) {
-    // REVOIR LES SEPARATIONS DE RESPONSABILITE AVEC LE BOUTTON CLOSE A APPELER
 
-    console.log("Création du modal avec les données : ", movieData);
+    const modal = createModalSection(); // <section class="modal">
+    const modalContent = createModalContent(); // <div class="modal-content">
+    const modalGrid = createModalGrid(); // <div class="modal-grid-container">
 
-    // Création de <section class="modal">
+    // Ajout des différentes sections dans le modalGrid :
+    modalGrid.appendChild(createModalMainInfos(movieData)); // Informations principales du film
+    modalGrid.appendChild(createModalMovieImage(movieData)); // Image du film
+    modalGrid.appendChild(createModalMovieSummary(movieData)); // Résumé du film
+    modalGrid.appendChild(createModalActorsSection(movieData)); // Acteurs du film
+
+    // Ajout de <div class="modal-grid-container"> à <div class="modal-content">
+    modalContent.appendChild(modalGrid);
+
+    // Ajout de <div class="container container-flex"> à <div class="modal-content">
+    modalContent.appendChild(createModalCloseButton(modal)); // Bouton pour fermer le modal
+
+    // Ajout des éléments à <section class="modal">
+    modal.appendChild(modalContent);
+
+    // Ajout de <section class="modal"> au body
+    document.body.appendChild(modal);
+    modal.style.display = 'block'; // Force l'affichage du modal qui est en display none par défaut en CSS
+}
+
+
+// Création de <section class="modal">
+function createModalSection() {
     const modal = document.createElement("section");
     modal.className = "modal";
+    return modal;
+}
 
-    // Création de <div class="modal-content">
+// Création de <div class="modal-content">
+function createModalContent() {
     const modalContent = document.createElement("div");
     modalContent.className = "modal-content";
+    return modalContent;
+}
 
-    // Création de <!-- Modal grid content -->
+// Création de <div class="modal-grid-container">
+function createModalGrid() {
     const modalGrid = document.createElement("div");
     modalGrid.className = "modal-grid-container";
+    return modalGrid;
+}
 
-    
-    // PARTIE : Informations principales du film
+// Création de la partie des informations principales du film :
+function createModalMainInfos(movieData) {
 
     // Création de <div class="modal-main-infos-movie">
     const mainInfos = document.createElement("div");
@@ -242,7 +470,7 @@ function createMovieModal(movieData) {
 
     const year = document.createElement("div");
     year.className = "year";
-    year.textContent = `${movieData.year} -`;  // Ajout du trait d'union
+    year.textContent = `${movieData.year} -`; // Ajout du trait d'union
     infoRow2.appendChild(year);
 
     const category = document.createElement("div");
@@ -258,14 +486,14 @@ function createMovieModal(movieData) {
 
     const agePg = document.createElement("div");
     agePg.className = "age-pg";
-    // Si la note PG est "Not rated or unkown rating", afficher "N/A" pour gestion espace Modal
     const rating = movieData.rated;
-    agePg.textContent = `PG: ${rating === "Not rated or unkown rating" ? "N/A" : rating} -`;  // Ajout du trait d'union
+    // Si la note PG est "Not rated or unkown rating", afficher "N/A" pour gestion espace Modal
+    agePg.textContent = `PG: ${rating === "Not rated or unkown rating" ? "N/A" : rating} -`;  
     infoRow3.appendChild(agePg);
 
     const time = document.createElement("div");
     time.className = "time";
-    time.textContent = `${movieData.duration} minutes -`;  // Ajout du trait d'union
+    time.textContent = `${movieData.duration} minutes -`;  
     infoRow3.appendChild(time);
 
     const country = document.createElement("div");
@@ -282,11 +510,12 @@ function createMovieModal(movieData) {
     imdbScore.textContent = `IMDb Score : ${imdbScoreValue}`;
     mainInfos.appendChild(imdbScore);
 
-    // 5ème ligne : BOX OFFICE (Conversion Dollars)
+    // 5ème ligne : BOX OFFICE
     const boxOffice = document.createElement("div");
     boxOffice.className = "box-office";
     const boxOfficeValue = movieData.worldwide_gross_income 
-    ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(movieData.worldwide_gross_income) : "N/A";
+        ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(movieData.worldwide_gross_income) 
+        : "N/A";
     // (Valeur numérique, si = 0, False > donc pas || )
     boxOffice.textContent = `Box Office : ${boxOfficeValue}`;
     mainInfos.appendChild(boxOffice);
@@ -308,175 +537,86 @@ function createMovieModal(movieData) {
     director.textContent = movieData.directors.join(", ");
     mainInfos.appendChild(director);
 
-    modalGrid.appendChild(mainInfos);
+    return mainInfos;
+}
 
-    // PARTIE : Image du film ; Création de <div class="modal-image-movie"> avec <img src="(En dynamique)" class="modal-img">
+// Création de la partie de l'image du film :
+function createModalMovieImage(movieData) {
+    // <div class="modal-image-movie"> avec <img src="(En dynamique)" class="modal-img"></img>
     const modalImage = document.createElement("div");
     modalImage.className = "modal-image-movie";
+
     const img = document.createElement("img");
     img.src = movieData.image_url;
     img.className = "modal-img";
+    
     modalImage.appendChild(img);
-    modalGrid.appendChild(modalImage);
+    return modalImage;
+}
 
-    // PARTIE : Résumé ; Création de <span class="modal-summary"> (En dynamique)
+// Création de la partie Résumé du film :
+function createModalMovieSummary(movieData) {
+    // <span class="modal-summary"> (En dynamique)
     const modalSummary = document.createElement("span");
     modalSummary.className = "modal-summary";
     modalSummary.textContent = movieData.long_description || "Résumé non disponible";
-    modalGrid.appendChild(modalSummary);
+    return modalSummary;
+}
 
-    // PARTIE : Acteurs ; Création de <span class="modal-with"> avec <span class="modal-actors"> (En dynamique)
+// Création de la partie des acteurs du film :
+function createModalActorsSection(movieData) {
+    // <span class="modal-with"> avec <span class="modal-actors"> (En dynamique)
+    const actorsContainer = document.createDocumentFragment();
+
     const modalWith = document.createElement("span");
     modalWith.className = "modal-with";
     modalWith.textContent = "Avec :";
-    modalGrid.appendChild(modalWith);
+    actorsContainer.appendChild(modalWith);
 
     const modalActors = document.createElement("span");
     modalActors.className = "modal-actors";
     modalActors.textContent = `${movieData.actors.join(", ")}`;
-    modalGrid.appendChild(modalActors);
+    actorsContainer.appendChild(modalActors);
 
-    modalContent.appendChild(modalGrid);
+    return actorsContainer;
+}
 
-    // PARTIE : Bouton de fermeture <div class="container container-flex"> avec <button class="btn-close">Fermer</button>
+// Création du bouton de fermeture
+function createModalCloseButton(modal) {
+    // <div class="container container-flex"> avec <button class="btn-close">Fermer</button>
     const btnContainer = document.createElement("div");
     btnContainer.className = "container container-flex";
 
     const btnClose = document.createElement("button");
     btnClose.className = "btn-close";
     btnClose.textContent = "Fermer";
+
     btnClose.addEventListener("click", () => {
         modal.remove();
     });
-    // Ajout du bouton à <div class="container container-flex">
+
     btnContainer.appendChild(btnClose);
-
-    // Ajout de <div class="container container-flex"> à <div class="modal-content">
-    modalContent.appendChild(btnContainer);
-    // Ajout de <div class="modal-content"> à <section class="modal">
-    modal.appendChild(modalContent);
-
-    // Ajout du modal au body
-    document.body.appendChild(modal);
-    modal.style.display = 'block'; // Force l'affichage du modal qui en en display none par défaut en CSS
+    return btnContainer;
 }
 
 
-// LES DISPLAY :
 
+// MEDIA QUERIES - Tablette et Mobile
 
-function displayBestMovie(bestMovieData, section) {
-    // Créer le conteneur grille pour les éléments du meilleur film
-    const container = document.createElement('div');
-    container.classList.add('container', 'item-grid');
-    
-    const bestMovieDiv = document.createElement('div');
-    bestMovieDiv.classList.add('best-movie');
-    
-    // Créer la div 'best-movie' pour les éléments du meilleur film
-    const movieImgDiv = document.createElement('div');
-    movieImgDiv.classList.add('best-movie-img');
-    const movieImg = document.createElement('img');
-    movieImg.src = bestMovieData.image_url; // URL dynamique de l'image
-    movieImgDiv.appendChild(movieImg);
-    
-    // Créer le titre du meilleur film avec un <h2> - dynamique
-    const movieTitleDiv = document.createElement('div');
-    movieTitleDiv.classList.add('best-movie-title');
-    const movieTitle = document.createElement('h2');
-    movieTitle.textContent = bestMovieData.title; // Titre dynamique du film
-    movieTitleDiv.appendChild(movieTitle);
-    
-    // Créer le résumé du meilleur film film - dynamique
-    const movieSummaryDiv = document.createElement('div');
-    movieSummaryDiv.classList.add('best-movie-summary');
-    
-    // Créer <p> pour afficher le résumé du meilleur film - dynamique, avec un texte par défaut si absent
-    const movieSummary = document.createElement('p');
-    movieSummary.textContent = bestMovieData.description || bestMovieData.long_description || "Résumé non disponible"; 
-    // Voir si dans FIGMA, on doit mettre la version courte, et la longue pour Modal.
-    movieSummaryDiv.appendChild(movieSummary);
-    
-    // Créer le bouton "Détails" du meilleur film - url dynamique
-    const movieButtonDiv = document.createElement('div');
-    movieButtonDiv.classList.add('best-movie-button');
-    const movieButton = document.createElement('button');
-    movieButton.classList.add('best-movie-details-button');
-    movieButton.textContent = 'Détails';
-    movieButtonDiv.appendChild(movieButton);
-    
-    // Lier le bouton à l'ouverture du modal
-    movieButton.addEventListener('click', () => {
-        createMovieModal(bestMovieData); // Appel de la fonction qui crée le modal
-    });
+// Créer le bouton "Voir Plus" :
+function createShowMoreButton(section) {
+    // Créer le conteneur flex pour le bouton : <div class="container container-flex">
+    const containerFlex = document.createElement('div');
+    containerFlex.classList.add('container', 'container-flex');
 
-    // Ajouter tous les éléments à bestMovieDiv ('best-movie')
-    bestMovieDiv.appendChild(movieImgDiv);
-    bestMovieDiv.appendChild(movieTitleDiv);
-    bestMovieDiv.appendChild(movieSummaryDiv);
-    bestMovieDiv.appendChild(movieButtonDiv);
-    
-    // Ajouter la structure du film au conteneur ('container', 'item-grid')
-    container.appendChild(bestMovieDiv);
-    
-    // Ajouter le conteneur ('container', 'item-grid') à la section générée par createSection
-    section.appendChild(container);
+    // Créer le bouton "Voir plus" : <button class="btn-show">
+    const showMoreButton = document.createElement('button');
+    showMoreButton.classList.add('btn', 'btn-show');
+    showMoreButton.textContent = "Voir plus";
+
+    // Ajouter le bouton au conteneur
+    containerFlex.appendChild(showMoreButton);
+
+    // Ajouter le conteneur à la section
+    section.appendChild(containerFlex);
 }
-
-
-function displayMovies(movies, sectionTitle) {
-    // Gérer affichage Aucun film pour la section
-    if (!movies || movies.length === 0) {
-        console.warn(`Aucun film trouvé pour la section "${sectionTitle}".`);
-        return;
-    }
-
-    // Créer la section (appel createSection) et ajouter l'attribut ("data-title") pour l'identifier
-    const section = createSection(sectionTitle);
-    section.setAttribute("data-title", sectionTitle);
-
-    // Créer le conteneur principal des films
-    const container = document.createElement('div');
-    container.classList.add('container', 'item-grid');
-
-    // Boucler sur les films et générer leur affichage
-    movies.forEach(movie => {
-        const itemDiv = document.createElement('div');
-        itemDiv.classList.add('item', 'from-third', 'from-fifth');
-
-        const movieImg = document.createElement('img');
-        movieImg.src = movie.image_url;
-        movieImg.alt = movie.title;
-
-        const detailDiv = document.createElement('div');
-        detailDiv.classList.add('detail');
-
-        const movieTitle = document.createElement('h3');
-        movieTitle.textContent = movie.title;
-
-        const detailButton = document.createElement('button');
-        detailButton.classList.add('btn');
-        detailButton.textContent = "Détails";
-
-        // Lier le bouton à l'ouverture du modal
-        detailButton.addEventListener('click', () => {
-            console.log('Le bouton Détails a été cliqué');
-            createMovieModal(movie);  // Appel de la fonction qui crée le modal
-        });
-
-        // Construction de l'élément
-        detailDiv.appendChild(movieTitle);
-        detailDiv.appendChild(detailButton);
-        itemDiv.appendChild(movieImg);
-        itemDiv.appendChild(detailDiv);
-        container.appendChild(itemDiv);
-    });
-
-    // Ajouter le conteneur des films à la section
-    section.appendChild(container);
-
-    // Appeler fonction createShowMoreButton pour bouton "Voir plus"
-    createShowMoreButton(section);
-}
-
-
