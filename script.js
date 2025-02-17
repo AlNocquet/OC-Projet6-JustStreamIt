@@ -8,7 +8,6 @@
 // DISPLAY : Affichage des datas.
 
 
-
 // FETCH ET CHECK :
 
 // Récupère une liste de films depuis une URL donnée
@@ -317,34 +316,29 @@ function getOrCreateContainer(section, container) {
 }
 
 
-
-// (displayBestMovie()) Créer la div 'best-movie-img':
+// (displayBestMovie()) Créer <div class="best-movie-img"> :
 function createMovieImage(imageUrl) {
+    // Création d'un conteneur pour l'image
     const movieImgDiv = document.createElement('div');
     movieImgDiv.classList.add('best-movie-img');
-    
+  
+    // <img> :
     const movieImg = document.createElement('img');
+  
+    // Définir une image de fallback par défaut :
+    const defaultImage = 'style/image-not-found.jpg';
+  
+    // Attribuer le src avec vérification de l'URL, sinon utiliser l'image par défaut :
+    movieImg.src = (imageUrl && imageUrl.trim() !== '') ? imageUrl : defaultImage;
 
-    // Définir une image de fallback par défaut
-    const defaultImage = 'image-not-found.jpg';
-
-    // Fonction de gestion des erreurs de chargement
-    const setFallbackImage = () => {
-        movieImg.src = defaultImage; // Si l'image échoue, on utilise l'image par défaut
+    // Attacher l'événement onerror à movieImg en cas d'erreur :
+    movieImg.onerror = () => {
+      movieImg.src = defaultImage;
     };
-
-    // Si l'URL de l'image est correcte, on la charge
-    if (imageUrl && imageUrl !== '') {
-        movieImg.src = imageUrl;
-    } else {
-        // Si l'URL est vide ou invalide, on utilise l'image par défaut immédiatement
-        movieImg.src = defaultImage;
-    }
-
-    // Attacher l'événement `onerror` à l'image pour qu'elle utilise l'image par défaut si elle échoue
-    movieImg.onerror = setFallbackImage;
-
+  
+    // Ajouter l'image à <div class="best-movie-img"> :
     movieImgDiv.appendChild(movieImg);
+  
     return movieImgDiv;
 }
 
@@ -373,36 +367,30 @@ function createMovieSummary(description, longDescription) {
     return movieSummaryDiv;   
 }
 
-// MODAL : (displayBestMovie()) Créer le bouton "Détails" - url dynamique :
-function createMovieButton(movieData) {
-    const movieButtonDiv = document.createElement('div');
-    movieButtonDiv.classList.add('best-movie-button');
-    
-    const movieButton = document.createElement('button');
-    movieButton.classList.add('best-movie-details-button');
-    movieButton.textContent = 'Détails';
-    
-    // Ajout de l'EventListener pour afficher le modal
-    movieButton.addEventListener('click', () => createMovieModal(movieData)); 
-    
-    movieButtonDiv.appendChild(movieButton);
-    return movieButtonDiv;
-}
-
 
 // (DisplayMovies()) Créer un élément représentant un film :
 function createMovieItem(movie) {
 
-    // Créer la div 'item from-third from-fifth' (Un film):
+    // <div 'item from-third from-fifth'> (Un film):
     const itemDiv = document.createElement('div');
     itemDiv.classList.add('item', 'from-third', 'from-fifth');
 
-    // Img
+    // Img (Définir une image de fallback par défaut):
     const movieImg = document.createElement('img');
     movieImg.src = movie.image_url;
     movieImg.alt = movie.title;
+    const defaultImage = 'style/image-not-found.jpg';
+  
+    // Img : Attribuer le src avec vérification de l'URL, sinon utiliser l'image par défaut :
+    movieImg.src = (movie.image_url && movie.image_url.trim() !== '') ? movie.image_url : defaultImage;
+    movieImg.alt = movie.title;
+  
+    // Attacher l'événement onerror à movieImg en cas d'erreur :
+    movieImg.onerror = () => {
+        movieImg.src = defaultImage;
+    };
 
-    // Détails (Zone grise Détails contenant : Titre h3 dynamique ; Bouton détails pour Modal)
+    // Détails (Zone grise Détails contenant : Titre h3 dynamique ; Bouton détails pour Modal) :
     const detailDiv = document.createElement('div');
     detailDiv.classList.add('detail');
 
@@ -425,12 +413,165 @@ function createMovieItem(movie) {
 
     // Ajouter Img à <div class ="item from-third from-fifth"> :
     itemDiv.appendChild(movieImg);
+
     // Ajouter Zone détails à <div class ="item from-third from-fifth"> :
     itemDiv.appendChild(detailDiv);
 
     return itemDiv;
 }
 
+
+
+// MODAL : (displayBestMovie()) Créer le bouton "Détails" - url dynamique :
+function createMovieButton(movieData) {
+    const movieButtonDiv = document.createElement('div');
+    movieButtonDiv.classList.add('best-movie-button');
+    
+    const movieButton = document.createElement('button');
+    movieButton.classList.add('best-movie-details-button');
+    movieButton.textContent = 'Détails';
+    
+    // Ajout de l'EventListener pour afficher le modal
+    movieButton.addEventListener('click', () => createMovieModal(movieData)); 
+    
+    movieButtonDiv.appendChild(movieButton);
+    return movieButtonDiv;
+}
+
+
+// CATEGORIE A CHOIX :
+
+// Fonction principale : Créer et configurer section "Autres catégories" pour afficher les films selon la catégorie sélectionnée
+async function createOtherCategorySection() {
+
+    // Appel : crée la structure de la section avec ses éléments internes :
+    const section = buildOtherCategorySection();
+
+    // Ajoute <section class="section-container" data-title="Autres catégories"> à <main class="main-container">:
+    document.querySelector(".main-container").appendChild(section);
+  
+    // Récupère le <select> et le conteneur ".container.item-grid" (conteneur d'un film) :
+    const select = section.querySelector("select");
+    const moviesContainer = section.querySelector(".container.item-grid");
+  
+    // Remplit le <select> avec les catégories dans les <options> depuis l'API :
+    await populateGenreOptions(select);
+  
+    // addEventListener : MAJ des films lors de changement de la catégorie par l'utilisateur :
+    select.addEventListener("change", () => {
+      updateMoviesForGenre(select, section, moviesContainer);
+    });
+  
+    // Si <select> contient <options>, déclenche un événement de changement :
+    if (select.options.length > 0) {
+      select.dispatchEvent(new Event("change"));
+    }
+}
+
+
+// Créer HTML de la section "Autres catégories"
+function buildOtherCategorySection() {
+
+    // <section class="section-container" data-title="Autres catégories"> :
+    const section = document.createElement("section");
+    section.classList.add("section-container");
+    section.setAttribute("data-title", "Autres catégories");
+  
+    // <div class="top-row"> (pour aligner h1 et <select>) :
+    const topRow = document.createElement("div");
+    topRow.classList.add("top-row");
+  
+    // <h1> Autres : (non dynamique) </h1> :
+    const h1 = document.createElement("h1");
+    h1.textContent = "Autres :";
+    topRow.appendChild(h1);
+  
+    // <div class="custom-select"> dans <div class="top-row"> pour gérer petit icone vert dans <select>:
+    const customSelectContainer = document.createElement("div");
+    customSelectContainer.classList.add("custom-select");
+    const select = document.createElement("select");
+  
+    // <select> (<select class="side-by-side-select">) dans <div class="top-row"> :
+    select.classList.add("side-by-side-select");
+    customSelectContainer.appendChild(select);
+    topRow.appendChild(customSelectContainer);
+  
+    // Ajout <div class="top-row"> à <section class="section-container" data-title="Autres catégories"> :
+    section.appendChild(topRow);
+  
+    // <div class="selection"> pour contenir <div class="container item-grid"> * 6 (films) :
+    const selectionDiv = document.createElement("div");
+    selectionDiv.classList.add("selection");
+    section.appendChild(selectionDiv);
+    const moviesContainer = document.createElement("div");
+    moviesContainer.classList.add("container", "item-grid");
+    section.appendChild(moviesContainer);
+  
+    createShowMoreButton(section);
+  
+    return section;
+}
+
+// Récupère les genres via fetchAllGenres() et ajoute chaque genre dans <select>
+async function populateGenreOptions(select) {
+
+    let genres = [];
+
+    try {
+      // Appel, récupérer catégories depuis API :
+      genres = await fetchAllGenres();
+    } catch (error) {
+      console.error("Erreur lors de la récupération des genres :", error);
+    }
+  
+    // Pour chaque genre, crée une <option> et l'ajoute à <select> :
+    genres.forEach(genre => {
+      const option = document.createElement("option");
+      option.value = genre.name;
+      option.textContent = genre.name;
+      select.appendChild(option);
+    });
+  }
+
+
+// MAJ du conteneur des films en fonction du genre sélectionné
+async function updateMoviesForGenre(select, section, moviesContainer) {
+
+    // Vider le conteneur des films :
+    moviesContainer.innerHTML = "";
+  
+    // Récupérer le genre sélectionné et met à jour l'attribut "data-title" de la section :
+    const selectedCategory = select.value;
+    section.setAttribute("data-title", selectedCategory);
+  
+    try {
+      // Récupérer les films correspondant au genre sélectionné via l'API :
+      const data = await fetchMoviesByCategory(selectedCategory);
+      const results = data?.results || [];
+  
+      if (results.length > 0) {
+        // Appel, Récupérer les détails complets pour chaque film :
+        const detailedMoviesPromises = results.map(async (movie) =>
+          await fetchMovieDetails(movie.id)
+        );
+        // Attendre que toutes les promesses soient résolues :
+        const detailedMovies = await Promise.all(detailedMoviesPromises);
+  
+        // Pour chaque film détaillé, crée <div 'item from-third from-fifth'> et l'ajoute à <div class="item"> :
+        detailedMovies.forEach((movie) => {
+          const itemDiv = createMovieItem(movie);
+          moviesContainer.appendChild(itemDiv);
+        });
+
+      } else {
+        // Afficher un message si aucun film trouvé pour la catégorie :
+        moviesContainer.innerHTML = "<p>Aucun film trouvé pour cette catégorie.</p>";
+      }
+
+    } catch (error) {
+      console.error("Erreur lors de la récupération des films :", error);
+    }
+}
 
 
 // MODAL : 
@@ -575,7 +716,7 @@ function createModalMainInfos(movieData) {
 
 // Création de la partie de l'image du film :
 function createModalMovieImage(movieData) {
-    // Création du conteneur de l'image du film
+    // Création <div class="modal-image-movie">
     const modalImage = document.createElement("div");
     modalImage.className = "modal-image-movie";
 
@@ -593,6 +734,31 @@ function createModalMovieImage(movieData) {
     modalImage.appendChild(img);
     return modalImage;
 }
+
+
+function createModalMovieImage(movieData) {
+    // <div class="modal-image-movie"> :
+    const modalImage = document.createElement("div");
+    modalImage.className = "modal-image-movie";
+  
+    const img = document.createElement("img");
+    const defaultImage = 'style/image-not-found.jpg';
+  
+    // Attribution de l'URL de l'image si valide, sinon utilisation de l'image par défaut :
+    img.src = movieData.image_url && movieData.image_url.trim() !== '' ? movieData.image_url : defaultImage;
+    img.className = "modal-img";
+  
+    // Gestionnaire d'erreur : si le chargement de l'image échoue, utiliser l'image par défaut :
+    img.onerror = () => {
+        img.src = defaultImage;
+    };
+  
+    modalImage.appendChild(img);
+
+    return modalImage;
+
+  }
+
 
 // Création de la partie Résumé du film :
 function createModalMovieSummary(movieData) {
@@ -662,67 +828,3 @@ function createShowMoreButton(section) {
 }
 
 
-
-// CATEGORIE A CHOIX :
-
-
-function createOtherCategorySection() {
-    const mainContainer = document.querySelector('.main-container');
-
-    // Vérifier si la section existe déjà
-    let section = document.querySelector('.section-container[data-title="Autres catégories"]');
-    if (section) {
-        return section;
-    }
-
-    // Sinon la créer : 
-    section = document.createElement('section');
-    section.classList.add('section-container');
-    section.setAttribute('data-title', 'Autres catégories');
-    
-    const h1 = document.createElement('h1');
-    h1.textContent = "Autres";
-    section.appendChild(h1);
-
-    const selectionDiv = document.createElement('div');
-    selectionDiv.classList.add('selection');
-    
-    const selectElement = document.createElement('select');
-    selectElement.id = 'category-select';
-    selectionDiv.appendChild(selectElement);
-    section.appendChild(selectionDiv);
-
-    const container = document.createElement('div');
-    container.classList.add('container', 'item-grid');
-    container.id = 'movies-container';
-    section.appendChild(container);
-
-    mainContainer.appendChild(section);
-
-    loadCategories();
-    
-    return section;
-}
-
-async function loadCategories() {
-    try {
-        const allGenres = await fetchAllGenres();
-        const categorySelect = document.getElementById('category-select');
-
-        // Select
-        allGenres.forEach(genre => {
-            const option = document.createElement('option');
-            option.value = genre.name;
-            option.textContent = genre.name;
-            categorySelect.appendChild(option);
-        });
-
-        // addEventListener : charger les films de la catégorie sélectionnée
-        categorySelect.addEventListener('change', async (event) => {
-            const selectedCategory = event.target.value;
-            await getTop6MoviesByCategory(selectedCategory, 'Autres');
-        });
-    } catch (error) {
-        console.error("Erreur lors du chargement des catégories :", error);
-    }
-}

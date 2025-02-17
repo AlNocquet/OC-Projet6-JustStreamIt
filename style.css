@@ -1,11 +1,11 @@
 
-* {
-    box-sizing: border-box;
-
-}
-
 html {
     background-color: #c0c0c0;
+}
+
+.main-container {
+    font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
+    color: #000;
 }
 
 
@@ -32,8 +32,6 @@ html {
     .main-container {
         background-color: #ffffff;
         border: 1px solid #000000;
-        font-family: 'Arial Narrow', Arial, sans-serif;
-        color: #000;
         flex-direction: column;
         justify-content: center;
         align-items: flex-start;
@@ -46,9 +44,8 @@ html {
     h1 {
         display: flex;
         font-weight: bolder;
-        margin: 0 auto;
         font-size: 48px;
-        text-indent: 110px;
+        text-indent: 105px;
     }
 
 
@@ -234,15 +231,39 @@ html {
     
     /* Management of "Dropdown" category */
 
-    .selection {
-        position: relative;
+    .section-container {
+        border-width: 1px;
     }
 
-    .selection select {
-        position: absolute;
+    .top-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
-    
-    
+
+    .top-row > h1 {
+        margin-right: 10px;
+    }
+
+    .top-row > .side-by-side-select {
+        margin-right: 20px;
+    }
+
+    .side-by-side-select {
+        border-width: 1px;
+        appearance: none; /* pour enlever le style natif sur certains navigateurs */
+        background: url('style/icone.png') no-repeat right center;
+        background-position: calc(100% - 20px) center;
+        font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
+        font-weight: bolder;
+        font-size: 35px;
+        margin-top: 10px;
+        text-indent: 5px;
+        width: 395px;
+        height: 60px;
+    }
+
+
     /* Management of Modal (Desktop) */
 
     .modal {
