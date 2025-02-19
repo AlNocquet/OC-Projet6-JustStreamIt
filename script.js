@@ -173,22 +173,26 @@ async function getTop6MoviesByCategory(category) {
 
 // Affiche les informations du meilleur film dans une section :
 function displayBestMovie(bestMovieData, section) {
+
     // Créer la div 'container item-grid':
     const container = document.createElement('div');
     container.classList.add('container', 'item-grid');
 
-    // Créer la div 'best-movie'
+    // Créer la div 'best-movie' :
     const bestMovieDiv = document.createElement('div');
     bestMovieDiv.classList.add('best-movie');
 
     // Ajouter les éléments dynamiques : ( Entrées : Titre, Img, Résumé, Bouton "Détails")
-    bestMovieDiv.appendChild(createMovieImage(bestMovieData.image_url));
-    bestMovieDiv.appendChild(createMovieTitle(bestMovieData.title));
-    bestMovieDiv.appendChild(createMovieSummary(bestMovieData.description, bestMovieData.long_description));
-    bestMovieDiv.appendChild(createMovieButton(bestMovieData)); // (Inclus ouverture Modal : createMovieItem() appelée dans createMovieButton())
+    bestMovieDiv.append(
+        createMovieImage(bestMovieData.image_url),
+        createMovieTitle(bestMovieData.title),
+        createMovieSummary(bestMovieData.description, bestMovieData.long_description),
+        createMovieButton(bestMovieData)
+    );
 
     // Ajouter la div 'best-movie' à 'container item-grid' :
     container.appendChild(bestMovieDiv);
+
     // Ajouter 'container item-grid' à <section> (createSection()) :
     section.appendChild(container);
 }
@@ -204,32 +208,13 @@ function displayMovies(movies, sectionTitle, container = null) {
         return;
     }
 
-    let section;
-
-    // Si la section est "Autres catégories", récupérer :
-    if (sectionTitle === 'Autres catégories') {
-        section = document.querySelector('.section-container[data-title="Autres catégories"]');
-
-        // Sinon la créer :
-        if (!section) {
-            section = createOtherCategorySection();
-        } else {
-            // Si la section ".container.item-grid">" existe déjà, la vider :
-            const container = section.querySelector('.container.item-grid');
-            container.innerHTML = ''; 
-        }
-    } else {
-        // Pour autres sections, créer ou récupérer par son titre :
-        section = getOrCreateSection(sectionTitle);
-    }
+    // Obtenir ou créer la section avec titre :
+    let section = getOrCreateSection(sectionTitle);
 
     // Obtenir ou créer le conteneur :
     container = getOrCreateContainer(section, container);
 
-    // Vider à nouveau le conteneur avant d'ajouter les films :
-    container.innerHTML = '';
-
-    // Pour chaque film, créer un élément et l'ajouter au conteneur :
+    // Obtenir chaque film, créer l'objet html :
     movies.forEach(movie => {
         const itemDiv = createMovieItem(movie);
         container.appendChild(itemDiv);
@@ -242,6 +227,35 @@ function displayMovies(movies, sectionTitle, container = null) {
     appendSectionToPage(section);
 }
 
+
+function displayMovies(movies, sectionTitle, container = null) {
+    if (!movies || movies.length === 0) {
+        console.warn(`Aucun film trouvé pour la section "${sectionTitle}".`);
+        return;
+    }
+
+    let section = getOrCreateSection(sectionTitle);
+    container = getOrCreateContainer(section, container);
+
+    // Création d’un div parent pour y ajouter une bordure sans impacter d'autres fonctions
+    let borderWrapper = document.createElement("div");
+    borderWrapper.classList.add("movies-border-wrapper"); // Ajout d'une classe CSS spécifique
+
+    // On ajoute ce wrapper dans la section AVANT d'ajouter le container des films
+    section.appendChild(borderWrapper);
+    
+    // On place le container des films dans ce wrapper
+    borderWrapper.appendChild(container);
+
+    // Ajout des films dans le container
+    movies.forEach(movie => {
+        const itemDiv = createMovieItem(movie); // On garde createMovieItem inchangé
+        container.appendChild(itemDiv);
+    });
+
+    createShowMoreButton(section);
+    appendSectionToPage(section);
+}
 
 // Ajoute la section dans le DOM si elle n'existe pas déjà (<main class="main-container">)
 function appendSectionToPage(section) {
@@ -514,25 +528,28 @@ function buildOtherCategorySection() {
 
 // Récupère les genres via fetchAllGenres() et ajoute chaque genre dans <select>
 async function populateGenreOptions(select) {
-
     let genres = [];
 
     try {
-      // Appel, récupérer catégories depuis API :
-      genres = await fetchAllGenres();
+        // Appel, récupérer catégories depuis API :
+        genres = await fetchAllGenres();
     } catch (error) {
-      console.error("Erreur lors de la récupération des genres :", error);
+        console.error("Erreur lors de la récupération des genres :", error);
     }
-  
-    // Pour chaque genre, crée une <option> et l'ajoute à <select> :
-    genres.forEach(genre => {
-      const option = document.createElement("option");
-      option.value = genre.name;
-      option.textContent = genre.name;
-      select.appendChild(option);
-    });
-  }
 
+    // Exclure "Sci-Fi" et "Fantasy":
+    const excludedCategories = ["Sci-Fi", "Fantasy"];
+    // TRUE si trouvé /FALSE sinon; inverse (!) pour garder uniquement les genres qui ne sont pas dans excludedCategories :
+    const filteredGenres = genres.filter(genre => !excludedCategories.includes(genre.name));
+
+    // Pour chaque genre (filtré), crée une <option> et l'ajoute à <select> :
+    filteredGenres.forEach(genre => {
+        const option = document.createElement("option");
+        option.value = genre.name;
+        option.textContent = genre.name;
+        select.appendChild(option);
+    });
+}
 
 // MAJ du conteneur des films en fonction du genre sélectionné
 async function updateMoviesForGenre(select, section, moviesContainer) {

@@ -40,24 +40,14 @@ html {
         padding: 20px; /* Espace intérieur de la section */
     }
 
-
-    h1 {
-        display: flex;
-        font-weight: bolder;
-        font-size: 48px;
-        text-indent: 105px;
-    }
-
-
     .container {
-        background-color: rgba(43, 255, 0, 0);
         max-width: 1100px;
-        margin: 20px;
     }
 
     .section-container {
         border: 1px solid rgba(255, 0, 0, 0);
     }
+
 
     /* Management of site banner */
 
@@ -65,17 +55,26 @@ html {
         background-color: #61787e;
         border: 1px solid #000000;
         display: flex;
-        justify-content: flex-start; /* Aligne à gauche */
-        align-items: center; /* Centre verticalement */
-        margin: 35px 105px;
+        justify-content: flex-start;
+        align-items: center;
+        margin: 35px auto 0 auto; /* Centre le header */
+        width: 835px;
     }
-
+    
     .logo {
         display: flex;
     }
     
     .title-banner{
         display: flex;
+    }
+
+
+    h1 {
+        display: flex;
+        font-weight: bolder;
+        font-size: 48px;
+        text-indent: 135px;
     }
 
     
@@ -87,19 +86,20 @@ html {
         grid-template-columns: 1fr 2fr;
         width: 835px;
         height: 369px;
+        box-sizing: border-box; /* Empêche la bordure d’augmenter la largeur totale */
     }
 
     .best-movie-img {
         grid-column: 1 / 2;
         grid-row: 1 / 4;
+        display: flex; /* Active flexbox */
+        align-items: center; /* Centre verticalement */
+        justify-content: center; /* Centre horizontalement */
     }
     
     .best-movie-img img {
-        display: flex;
-        justify-content: center;
         width: 227px;
-        height: 334px; 
-        margin: 10px;
+        height: 334px;
     }
     
     .best-movie-title h2 {
@@ -126,11 +126,6 @@ html {
         margin : 0px;
     }
 
-    .container-flex {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
 
     .best-movie-details-button {
         grid-column: 2 / 3;
@@ -158,7 +153,8 @@ html {
 
 
     /* Management of items from Categories */
-    
+
+
     .container .item-grid {
         width: 844px;
         height: 558px;
@@ -191,35 +187,43 @@ html {
 
     .detail {
         position: absolute;
-        top: 40px;
-        width: 100%;
-        height: 130px;
+        top: 35px;
+        width: 87%;
+        height: 102px;
         background-color: #00000075;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 1rem;
+    }
     
-        h3 {
-            color: white;
-            text-align: left;
-            padding: 1rem;;
-        }
+    .detail h3 {
+        color: white;
+        text-align: left;
+        margin: 0;
+        height: 40px;
+        overflow: hidden;
+        text-overflow: ellipsis; /* Ajoute des "..." si le texte est trop long */
+        white-space: nowrap; /* Empêche le retour à la ligne */
+    }
     
-        .btn {
-            background-color: rgba(46, 44, 44, 0.925);
-            color: white;
-            font-size: 16px;
-            font-weight: normal;
-            cursor: pointer;
-            border: none;
-            float: right;
-            margin-right: 10px;
-            border-radius: 25px;    
-            width: 84px;
-            height: 26px;
-        }
+    .detail .btn {
+        position: absolute;
+        bottom: 20px; 
+        right: 20px;
+        background-color: rgba(46, 44, 44, 0.925);
+        color: white;
+        font-size: 16px;
+        font-weight: normal;
+        cursor: pointer;
+        border: none;
+        border-radius: 25px;    
+        width: 86px;
+        height: 26px;
+    }
     
-    
-        .btn:hover {
-          background-color:rgb(43, 41, 41);
-        }
+    .detail .btn:hover {
+        background-color: rgb(43, 41, 41);
     }
     
 
@@ -475,6 +479,8 @@ html {
     }
 
 
+    /* Management of "Dropdown" category */
+
     .selection select {
         font-size: 20px;
         font-weight: bolder;
@@ -486,10 +492,6 @@ html {
         padding: 15px;
     }
  
-
-    /* Management of "Dropdown" category */
-
-    
 
 }
 
