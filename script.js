@@ -387,7 +387,7 @@ function createMovieItem(movie) {
 
     // <div 'item from-third from-fifth'> (Un film):
     const itemDiv = document.createElement('div');
-    itemDiv.classList.add('item', 'from-third', 'from-fifth');
+    itemDiv.classList.add('item');
 
     // Img (Définir une image de fallback par défaut):
     const movieImg = document.createElement('img');
@@ -787,10 +787,11 @@ function createModalActorsSection(movieData) {
 
 // Création du bouton de fermeture
 function createModalCloseButton(modal) {
-    // <div class="container container-flex"> avec <button class="btn-close">Fermer</button>
+    // <div class="container container-flex"> :
     const btnContainer = document.createElement("div");
     btnContainer.className = "container container-flex";
 
+    // <button class="btn-close">Fermer</button> :
     const btnClose = document.createElement("button");
     btnClose.className = "btn-close";
     btnClose.textContent = "Fermer";
@@ -809,20 +810,58 @@ function createModalCloseButton(modal) {
 
 // Créer le bouton "Voir Plus" :
 function createShowMoreButton(section) {
-    // Créer le conteneur flex pour le bouton : <div class="container container-flex">
+    // Récupérer tous les films de la catégorie <class="item"> :
+    const items = section.querySelectorAll('.item');
+
+    // Masquer initialement certains items selon le media query :
+    // - En mobile (max-width: 767px) : masquer les items du 3ème au 6ème (indices 2 à 5)
+    if (window.matchMedia("(max-width: 767px)").matches) {
+        for (let i = 2; i < 6 && i < items.length; i++) {
+            items[i].classList.add('hidden');
+        }
+
+    // - En tablette (min-width: 768px et max-width: 1024px) : masquer les items du 5ème et 6ème (indices 4 et 5)
+    } else if (window.matchMedia("(min-width: 768px) and (max-width: 1024px)").matches) {
+        for (let i = 4; i < 6 && i < items.length; i++) {
+            items[i].classList.add('hidden');
+        }
+    }
+
+    // Créer le conteneur flex <div class="container container-flex"> :
     const containerFlex = document.createElement('div');
     containerFlex.classList.add('container', 'container-flex');
 
-    // Créer le bouton "Voir plus" : <button class="btn-show">
-    const showMoreButton = document.createElement('button');
-    showMoreButton.classList.add('btn', 'btn-show');
-    showMoreButton.textContent = "Voir plus";
+    // Créer le bouton "Voir plus" : <button class="btn-show"> :
+    const button = document.createElement('button');
+    button.classList.add('btn-show');
+    button.textContent = "Voir plus";
 
-    // Ajouter le bouton au conteneur
-    containerFlex.appendChild(showMoreButton);
+    // addEventListener; afficher les items "restants" en fonction du MQ :
+    button.addEventListener('click', function() {
+        // - Mobile, afficher du 3ème au 6ème item de la catégorie (items aux indices 2 à 5) :
+        if (window.matchMedia("(max-width: 767px)").matches) {
+            for (let i = 2; i < 6 && i < items.length; i++) {
+                items[i].classList.remove('hidden');
+            }
+        // - Tablette, afficher le 5ème et le 6ème item de la catégorie (items aux indices 4 et 5) :
+        } else if (window.matchMedia("(min-width: 768px) and (max-width: 1024px)").matches) {
+            for (let i = 4; i < 6 && i < items.length; i++) {
+                items[i].classList.remove('hidden');
+            }
+        } else {
+            // Par défaut, afficher tous les items cachés :
+            const hiddenItems = section.querySelectorAll('.item.hidden');
+            hiddenItems.forEach(item => item.classList.remove('hidden'));
+        }
+        // Masquer le bouton une fois les items affichés :
+        button.style.display = 'none';
+    });
 
-    // Ajouter le conteneur à la section
+    // Ajouter le bouton à <div class="container container-flex"> :
+    containerFlex.appendChild(button);
+
+    // Ajouter <div class="container container-flex"> à la section :
     section.appendChild(containerFlex);
+
+    return button;
 }
-
-
