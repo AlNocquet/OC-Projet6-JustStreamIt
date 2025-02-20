@@ -617,7 +617,7 @@ function createMovieModal(movieData) {
 
     // Ajout de <section class="modal"> au body
     document.body.appendChild(modal);
-    modal.style.display = 'block'; // Force l'affichage du modal qui est en display none par défaut en CSS
+    modal.style.display = 'flex'; // Force l'affichage du modal qui est en display none par défaut en CSS
 }
 
 
@@ -733,33 +733,12 @@ function createModalMainInfos(movieData) {
 
 // Création de la partie de l'image du film :
 function createModalMovieImage(movieData) {
-    // Création <div class="modal-image-movie">
-    const modalImage = document.createElement("div");
-    modalImage.className = "modal-image-movie";
-
-    const img = document.createElement("img");
-
-    // Définition de l'URL de l'image (avec vérification) :
-    img.src = movieData.image_url && movieData.image_url !== '' ? movieData.image_url : 'image-not-found.jpg';
-    img.className = "modal-img";
-
-    // Gestionnaire d'erreur si l'image ne se charge pas :
-    img.onerror = () => {
-        img.src = 'image-not-found.jpg'; // Si l'image ne peut pas être chargée, utiliser l'image par défaut
-    };
-
-    modalImage.appendChild(img);
-    return modalImage;
-}
-
-
-function createModalMovieImage(movieData) {
     // <div class="modal-image-movie"> :
     const modalImage = document.createElement("div");
     modalImage.className = "modal-image-movie";
   
     const img = document.createElement("img");
-    const defaultImage = 'style/image-not-found.jpg';
+    const defaultImage = 'style/image-not-found-modal.jpg';
   
     // Attribution de l'URL de l'image si valide, sinon utilisation de l'image par défaut :
     img.src = movieData.image_url && movieData.image_url.trim() !== '' ? movieData.image_url : defaultImage;
@@ -773,8 +752,7 @@ function createModalMovieImage(movieData) {
     modalImage.appendChild(img);
 
     return modalImage;
-
-  }
+}
 
 
 // Création de la partie Résumé du film :
@@ -782,7 +760,10 @@ function createModalMovieSummary(movieData) {
     // <span class="modal-summary"> (En dynamique)
     const modalSummary = document.createElement("span");
     modalSummary.className = "modal-summary";
-    modalSummary.textContent = movieData.long_description || "Résumé non disponible";
+    // Si résumé existe (TRUE) et n'est pas une chaîne vide après trim, égal à movieData.long_description :
+    modalSummary.textContent = (movieData.long_description && movieData.long_description.trim()) 
+        ? movieData.long_description 
+        : "Résumé non disponible"; // Sinon message "Résumé non disponible"
     return modalSummary;
 }
 

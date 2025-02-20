@@ -88,6 +88,7 @@ html {
         height: 369px;
         box-sizing: border-box; /* Empêche la bordure d’augmenter la largeur totale */
     }
+    
 
     .best-movie-img {
         grid-column: 1 / 2;
@@ -271,7 +272,9 @@ html {
     /* Management of Modal (Desktop) */
 
     .modal {
-        display: none;
+        display: none; 
+        justify-content: center;
+        align-items: center;  
         position: fixed;
         z-index: 9999;
         left: 50%;
@@ -279,18 +282,19 @@ html {
         height: 939px; /* Hauteur spécifiée */
         width: 778px; /* Largeur spécifiée */
         border: 5px solid #000000; 
+        background-color: #ffffff;
         transform: translate(-50%, 0); /* Centrage horizontal */
     }
     
     .modal-content {
-        background-color: white;
-        width: 100%; /* Prend toute la largeur du modal */
-        height: 100%; /* Prend toute la hauteur du modal */
-        padding: 20px;
+        position: relative;
+        width: 100%;
+        height: 100%;
+        padding: 10px 20px;
         text-align: center;
-        overflow: auto;  /* Permet le défilement si le contenu dépasse la hauteur du modal */
+        box-sizing: border-box;
     }
-    
+ 
     .modal-grid-container {
         display: grid;
         grid-template-columns: 2fr 1fr;
@@ -298,8 +302,16 @@ html {
             "a b"
             "c c"
             "d d"
-            "e e";
+            "e e"
+            "f f";
+        grid-auto-rows: min-content;
+        justify-items: stretch;
+        margin-top: 10px;
+        margin-left: 15px;
+        width: 698px;
+        max-width: 698px;
     }
+    
 
     /* Styles pour les lignes d'informations, alignement de chaque ligne */
     .info-row {
@@ -323,21 +335,25 @@ html {
 
     /* Style de la section des infos principales du film */
     .modal-main-infos-movie {
+        grid-area: a;
         display: flex;
         flex-direction: column; /* Flex column : Aligner verticalement les éléments */
-        width: 100%;
-        max-width: 778px; /* Limiter la largeur du modal */
-        grid-area: a;
         text-align: left;
-        /*height: 450px; /* Taille a ajuster selon les tests */
+        width: 500px;
+        max-width: 95%;
     }
 
     /* Titre du film */
-    .title { 
-        font-size: 48px;
+    .title::first-line {
+        font-size: 48px; /* Taille pour la première ligne uniquement */
         font-weight: 600;
         /*line-height: 71.14px;*/
     }
+
+    .title {
+        font-size: 28px; /* Taille par défaut pour toutes les lignes */
+    }
+    
 
     /* Année, Catégorie, PG Rating, Temps, Pays, imdb-score, box-office */
     .year, 
@@ -349,15 +365,15 @@ html {
     .box-office { 
         font-size: 24px;
         font-weight: 600;
-        /*line-height: 35.57px;*/
+        line-height: 35.57px;
     }
 
     /* label "Réalisé par" */
     .label {
         font-size: 24px;
         font-weight: 600;
-        /*line-height: 35.57px;*/
-        margin-top: 35px;
+        line-height: 35.57px;
+        margin-top: 5px;
     }
 
     /* Réalisateur */
@@ -369,12 +385,13 @@ html {
 
     /* Image du film */
     .modal-image-movie {
+        grid-area: b;
         display: flex;
-        justify-content: center;
-        object-fit: contain;  /* Conserver l'image entière sans la déformer */
-        max-width: 100%; /* L'image ne dépassera pas la largeur de son conteneur */
-        max-height: 300px;
+        justify-content: right;
+        object-fit: contain;
+        width: 200px;
     }
+    
 
     /* Résumé du film */
     .modal-summary {
@@ -383,11 +400,12 @@ html {
         font-weight: 300;
         line-height: 35.57px;
         text-align: justify;
-        width: 698px;
-        margin-top: 30px;
-        height: 100px;
-        max-height: 100px; /* Hauteur limite du résumé */
+        height: 180px;
+        width: 698px; /* Largeur spécifiée */
+        max-height: 180px; /* Hauteur limite du résumé */
+        max-width: 698px; /* Largeur spécifiée */
         overflow-y: auto;  /* Scroll si besoin */
+        margin-top: 15px;
     }
 
     /* "Avec" */
@@ -397,25 +415,37 @@ html {
         font-weight: 600;
         line-height: 29.64px;
         text-align: left;
-        margin-top: 35px;
+        margin-top: 15px;
     }
 
     /* Noms des acteurs */
     .modal-actors {
         grid-area: e;
-        text-align: left;
+        text-align: justify;
         font-size: 20px;
         font-weight: 300;
         line-height: 29.64px;
-        width: 692px;
         height: 100px;
+        width: 698px; /* Largeur spécifiée */
         max-height: 100px; /* Hauteur limite de la liste des acteurs */
+        max-width: 698px; /* Largeur spécifiée */
         overflow-y: auto;  /* Scroll si besoin */
+    }
+
+    /* Conteneur du bouton - S'assurer qu'il est bien positionné */
+    .container-flex {
+        grid-area: f;
+        position: absolute;
+        bottom: 220px;
+        left: 280px;
+        display: flex;
+        justify-content: center; 
+        align-items: center;
+        margin-top: 20px;
     }
 
     /* Bouton de fermeture */
     .btn-close {
-        float: right;
         font-size: 16px;
         font-weight: bold;
         cursor: pointer;
@@ -426,12 +456,16 @@ html {
         height: 36px;
         padding: 2px 4px;
         border-radius: 25px;
-        margin-top: 20px; /* Marge bouton Fermer */
+        margin: 0; /* Supprime toute marge qui pourrait le désaligner */
+        display: flex; /* Permet d'ajuster le contenu interne */
+        justify-content: center; /* Centre le texte */
+        align-items: center; /* Centre verticalement */
     }
 
     .btn-close:hover {
         background-color: darkred;
     }
+
 
 
 
@@ -548,7 +582,8 @@ html {
             left: 270px;
             width: 25%;
             height: auto;
-            padding: 15px;
+            padding: 35px;
+            margin: 20px;
         }
      
     
