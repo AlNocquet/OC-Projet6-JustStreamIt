@@ -8,6 +8,6 @@
     await getTop6Movies(); // Top 6 films
     await getTop6MoviesByCategory("Fantasy"); // Catégorie "Fantasy"
     await getTop6MoviesByCategory("Sci-Fi"); // Catégorie "Sci-Fi"
-    await createOtherCategorySection(); // Catégorie à choix
+    await getTop6Movies_OthersCategories(); // Catégorie à choix
 })();
 

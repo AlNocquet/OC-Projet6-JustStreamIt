@@ -186,7 +186,7 @@ function displayBestMovie(bestMovieData, section) {
     bestMovieDiv.append(
         createMovieImage(bestMovieData.image_url),
         createMovieTitle(bestMovieData.title),
-        createMovieSummary(bestMovieData.description, bestMovieData.long_description),
+        createMovieSummary(bestMovieData.description),
         createMovieButton(bestMovieData)
     );
 
@@ -210,52 +210,32 @@ function displayMovies(movies, sectionTitle, container = null) {
 
     // Obtenir ou créer la section avec titre :
     let section = getOrCreateSection(sectionTitle);
-
     // Obtenir ou créer le conteneur :
     container = getOrCreateContainer(section, container);
 
-    // Obtenir chaque film, créer l'objet html :
+    // Création <div class="movies-border-wrapper"> pour ajouter une bordure :
+    let borderWrapper = document.createElement("div");
+    borderWrapper.classList.add("movies-border-wrapper");
+
+    // Ajouter <div class="movies-border-wrapper"> à la section AVANT le container des films :
+    section.appendChild(borderWrapper);
+    
+    // Ajouter <div class="movies-border-wrapper"> au conteneur :
+    borderWrapper.appendChild(container);
+
+    // Pour chaque film, créer et ajouter l'objet html au conteneur :
     movies.forEach(movie => {
         const itemDiv = createMovieItem(movie);
         container.appendChild(itemDiv);
     });
 
     // Ajouter le bouton "Voir plus" :
-    createShowMoreButton(section);
+    createShowButton(section);
 
     // Ajouter la section à la page :
     appendSectionToPage(section);
 }
 
-
-function displayMovies(movies, sectionTitle, container = null) {
-    if (!movies || movies.length === 0) {
-        console.warn(`Aucun film trouvé pour la section "${sectionTitle}".`);
-        return;
-    }
-
-    let section = getOrCreateSection(sectionTitle);
-    container = getOrCreateContainer(section, container);
-
-    // Création d’un div parent pour y ajouter une bordure sans impacter d'autres fonctions
-    let borderWrapper = document.createElement("div");
-    borderWrapper.classList.add("movies-border-wrapper"); // Ajout d'une classe CSS spécifique
-
-    // On ajoute ce wrapper dans la section AVANT d'ajouter le container des films
-    section.appendChild(borderWrapper);
-    
-    // On place le container des films dans ce wrapper
-    borderWrapper.appendChild(container);
-
-    // Ajout des films dans le container
-    movies.forEach(movie => {
-        const itemDiv = createMovieItem(movie); // On garde createMovieItem inchangé
-        container.appendChild(itemDiv);
-    });
-
-    createShowMoreButton(section);
-    appendSectionToPage(section);
-}
 
 // Ajoute la section dans le DOM si elle n'existe pas déjà (<main class="main-container">)
 function appendSectionToPage(section) {
@@ -274,15 +254,29 @@ function createHeader() {
     const titleBannerDiv = document.createElement('div');
     titleBannerDiv.classList.add('banner');
     const titleBannerImg = document.createElement('img');
-    titleBannerImg.src = 'style/banner.jpg';
+    titleBannerImg.src = 'style/banner.jpg'; // valeur par défaut
     titleBannerDiv.appendChild(titleBannerImg);
 
     header.appendChild(titleBannerDiv);
 
     const mainContainer = document.querySelector('main');
     mainContainer.appendChild(header);
+
+    // Media Queries Mobile :
+    updateBannerImage();
+    // MAJ suite redimensionnement de la fenêtre
+    window.addEventListener('resize', updateBannerImage);
 }
 
+// Gérer le logo selon DESKTOP & TABLET vs MOBILE
+function updateBannerImage() {
+    const bannerImg = document.querySelector('header .banner img');
+    if (window.matchMedia("(max-width: 767px)").matches) {
+        bannerImg.src = 'style/logo.jpg';
+    } else {
+        bannerImg.src = 'style/banner.jpg';
+    }
+}
 
 // Créer <section>
 function createSection(title) {
@@ -332,7 +326,7 @@ function getOrCreateContainer(section, container) {
 
 // (displayBestMovie()) Créer <div class="best-movie-img"> :
 function createMovieImage(imageUrl) {
-    // Création d'un conteneur pour l'image
+    // Création d'un conteneur pour l'image :
     const movieImgDiv = document.createElement('div');
     movieImgDiv.classList.add('best-movie-img');
   
@@ -370,12 +364,12 @@ function createMovieTitle(title) {
 }
 
 // (displayBestMovie()) Créer la div 'best-movie-summary' - dynamique (avec un texte par défaut si absent) :
-function createMovieSummary(description, longDescription) {
+function createMovieSummary(description) {
     const movieSummaryDiv = document.createElement('div');
     movieSummaryDiv.classList.add('best-movie-summary');
     
     const movieSummary = document.createElement('p');
-    movieSummary.textContent = description || longDescription || "Résumé non disponible"; // Résumé dynamique
+    movieSummary.textContent = description || "Résumé non disponible"; // Résumé dynamique
     
     movieSummaryDiv.appendChild(movieSummary);
     return movieSummaryDiv;   
@@ -385,7 +379,7 @@ function createMovieSummary(description, longDescription) {
 // (DisplayMovies()) Créer un élément représentant un film :
 function createMovieItem(movie) {
 
-    // <div 'item from-third from-fifth'> (Un film):
+    // <div 'item'> (Un film):
     const itemDiv = document.createElement('div');
     itemDiv.classList.add('item');
 
@@ -425,18 +419,16 @@ function createMovieItem(movie) {
     detailDiv.appendChild(movieTitle);
     detailDiv.appendChild(detailButton);
 
-    // Ajouter Img à <div class ="item from-third from-fifth"> :
+    // Ajouter Img à <div class ="item"> :
     itemDiv.appendChild(movieImg);
 
-    // Ajouter Zone détails à <div class ="item from-third from-fifth"> :
+    // Ajouter Zone détails à <div class ="item"> :
     itemDiv.appendChild(detailDiv);
 
     return itemDiv;
 }
 
-
-
-// MODAL : (displayBestMovie()) Créer le bouton "Détails" - url dynamique :
+// (displayBestMovie()) Créer le bouton "Détails" > Ouverture Modal :
 function createMovieButton(movieData) {
     const movieButtonDiv = document.createElement('div');
     movieButtonDiv.classList.add('best-movie-button');
@@ -455,8 +447,8 @@ function createMovieButton(movieData) {
 
 // CATEGORIE A CHOIX :
 
-// Fonction principale : Créer et configurer section "Autres catégories" pour afficher les films selon la catégorie sélectionnée
-async function createOtherCategorySection() {
+// Fonction principale : Afficher les films selon la catégorie sélectionnée.
+async function getTop6Movies_OthersCategories() {
 
     // Appel : crée la structure de la section avec ses éléments internes :
     const section = buildOtherCategorySection();
@@ -480,10 +472,11 @@ async function createOtherCategorySection() {
     if (select.options.length > 0) {
       select.dispatchEvent(new Event("change"));
     }
+
+    createShowButton(section);
 }
 
-
-// Créer HTML de la section "Autres catégories"
+// Créer HTML de la section "Autres catégories" (sans createSection, createContainer = conflit) :
 function buildOtherCategorySection() {
 
     // <section class="section-container" data-title="Autres catégories"> :
@@ -509,7 +502,7 @@ function buildOtherCategorySection() {
     select.classList.add("side-by-side-select");
     customSelectContainer.appendChild(select);
     topRow.appendChild(customSelectContainer);
-  
+
     // Ajout <div class="top-row"> à <section class="section-container" data-title="Autres catégories"> :
     section.appendChild(topRow);
   
@@ -517,12 +510,11 @@ function buildOtherCategorySection() {
     const selectionDiv = document.createElement("div");
     selectionDiv.classList.add("selection");
     section.appendChild(selectionDiv);
+    
     const moviesContainer = document.createElement("div");
     moviesContainer.classList.add("container", "item-grid");
-    section.appendChild(moviesContainer);
-  
-    createShowMoreButton(section);
-  
+    selectionDiv.appendChild(moviesContainer);
+    
     return section;
 }
 
@@ -574,11 +566,13 @@ async function updateMoviesForGenre(select, section, moviesContainer) {
         // Attendre que toutes les promesses soient résolues :
         const detailedMovies = await Promise.all(detailedMoviesPromises);
   
-        // Pour chaque film détaillé, crée <div 'item from-third from-fifth'> et l'ajoute à <div class="item"> :
+        // Pour chaque film détaillé, crée <div class="item"> et l'ajoute à <div class='container item-grid'> :
         detailedMovies.forEach((movie) => {
           const itemDiv = createMovieItem(movie);
           moviesContainer.appendChild(itemDiv);
         });
+
+        createShowButton(section)
 
       } else {
         // Afficher un message si aucun film trouvé pour la catégorie :
@@ -598,9 +592,11 @@ function createMovieModal(movieData) {
 
     const modal = createModalSection(); // <section class="modal">
     const modalContent = createModalContent(); // <div class="modal-content">
-    const modalGrid = createModalGrid(); // <div class="modal-grid-container">
 
+    // <div class="modal-grid-container"> :
+    const modalGrid = createModalGrid();
     // Ajout des différentes sections dans le modalGrid :
+    modalGrid.appendChild(createModalCloseButton_X(modal)); // Icone X pour fermer le modal
     modalGrid.appendChild(createModalMainInfos(movieData)); // Informations principales du film
     modalGrid.appendChild(createModalMovieImage(movieData)); // Image du film
     modalGrid.appendChild(createModalMovieSummary(movieData)); // Résumé du film
@@ -609,17 +605,16 @@ function createMovieModal(movieData) {
     // Ajout de <div class="modal-grid-container"> à <div class="modal-content">
     modalContent.appendChild(modalGrid);
 
-    // Ajout de <div class="container container-flex"> à <div class="modal-content">
+    // Ajout de <div class="container container-flex"> à <div class="modal-content"> :
     modalContent.appendChild(createModalCloseButton(modal)); // Bouton pour fermer le modal
 
-    // Ajout des éléments à <section class="modal">
+    // Ajout des éléments à <section class="modal"> :
     modal.appendChild(modalContent);
 
-    // Ajout de <section class="modal"> au body
+    // Ajout de <section class="modal"> au body :
     document.body.appendChild(modal);
     modal.style.display = 'flex'; // Force l'affichage du modal qui est en display none par défaut en CSS
 }
-
 
 // Création de <section class="modal">
 function createModalSection() {
@@ -733,6 +728,7 @@ function createModalMainInfos(movieData) {
 
 // Création de la partie de l'image du film :
 function createModalMovieImage(movieData) {
+
     // <div class="modal-image-movie"> :
     const modalImage = document.createElement("div");
     modalImage.className = "modal-image-movie";
@@ -754,9 +750,9 @@ function createModalMovieImage(movieData) {
     return modalImage;
 }
 
-
 // Création de la partie Résumé du film :
 function createModalMovieSummary(movieData) {
+
     // <span class="modal-summary"> (En dynamique)
     const modalSummary = document.createElement("span");
     modalSummary.className = "modal-summary";
@@ -769,6 +765,7 @@ function createModalMovieSummary(movieData) {
 
 // Création de la partie des acteurs du film :
 function createModalActorsSection(movieData) {
+
     // <span class="modal-with"> avec <span class="modal-actors"> (En dynamique)
     const actorsContainer = document.createDocumentFragment();
 
@@ -785,8 +782,9 @@ function createModalActorsSection(movieData) {
     return actorsContainer;
 }
 
-// Création du bouton de fermeture
+// Création du bouton de fermeture (Desktop)
 function createModalCloseButton(modal) {
+
     // <div class="container container-flex"> :
     const btnContainer = document.createElement("div");
     btnContainer.className = "container container-flex";
@@ -804,57 +802,114 @@ function createModalCloseButton(modal) {
     return btnContainer;
 }
 
+// Création du bouton de fermeture (Tablette/Mobile)
+function createModalCloseButton_X(modal) {
+
+    // <div class="container container-flex-MQ"> :
+    const mobileContainer = document.createElement("div");
+    mobileContainer.className = "container container-flex-MQ";
+    
+    // <span class="icon-close"> Icone X (CSS) </span> :
+    const iconClose = document.createElement("span");
+    iconClose.className = "icon-close"; 
+  
+    // addEventListener Fermeture Modal avec X :
+    iconClose.addEventListener("click", () => {
+        modal.remove();
+    });
+  
+    mobileContainer.appendChild(iconClose);
+    return mobileContainer;
+}
 
 
 // MEDIA QUERIES - Tablette et Mobile
 
-// Créer le bouton "Voir Plus" :
-function createShowMoreButton(section) {
+// Création et fonction du bouton "Voir plus" / "Voir moins":
+function createShowButton(section) {
+
     // Récupérer tous les films de la catégorie <class="item"> :
     const items = section.querySelectorAll('.item');
 
-    // Masquer initialement certains items selon le media query :
-    // - En mobile (max-width: 767px) : masquer les items du 3ème au 6ème (indices 2 à 5)
-    if (window.matchMedia("(max-width: 767px)").matches) {
+    // MQ définitions : 
+    const isMobile = window.matchMedia("(max-width: 767px)").matches;
+    const isTablet = window.matchMedia("(min-width: 768px) and (max-width: 1024px)").matches;
+
+    // MASQUER :
+    if (isMobile) {
+        // Masquer les items 3 à 6 (indices 2..5) :
         for (let i = 2; i < 6 && i < items.length; i++) {
             items[i].classList.add('hidden');
         }
-
-    // - En tablette (min-width: 768px et max-width: 1024px) : masquer les items du 5ème et 6ème (indices 4 et 5)
-    } else if (window.matchMedia("(min-width: 768px) and (max-width: 1024px)").matches) {
+    } else if (isTablet) {
+        // Masquer les 5e et 6e items (indices 4..5) :
         for (let i = 4; i < 6 && i < items.length; i++) {
             items[i].classList.add('hidden');
         }
+    } else {
+        // Desktop :
+        return null;
     }
 
-    // Créer le conteneur flex <div class="container container-flex"> :
+    // Vérifier s’il reste des items cachés (si catégorie que 2 films par ex.) :
+    let hiddenItems = Array.from(items).filter(item => item.classList.contains('hidden'));
+    if (hiddenItems.length === 0) {
+        // Aucun item masqué, pas de bouton :
+        return null;
+    }
+
+    // Créer le conteneur <div class="container container-flex"> :
     const containerFlex = document.createElement('div');
     containerFlex.classList.add('container', 'container-flex');
 
-    // Créer le bouton "Voir plus" : <button class="btn-show"> :
+    // Créer le bouton "Voir..." : <button class="btn-show"> :
     const button = document.createElement('button');
     button.classList.add('btn-show');
+    // "Voir plus" : 
     button.textContent = "Voir plus";
 
-    // addEventListener; afficher les items "restants" en fonction du MQ :
+
+    // AFFICHER :
+    
+    // Variable d’état "replié" (false) :
+    let expanded = false;
+
+    // addEventListener; Variable d’état "déployé" (True) :
     button.addEventListener('click', function() {
-        // - Mobile, afficher du 3ème au 6ème item de la catégorie (items aux indices 2 à 5) :
-        if (window.matchMedia("(max-width: 767px)").matches) {
-            for (let i = 2; i < 6 && i < items.length; i++) {
-                items[i].classList.remove('hidden');
+        if (!expanded) {
+
+            if (isMobile) {
+                // Affiche les items indices 2..5 (3 à 6):
+                for (let i = 2; i < 6 && i < items.length; i++) {
+                    items[i].classList.remove('hidden');
+                }
+            } else if (isTablet) {
+                // Affiche les items indices 4..5 (5 à 6):
+                for (let i = 4; i < 6 && i < items.length; i++) {
+                    items[i].classList.remove('hidden');
+                }
             }
-        // - Tablette, afficher le 5ème et le 6ème item de la catégorie (items aux indices 4 et 5) :
-        } else if (window.matchMedia("(min-width: 768px) and (max-width: 1024px)").matches) {
-            for (let i = 4; i < 6 && i < items.length; i++) {
-                items[i].classList.remove('hidden');
-            }
+
+            // Renommer bouton "Voir moins" :
+            button.textContent = "Voir moins";
+            expanded = true;
+
+        
+        // RE-CACHER :
         } else {
-            // Par défaut, afficher tous les items cachés :
-            const hiddenItems = section.querySelectorAll('.item.hidden');
-            hiddenItems.forEach(item => item.classList.remove('hidden'));
+            if (isMobile) {
+                for (let i = 2; i < 6 && i < items.length; i++) {
+                    items[i].classList.add('hidden');
+                }
+            } else if (isTablet) {
+                for (let i = 4; i < 6 && i < items.length; i++) {
+                    items[i].classList.add('hidden');
+                }
+            }
+            // Renommer bouton "Voir plus" :
+            button.textContent = "Voir plus";
+            expanded = false;
         }
-        // Masquer le bouton une fois les items affichés :
-        button.style.display = 'none';
     });
 
     // Ajouter le bouton à <div class="container container-flex"> :
@@ -865,3 +920,4 @@ function createShowMoreButton(section) {
 
     return button;
 }
+
