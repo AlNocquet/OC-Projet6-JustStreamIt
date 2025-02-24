@@ -28,6 +28,7 @@ html {
 
 .btn-show {
     background: #FA0B0B;
+    font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
     cursor: pointer;
     border: none; 
     color: white;
@@ -151,6 +152,7 @@ html {
         background-color: #FA0B0B;
         color: white;
         border: none;
+        font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
         font-size: 22px;
         font-weight: normal;
         width: 166px;
@@ -203,7 +205,7 @@ html {
     
     .item img:hover {
         /* Scale hover*/
-        transform: scale(101%);
+        transform: scale(1.01);
     }
 
     .detail {
@@ -468,6 +470,7 @@ html {
     }
 
     .btn-close {
+        font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
         font-size: 16px;
         font-weight: bold;
         cursor: pointer;
@@ -491,8 +494,6 @@ html {
 }
 
 
-
-
 /************************************************************************/
 /******************************* TABLET *******************************/
 @media (min-width: 768px) and (max-width: 1024px) {
@@ -511,8 +512,8 @@ html {
         flex-direction: column;
         justify-content: center;
         align-items: flex-start;
-        width: 700px; /* Largeur fixe */
-        margin-top: 15px;
+        width: 788px; /* Largeur fixe */
+        height: auto;
         padding: 20px;
     }
 
@@ -529,11 +530,7 @@ html {
         width: 619px;
     }
     
-    .logo {
-        display: flex;
-    }
-    
-    .title-banner{
+    .banner{
         display: flex;
     }
 
@@ -542,7 +539,7 @@ html {
         font-weight: 600;
         font-size: 40px;
         line-height: 59.28px;
-        letter-spacing: 0%;
+        letter-spacing: 0;
         text-indent: 40px;
     }
 
@@ -577,7 +574,7 @@ html {
         font-size: 40px;
         font-weight: 600;
         line-height: 59.28px;
-        letter-spacing: 0%;
+        letter-spacing: 0;
         text-align: left;
         height: 32px;
         width: 343px;
@@ -592,7 +589,7 @@ html {
         font-size: 24px;
         font-weight: 200;
         line-height: 35.57px;
-        letter-spacing: 0%;
+        letter-spacing: 0;
         text-align: justify;
         margin : 0px;
     }
@@ -603,6 +600,7 @@ html {
         background-color: red;
         color: white;
         border: none;
+        font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
         font-size: 22px;
         font-weight: normal;
         height: 49px;
@@ -717,6 +715,9 @@ html {
     }
 
     .side-by-side-select {
+        appearance: none; /* pour enlever le style natif sur certains navigateurs */
+        background: url('style/icone.png') no-repeat right center;
+        background-position: calc(100% - 20px) center;
         border-width: 1px;
         background-position: calc(100% - 20px) center;
         font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
@@ -729,6 +730,450 @@ html {
     }
 
 
+    /* Management of Modal  */
+
+    .modal {
+        display: none; 
+        justify-content: center;
+        align-items: center;  
+        position: fixed;
+        z-index: 9999;
+        left: 50%;
+        top: 0%;
+        width: 506px; /* Largeur spécifiée */
+        height: auto; /* 2684px; Hauteur spécifiée */
+        border: 6px solid #000000; 
+        background-color: #ffffff;
+        transform: translate(-50%, 0); /* Centrage horizontal */
+    }
+
+    .modal-content {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        padding: 10px 20px;
+        text-align: center;
+        box-sizing: border-box;
+    }
+
+    .modal-grid-container {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        grid-template-areas: 
+            "a b" 
+            "c c"
+            "d d"
+            "e e"
+            "f f"; 
+        grid-auto-rows: min-content;
+        justify-items: stretch;
+        width: 423px;
+        max-width: 423px;
+    }
+
+    /* Styles pour les lignes d'informations, alignement de chaque ligne */
+
+    .info-row {
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .info-row > div {
+        text-align: left;
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 35px;
+        margin-inline-end: 10px;
+    }
+
+    .space {
+        margin-top: 15px; /* Ajout d'espace pour séparer les sections */
+    }
+
+    /* Style de la section des infos principales du film */
+
+    .modal-main-infos-movie {
+        grid-area: a;
+        display: flex;
+        flex-direction: column; /* Flex column : Aligner verticalement les éléments */
+        text-align: left;
+        width: 423px;
+        max-width: 423px;
+    }
+
+    /* Titre du film */
+    .title::first-line {
+        font-size: 48px; /* Taille pour la première ligne uniquement */
+        font-weight: 600;
+        line-height: 71.14px;
+    }
+
+    .title {
+        font-size: 28px; /* Taille par défaut pour toutes les lignes */
+    }
+
+    /* Année, Catégorie, PG Rating, Temps, Pays, imdb-score, box-office */
+    .year, 
+    .category, 
+    .age-pg, 
+    .time, 
+    .country, 
+    .imdb-score, 
+    .box-office { 
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 35.57px;
+    }
+
+    /* label "Réalisé par" */
+    .label {
+        font-size: 24px;
+        font-weight: 600;
+        line-height: 35.57px;
+        margin-top: 25px;
+    }
+
+    /* Réalisateur */
+    .director {
+        font-size: 24px;
+        font-weight: 300;
+        line-height: 35.57px;
+    }
+
+    /* Image du film */
+    .modal-image-movie {
+        grid-area: d;
+        width: 409px;
+        height: 602px;
+    }
+
+    .modal-image-movie img{
+        grid-area: d;
+        display: grid;
+        justify-content: center;
+        align-items: center;
+        width: 90%;
+        height: auto;
+        margin: 35px;
+    }
+
+    /* Résumé du film */
+    .modal-summary {
+        grid-area: c;
+        font-size: 24px;
+        font-weight: 300;
+        line-height: 35.57px;
+        text-align: justify;
+        height: fit-content; /* Modal s'ajuste au résumé */
+        /*height: 587px;*//* Hauteur spécifiée */
+        width: 423px; /* Largeur spécifiée */
+        max-height: 587px;
+        max-width: 423px;
+        margin-top: 15px;
+    }
+
+    /* "Avec" */
+    .modal-with {
+        grid-area: e;
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 29.64px;
+        text-align: left;
+        margin-top: 25px;
+    }
+
+    /* Noms des acteurs */
+    .modal-actors {
+        grid-area: f;
+        text-align: justify;
+        font-size: 20px;
+        font-weight: 300;
+        line-height: 29.64px;
+        height: fit-content; /* Modal s'ajuste à modal-actors */
+        width: 423px; /* Largeur spécifiée */
+        max-height: 319px; /* Hauteur spécifié */
+        max-width: 423px; /* Largeur spécifiée */
+        overflow-y: auto;  /* Scroll si besoin */
+    }
+
+    /* Bouton X fermeture Modal */
+
+    .btn-close {
+        display: none;
+    }
+
+    .container-flex-MQ {
+        grid-area: b;
+        display: flex;
+        justify-content: right;
+    }
+
+    .icon-close {
+        display: inline-block;
+        width: 32px;
+        height: 32px;
+        background: url("style/icone-close.png") no-repeat center center;
+        background-size: contain;
+        margin-top: 15px;
+    }
+
+}
+
+
+
+    /************************************************************************/
+    /******************************* MOBILE *******************************/
+    @media (max-width: 767px) {
+
+
+    /* Site body management on desktop basis */
+
+    body {
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .main-container {
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+        width: 456px; /* Largeur fixe */
+        height: auto; /* 5487px; Hauteur fixe */
+        padding-top: 20px;
+        padding-bottom: 20px;
+    }
+
+
+    /* Management of site banner */
+
+    header {
+        background-color: #61787e;
+        border: 1px solid #000000;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 20px auto 0 auto; /* Centre le header */
+        width: 329px;
+    }
+
+
+    h1 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 600;
+        font-size: 32px;
+        line-height: 47.42px;
+        letter-spacing: 0%;
+        margin-bottom: 10px;
+        /*width: 101px;*/
+        /*height: 47px;*/
+    }
+
+
+    /* Passage en mode colonne unique pour .best-movie */
+    .best-movie {
+        border: 6px solid #000000;
+        display: grid;
+        grid-template-columns: 1fr; /* Une seule colonne */
+        /* Définition de 4 lignes :
+        - Les trois premières avec leur hauteur naturelle (auto)
+        - La 4ème prend tout l'espace restant (1fr) */
+        grid-template-rows: auto auto auto 1fr;
+        width: 329px;
+        height: 463px;
+        box-sizing: border-box;
+        margin: 0 auto; /* Centre la grille */
+        justify-items: center; /* Centre par défaut tous les éléments */
+    }
+
+    /* Chaque élément sur une colonne */
+    .best-movie-img,
+    .best-movie-title h2,
+    .best-movie-summary p,
+    .best-movie-details-button {
+        grid-column: 1;
+    }
+
+    .best-movie-img {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 5px 0 auto;
+    }
+
+    .best-movie-img img {
+        width: 298px;
+        height: 241px;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    /* Pour le titre et le résumé, annuler le centrage de la grille */
+    .best-movie-title h2,
+    .best-movie-summary p {
+        justify-self: start;
+    }
+
+    .best-movie-title h2 {
+        width: 293px;
+        height: 47px;
+        font-weight: 600;
+        font-size: 32px;
+        line-height: 47.42px;
+        letter-spacing: 0%;
+        text-align: left;
+        margin: 0;
+    }
+
+    .best-movie-summary p {
+        width: 293px;
+        height: 114px;
+        font-size: 16px;
+        font-weight: 200;
+        line-height: 23.71px;
+        letter-spacing: 0;
+        text-align: justify;
+        margin: 0;
+    }
+
+    .best-movie-details-button {
+        font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
+        background-color: red;
+        color: white;
+        border: none;
+        font-size: 16px;
+        font-weight: 400;
+        height: 40px;
+        width: 91px;
+        border-radius: 25px;
+        cursor: pointer;
+        text-align: center;
+        text-decoration: none;
+        padding: 2px 4px;
+        align-self: end; /* Positionne le bouton en bas de son espace de grille */
+    }
+
+    .best-movie-details-button:hover {
+        background-color: darkred;
+    }
+
+
+    /* Management of items from Categories */
+
+    .container .item-grid {
+        width: 618px;
+    }
+
+    .item-grid {
+        display: grid;
+        grid-template-columns: 329px;
+        gap: 35px;
+        justify-content: center;
+    }
+
+    .item {
+        position: relative;
+        text-align: center;
+        height: 319px;
+        width: 329px;
+    }
+
+    .item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .item img:hover {
+        /* Scale hover*/
+        transform: scale(101%);
+    }
+
+    .detail {
+        position: absolute;
+        top: 35px;
+        width: 90%;
+        height: 131px;
+        background-color: #00000075;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 1rem;
+    }
+   
+    .detail h3 {
+        color: white;
+        text-align: left;
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 35.57px;
+        letter-spacing: 0%;
+        overflow: hidden;
+        text-overflow: ellipsis; /* Ajoute des "..." si le texte est trop long */
+        white-space: nowrap; /* Empêche le retour à la ligne */
+        margin: 0;
+    }
+    
+    .detail .btn {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        background-color: #2D2C2C;
+        color: white;
+        font-size: 16px;
+        font-weight: normal;
+        cursor: pointer;
+        border: none;
+        border-radius: 25px;    
+        width: 105px;
+        height: 32px;
+        padding: 2px 4px;
+        gap: 10px;
+    }
+
+    .detail .btn:hover {
+        background-color: #242323;
+    }
+
+    
+    /* Management of "Dropdown" category */
+
+    .section-container {
+        border-width: 1px;
+    }
+
+    .top-row h1 {
+        display: none;
+    }
+
+    .top-row {
+        text-align: center;
+    }
+    
+    .side-by-side-select {
+        appearance: none; /* pour enlever le style natif sur certains navigateurs */
+        background: url('style/icone.png') no-repeat right center;
+        background-position: calc(100% - 20px) center;
+        display: block;    /* Passage en bloc */
+        margin: 50px auto 0 auto; /* Centré horizontalement */
+        border-width: 1px;
+        width: 300px;
+        border-width: 1px;
+        font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
+        text-indent: 10px;
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 47.42px;
+        letter-spacing: 0%;
+        margin-bottom: 15px;
+        width: 285px;
+        height: 68px;
+    }
+
+    
     /* Management of Modal  */
 
     .modal {
@@ -916,12 +1361,5 @@ html {
         margin-top: 15px;
     }
 
-}
 
-
-
-    /************************************************************************/
-    /******************************* MOBILE *******************************/
-    @media (max-width: 767px) {
-  
 }
