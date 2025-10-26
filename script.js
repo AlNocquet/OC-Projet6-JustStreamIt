@@ -827,97 +827,115 @@ function createModalCloseButton_X(modal) {
 
 // Création et fonction du bouton "Voir plus" / "Voir moins":
 function createShowButton(section) {
+  // Récupérer tous les films de la catégorie <class="item"> :
+  const items = section.querySelectorAll('.item');
 
-    // Récupérer tous les films de la catégorie <class="item"> :
-    const items = section.querySelectorAll('.item');
+  // Créer le conteneur et le bouton
+  const containerFlex = document.createElement('div');
+  containerFlex.classList.add('container', 'container-flex');
 
-    // MQ définitions : 
-    const isMobile = window.matchMedia("(max-width: 767px)").matches;
-    const isTablet = window.matchMedia("(min-width: 768px) and (max-width: 1024px)").matches;
+  const button = document.createElement('button');
+  button.classList.add('btn-show');
+  button.textContent = 'Voir plus';
 
-    // MASQUER :
-    if (isMobile) {
-        // Masquer les items 3 à 6 (indices 2..5) :
-        for (let i = 2; i < 6 && i < items.length; i++) {
-            items[i].classList.add('hidden');
-        }
-    } else if (isTablet) {
-        // Masquer les 5e et 6e items (indices 4..5) :
-        for (let i = 4; i < 6 && i < items.length; i++) {
-            items[i].classList.add('hidden');
-        }
+  containerFlex.appendChild(button);
+  section.appendChild(containerFlex);
+
+  // MatchMedia (responsive sans reload)
+  const mqMobile  = window.matchMedia('(max-width: 767px)');
+  const mqTablet  = window.matchMedia('(min-width: 768px) and (max-width: 1024px)');
+  const mqDesktop = window.matchMedia('(min-width: 1281px)');
+
+  function mode() {
+    if (mqMobile.matches) return 'mobile';
+    if (mqTablet.matches) return 'tablet';
+    return 'desktopLike'; // >=1025 hors tablette stricte (y compris ≥1281)
+  }
+
+  function showRange(start, end) {
+    for (let i = start; i < end && i < items.length; i++) {
+      items[i].classList.remove('hidden');
+    }
+  }
+  function hideRange(start, end) {
+    for (let i = start; i < end && i < items.length; i++) {
+      items[i].classList.add('hidden');
+    }
+  }
+  function showAll() { items.forEach(el => el.classList.remove('hidden')); }
+
+  let expanded = false;
+
+  function applyState() {
+    const m = mode();
+
+    if (m === 'mobile') {
+      // Repli par défaut : cacher items 3..6 (indices 2..5)
+      hideRange(2, 6);
+      // Bouton visible si quelque chose est caché
+      const hiddenCount = Array.from(items).slice(2, 6).filter(el => el.classList.contains('hidden')).length;
+      if (hiddenCount > 0) {
+        button.classList.remove('hidden');
+        button.textContent = expanded ? 'Voir moins' : 'Voir plus';
+      } else {
+        button.classList.add('hidden');
+      }
+    } else if (m === 'tablet') {
+      // Repli par défaut : cacher items 5..6 (indices 4..5)
+      hideRange(4, 6);
+      const hiddenCount = Array.from(items).slice(4, 6).filter(el => el.classList.contains('hidden')).length;
+      if (hiddenCount > 0) {
+        button.classList.remove('hidden');
+        button.textContent = expanded ? 'Voir moins' : 'Voir plus';
+      } else {
+        button.classList.add('hidden');
+      }
     } else {
-        // Desktop :
-        return null;
+      // Desktop-like : tout afficher et bouton masqué
+      showAll();
+      button.classList.add('hidden'); // En plus, ton CSS masque ≥1281px
+      expanded = false;               // état neutre
     }
+  }
 
-    // Vérifier s’il reste des items cachés (si catégorie que 2 films par ex.) :
-    let hiddenItems = Array.from(items).filter(item => item.classList.contains('hidden'));
-    if (hiddenItems.length === 0) {
-        // Aucun item masqué, pas de bouton :
-        return null;
-    }
+  // Etat initial selon le viewport courant (même si la page a été chargée en desktop)
+  applyState();
 
-    // Créer le conteneur <div class="container container-flex"> :
-    const containerFlex = document.createElement('div');
-    containerFlex.classList.add('container', 'container-flex');
-
-    // Créer le bouton "Voir..." : <button class="btn-show"> :
-    const button = document.createElement('button');
-    button.classList.add('btn-show');
-    // "Voir plus" : 
-    button.textContent = "Voir plus";
-
-
-    // AFFICHER :
-    
-    // Variable d’état "replié" (false) :
-    let expanded = false;
-
-    // addEventListener; Variable d’état "déployé" (True) :
-    button.addEventListener('click', function() {
-        if (!expanded) {
-
-            if (isMobile) {
-                // Affiche les items indices 2..5 (3 à 6):
-                for (let i = 2; i < 6 && i < items.length; i++) {
-                    items[i].classList.remove('hidden');
-                }
-            } else if (isTablet) {
-                // Affiche les items indices 4..5 (5 à 6):
-                for (let i = 4; i < 6 && i < items.length; i++) {
-                    items[i].classList.remove('hidden');
-                }
-            }
-
-            // Renommer bouton "Voir moins" :
-            button.textContent = "Voir moins";
-            expanded = true;
-
-        
-        // RE-CACHER :
-        } else {
-            if (isMobile) {
-                for (let i = 2; i < 6 && i < items.length; i++) {
-                    items[i].classList.add('hidden');
-                }
-            } else if (isTablet) {
-                for (let i = 4; i < 6 && i < items.length; i++) {
-                    items[i].classList.add('hidden');
-                }
-            }
-            // Renommer bouton "Voir plus" :
-            button.textContent = "Voir plus";
-            expanded = false;
-        }
+  // S'adapter à la vue adaptive sans recharger
+  [mqMobile, mqTablet, mqDesktop].forEach(mq => {
+    mq.addEventListener('change', () => {
+      // Quand on change de breakpoint, on repasse en état replié par défaut (si mobile/tablet)
+      expanded = false;
+      applyState();
     });
+  });
 
-    // Ajouter le bouton à <div class="container container-flex"> :
-    containerFlex.appendChild(button);
+  // Toggle au clic
+  button.addEventListener('click', function () {
+    const m = mode();
+    if (!expanded) {
+      if (m === 'mobile') {
+        // Afficher 3..6
+        showRange(2, 6);
+      } else if (m === 'tablet') {
+        // Afficher 5..6
+        showRange(4, 6);
+      }
+      button.textContent = 'Voir moins';
+      expanded = true;
+    } else {
+      if (m === 'mobile') {
+        hideRange(2, 6);
+      } else if (m === 'tablet') {
+        hideRange(4, 6);
+      }
+      button.textContent = 'Voir plus';
+      expanded = false;
+      section.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    }
+  });
 
-    // Ajouter <div class="container container-flex"> à la section :
-    section.appendChild(containerFlex);
-
-    return button;
+  // Compatibilité avec appelant existant
+  return button;
 }
 
