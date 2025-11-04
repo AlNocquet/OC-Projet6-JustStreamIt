@@ -127,7 +127,7 @@ async function getTop6Movies() {
             const detailedMovies = await Promise.all(detailedMoviesPromises);
 
             // Afficher :
-            displayMovies(detailedMovies, "Top films toutes catégories");
+            displayMovies(detailedMovies, "Films les mieux notés");
         } else {
             console.log("Aucun film trouvé");
         }
@@ -491,7 +491,7 @@ function buildOtherCategorySection() {
     // <h1> Autres : (non dynamique) </h1> :
     const h1 = document.createElement("h1");
     h1.textContent = "Autres :";
-    topRow.appendChild(h1);
+    topRow.insertBefore(h1, topRow.firstChild);
   
     // <div class="custom-select"> dans <div class="top-row"> pour gérer petit icone vert dans <select>:
     const customSelectContainer = document.createElement("div");
@@ -590,30 +590,48 @@ async function updateMoviesForGenre(select, section, moviesContainer) {
 // Fonction principale de création et d'affichage du modal :
 function createMovieModal(movieData) {
 
-    const modal = createModalSection(); // <section class="modal">
-    const modalContent = createModalContent(); // <div class="modal-content">
+  const modal = createModalSection(); // <section class="modal">
+  const modalContent = createModalContent(); // <div class="modal-content">
 
-    // <div class="modal-grid-container"> :
-    const modalGrid = createModalGrid();
-    // Ajout des différentes sections dans le modalGrid :
-    modalGrid.appendChild(createModalCloseButton_X(modal)); // Icone X pour fermer le modal
-    modalGrid.appendChild(createModalMainInfos(movieData)); // Informations principales du film
-    modalGrid.appendChild(createModalMovieImage(movieData)); // Image du film
-    modalGrid.appendChild(createModalMovieSummary(movieData)); // Résumé du film
-    modalGrid.appendChild(createModalActorsSection(movieData)); // Acteurs du film
+  // <div class="modal-grid-container"> :
+  const modalGrid = createModalGrid();
+  // Ajout des différentes sections dans le modalGrid :
+  modalGrid.appendChild(createModalCloseButton_X(modal)); // Icone X pour fermer le modal
+  modalGrid.appendChild(createModalMainInfos(movieData)); // Informations principales du film
+  modalGrid.appendChild(createModalMovieImage(movieData)); // Image du film
+  modalGrid.appendChild(createModalMovieSummary(movieData)); // Résumé du film
+  modalGrid.appendChild(createModalActorsSection(movieData)); // Acteurs du film
 
-    // Ajout de <div class="modal-grid-container"> à <div class="modal-content">
-    modalContent.appendChild(modalGrid);
+  // Ajout de <div class="modal-grid-container"> à <div class="modal-content">
+  modalContent.appendChild(modalGrid);
 
-    // Ajout de <div class="container container-flex"> à <div class="modal-content"> :
-    modalContent.appendChild(createModalCloseButton(modal)); // Bouton pour fermer le modal
+  // Ajout de <div class="container container-flex"> à <div class="modal-content"> :
+  modalContent.appendChild(createModalCloseButton(modal)); // Bouton pour fermer le modal
 
-    // Ajout des éléments à <section class="modal"> :
-    modal.appendChild(modalContent);
+  // Ajout des éléments à <section class="modal"> :
+  modal.appendChild(modalContent);
 
-    // Ajout de <section class="modal"> au body :
-    document.body.appendChild(modal);
-    modal.style.display = 'flex'; // Force l'affichage du modal qui est en display none par défaut en CSS
+  // --- Ajout de <section class="modal"> au body ---
+  document.body.appendChild(modal);
+  modal.style.display = "flex"; // force l'affichage du modal
+
+  // -------------------------------------------------
+  // 🔒 Blocage parfait du scroll du fond
+  // -------------------------------------------------
+
+  // 1) Ajoute la classe de lock (utile si CSS .modal-open gère pointer-events)
+  document.body.classList.add("modal-open");
+
+  // 2) Enregistre la position de scroll actuelle
+  const y = window.scrollY;
+  document.body.dataset.scrollY = String(y);
+
+  // 3) Fige le body pour éviter tout mouvement du fond
+  document.body.style.position = "fixed";
+  document.body.style.top = `-${y}px`;
+  document.body.style.left = "0";
+  document.body.style.right = "0";
+  document.body.style.width = "100%";
 }
 
 // Création de <section class="modal">
@@ -650,60 +668,63 @@ function createModalMainInfos(movieData) {
     title.textContent = movieData.title;
     mainInfos.appendChild(title);
 
-    // 2ème ligne : YEAR et CATEGORY
+    // 2) YEAR + CATEGORY
     const infoRow2 = document.createElement("div");
     infoRow2.className = "info-row";
 
     const year = document.createElement("div");
     year.className = "year";
-    year.textContent = `${movieData.year} -`; // Ajout du trait d'union
+    year.textContent = `${movieData?.year ?? "N/A"}  -`;
     infoRow2.appendChild(year);
 
     const category = document.createElement("div");
     category.className = "category";
-    category.textContent = movieData.genres.join(", ");
+    const genres = Array.isArray(movieData?.genres) ? movieData.genres.join(", ") : (movieData?.genres ?? "N/A");
+    category.textContent = genres;
     infoRow2.appendChild(category);
 
     mainInfos.appendChild(infoRow2);
 
-    // 3ème ligne : AGE-PG, TIME, COUNTRY
+    // 3) AGE-PG + TIME + COUNTRY
     const infoRow3 = document.createElement("div");
     infoRow3.className = "info-row";
 
     const agePg = document.createElement("div");
     agePg.className = "age-pg";
-    const rating = movieData.rated;
-    // Si la note PG est "Not rated or unkown rating", afficher "N/A" pour gestion espace Modal
-    agePg.textContent = `PG: ${rating === "Not rated or unkown rating" ? "N/A" : rating} -`;  
+    const rawRating = movieData?.rated;
+    const rating = (rawRating === "Not rated or unkown rating" || rawRating === "Not rated or unknown rating" || !rawRating) ? "N/A" : rawRating;
+    agePg.textContent = `PG: ${rating} -`;
     infoRow3.appendChild(agePg);
 
     const time = document.createElement("div");
     time.className = "time";
-    time.textContent = `${movieData.duration} minutes -`;  
+    const duration = Number(movieData?.duration);
+    time.textContent = `Durée : ${Number.isFinite(duration) ? `${duration} minutes` : "N/A"} -`;
     infoRow3.appendChild(time);
 
     const country = document.createElement("div");
     country.className = "country";
-    country.textContent = `${movieData.countries.join(", ") || "N/A"}`;
+    const countries = Array.isArray(movieData?.countries) ? movieData.countries.join(", ") : (movieData?.countries ?? "");
+    country.textContent = countries || "N/A";
     infoRow3.appendChild(country);
 
     mainInfos.appendChild(infoRow3);
 
-    // 4ème ligne : IMDB-SCORE (Ajout manuel / 10)
+    // 4) IMDB-SCORE
     const imdbScore = document.createElement("div");
     imdbScore.className = "imdb-score";
-    const imdbScoreValue = movieData.imdb_score ? `${movieData.imdb_score} /10` : "N/A"; // (Valeur numérique, si = 0, False > donc pas || )
-    imdbScore.textContent = `IMDb Score : ${imdbScoreValue}`;
+    const imdbVal = (movieData?.imdb_score ?? null);
+    imdbScore.textContent = `IMDb : ${imdbVal !== null && imdbVal !== undefined ? `${imdbVal} /10` : "N/A"}`;
     mainInfos.appendChild(imdbScore);
 
-    // 5ème ligne : BOX OFFICE
+    // 5) BOX OFFICE (recettes mondiales)
     const boxOffice = document.createElement("div");
     boxOffice.className = "box-office";
-    const boxOfficeValue = movieData.worldwide_gross_income 
-        ? new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(movieData.worldwide_gross_income) 
+    const gross = Number(movieData?.worldwide_gross_income);
+    const boxText = Number.isFinite(gross)
+        ? new Intl.NumberFormat("fr-FR", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(gross)
         : "N/A";
-    // (Valeur numérique, si = 0, False > donc pas || )
-    boxOffice.textContent = `Box Office : ${boxOfficeValue}`;
+    boxOffice.textContent = `Recettes : ${boxText}`;
     mainInfos.appendChild(boxOffice);
 
     // Espace
@@ -711,20 +732,21 @@ function createModalMainInfos(movieData) {
     space.className = "space";
     mainInfos.appendChild(space);
 
-    // 6ème ligne : LABEL
+    // 6) LABEL
     const directorLabel = document.createElement("div");
     directorLabel.className = "label";
     directorLabel.textContent = "Réalisé par :";
     mainInfos.appendChild(directorLabel);
 
-    // 7ème ligne : DIRECTOR
+    // 7) DIRECTOR
     const director = document.createElement("div");
     director.className = "director";
-    director.textContent = movieData.directors.join(", ");
+    const directors = Array.isArray(movieData?.directors) ? movieData.directors.join(", ") : (movieData?.directors ?? "N/A");
+    director.textContent = directors || "N/A";
     mainInfos.appendChild(director);
 
     return mainInfos;
-}
+    }
 
 // Création de la partie de l'image du film :
 function createModalMovieImage(movieData) {
@@ -750,18 +772,46 @@ function createModalMovieImage(movieData) {
     return modalImage;
 }
 
+
 // Création de la partie Résumé du film :
 function createModalMovieSummary(movieData) {
+  const modalSummary = document.createElement("span");
+  modalSummary.className = "modal-summary";
 
-    // <span class="modal-summary"> (En dynamique)
-    const modalSummary = document.createElement("span");
-    modalSummary.className = "modal-summary";
-    // Si résumé existe (TRUE) et n'est pas une chaîne vide après trim, égal à movieData.long_description :
-    modalSummary.textContent = (movieData.long_description && movieData.long_description.trim()) 
-        ? movieData.long_description 
-        : "Résumé non disponible"; // Sinon message "Résumé non disponible"
-    return modalSummary;
+  const rawText = movieData.long_description || movieData.description || "";
+
+  // Fonction de validation : texte réellement informatif
+  const isValidText = (s) => {
+    if (typeof s !== "string") return false;
+    const cleaned = s.trim();
+
+    // Liste des textes à ignorer (placeholders de l'API)
+    const invalidPlaceholders = [
+      "add a plot >>",
+      "add a plot",
+      "no overview",
+      "not available",
+      "n/a",
+      "|",
+      "-",
+      "—",
+    ];
+
+    return (
+      cleaned.length > 0 &&
+      !/^[\p{P}\p{S}\s]+$/u.test(cleaned) && // pas que ponctuation/espaces
+      !invalidPlaceholders.includes(cleaned.toLowerCase())
+    );
+  };
+
+  const summaryText = isValidText(rawText)
+    ? rawText.trim()
+    : "Résumé non disponible";
+
+  modalSummary.textContent = summaryText;
+  return modalSummary;
 }
+
 
 // Création de la partie des acteurs du film :
 function createModalActorsSection(movieData) {
@@ -795,6 +845,7 @@ function createModalCloseButton(modal) {
     btnClose.textContent = "Fermer";
 
     btnClose.addEventListener("click", () => {
+        document.body.classList.remove('modal-open');
         modal.remove();
     });
 
@@ -804,22 +855,68 @@ function createModalCloseButton(modal) {
 
 // Création du bouton de fermeture (Tablette/Mobile)
 function createModalCloseButton_X(modal) {
+  // <div class="container container-flex-MQ"> :
+  const mobileContainer = document.createElement("div");
+  mobileContainer.className = "container container-flex-MQ";
 
-    // <div class="container container-flex-MQ"> :
-    const mobileContainer = document.createElement("div");
-    mobileContainer.className = "container container-flex-MQ";
-    
-    // <span class="icon-close"> Icone X (CSS) </span> :
-    const iconClose = document.createElement("span");
-    iconClose.className = "icon-close"; 
-  
-    // addEventListener Fermeture Modal avec X :
-    iconClose.addEventListener("click", () => {
-        modal.remove();
-    });
-  
-    mobileContainer.appendChild(iconClose);
-    return mobileContainer;
+  // <span class="icon-close"> Icone X (CSS) </span> :
+  const iconClose = document.createElement("span");
+  iconClose.className = "icon-close";
+
+  // Accessibilité et clavier
+  iconClose.setAttribute("role", "button");
+  iconClose.setAttribute("aria-label", "Fermer la modale");
+  iconClose.setAttribute("tabindex", "0");
+
+  // --- helper: fermeture + déblocage du fond ---
+  const closeModal = () => {
+    // retire la modale du DOM
+    modal.remove();
+
+    // 1) retire la classe de lock (overflow hidden + pointer-events)
+    document.body.classList.remove("modal-open");
+
+    // 2) si tu utilises un lock "parfait" via body fixed (optionnel)
+    //    (à appliquer à l’ouverture : stocker scrollY dans data-scroll-y et fixer le body)
+    const savedY = parseInt(document.body.dataset.scrollY || "0", 10);
+    document.body.style.position = "";
+    document.body.style.top = "";
+    document.body.style.left = "";
+    document.body.style.right = "";
+    document.body.style.width = "";
+    delete document.body.dataset.scrollY;
+    // restaure la position de scroll
+    window.scrollTo(0, savedY);
+
+    // 3) retire le listener clavier
+    document.removeEventListener("keydown", onEsc);
+  };
+
+  // Fermeture via clavier (Escape)
+  const onEsc = (e) => {
+    if (e.key === "Escape") {
+      e.preventDefault();
+      closeModal();
+    }
+  };
+  document.addEventListener("keydown", onEsc);
+
+  // Fermeture via clic sur l'icône
+  iconClose.addEventListener("click", (e) => {
+    e.preventDefault();
+    closeModal();
+  });
+
+  // Fermeture via Enter / Space sur l'icône
+  iconClose.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      closeModal();
+    }
+  });
+
+  mobileContainer.appendChild(iconClose);
+  return mobileContainer;
 }
 
 
@@ -938,4 +1035,6 @@ function createShowButton(section) {
   // Compatibilité avec appelant existant
   return button;
 }
+
+createModalMainInfos(movieData)
 
