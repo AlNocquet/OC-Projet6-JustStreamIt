@@ -10,6 +10,8 @@
         display: none;
 }
 
+.is-hidden { display: none !important; }
+
 /* ---------- Corps & conteneur principal (Mobile-first) ---------- */
 
 /* Site body management — mobile */
@@ -128,7 +130,7 @@ header {
         background-color: red;
         color: white;
         border: none;
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 400;
         height: 40px;
         width: 91px;
@@ -202,18 +204,19 @@ header {
 }
 
 .detail .btn {
+        font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
         position: absolute;
         bottom: 20px;
         right: 20px;
         background-color: #2D2C2C;
         color: white;
-        font-size: 14px;
+        font-size: 12px;
         font-weight: bolder;
         cursor: pointer;
         border: none;
         border-radius: 25px;    
-        width: 105px;
-        height: 32px;
+        width: 100px;
+        height: 30px;
         padding: 2px 4px;
         gap: 10px;
 }
@@ -221,6 +224,46 @@ header {
 .detail .btn:hover {
         background-color: #242323;
 }
+
+
+/* Centrage du conteneur du bouton */
+.container-flex {
+  display: flex;
+  justify-content: center;   /* centre horizontalement le bouton */
+  align-items: center;       /* aligne verticalement si besoin */
+  width: 100%;
+  margin-top: 12px;          /* petit espace au-dessus du bouton */
+}
+
+
+/* Boutons Voir plus / Voir moins */
+.btn-show,
+.btn-hide,
+button.btn-show,
+button.btn-hide,
+a.btn-show,
+a.btn-hide {
+        font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
+        background-color: red;
+        color: white;
+        border: none;
+        font-size: 14px;
+        font-weight: 400;
+        height: 30px;
+        width: 165px;
+        border-radius: 30px;
+        cursor: pointer;
+        text-align: center;
+        position: center;
+        text-decoration: none;
+        padding: 2px 4px;
+        margin-top: 20px;
+        position: static;          /* forcer un positionnement normal */
+        display: inline-flex;      /* alignement du texte */
+        justify-content: center;
+        align-items: center;
+}
+        
 
 
 /* ---------- Catégorie Autres - Dropdown (Mobile) ---------- */
@@ -249,12 +292,12 @@ header {
         font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
         text-indent: 10px;
         font-weight: 600;
-        font-size: 24px;
+        font-size: 20px;
         line-height: 47.42px;
         letter-spacing: 0;
         margin-bottom: 15px;
-        width: 285px;
-        height: 68px;
+        width: 200px;
+        height: 48px;
 }
 
 
@@ -446,7 +489,7 @@ body.modal-open .modal * {
 
 
 /* =========================================================
-                        MEDIA QUERIES
+        MEDIA QUERIES
 ========================================================= */
 
 /* --------- TABLETTE (≥768px) --------- */
@@ -557,9 +600,9 @@ h1 {
         color: white;
         border: none;
         font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
-        font-size: 20px;
+        font-size: 18px;
         font-weight: normal;
-        width: 123px;
+        width: 100px;
         border-radius: 25px;
         cursor: pointer;
         float: right; 
@@ -616,13 +659,14 @@ h1 {
 }
 
 .detail .btn {
+        font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
         position: absolute;
         bottom: 20px; 
         right: 20px;
         background-color: rgba(46, 44, 44, 0.925);
         color: white;
-        font-size: 16px;
-        font-weight: normal;
+        font-size: 12px;
+        font-weight: bold;
         cursor: pointer;
         border: none;
         border-radius: 25px;    
@@ -654,34 +698,22 @@ h1 {
 }
 
 .side-by-side-select {
+        font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
         appearance: none;
         background: url('style/icone.png') no-repeat right center;
         background-position: calc(100% - 20px) center;
         border-width: 1px;
-        background-position: calc(100% - 20px) center;
-        font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
         font-weight: bolder;
-        font-size: 30px;
+        font-size: 24px;
         margin-top: 10px;
-        text-indent: 5px;
-        height: 60px;
-        width: 241px;
+        height: 45px;
+        width: 285px;
+        margin-top: 60px;
+        margin-left: 75px;
 }
 
-
-/* Boutons Voir plus / Voir moins — tailles inchangées */
-.btn-show,
-.btn-hide,
-button.btn-show,
-button.btn-hide,
-a.btn-show,
-a.btn-hide {
-        font-size: 16px;
-        height: 36px;
-        line-height: 36px;
-        min-width: 214px;
-        }
 }
+
 
 
 /* --------- DESKTOP (≥1281px) --------- */
@@ -787,12 +819,13 @@ h1 {
         color: white;
         border: none;
         font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
-        font-size: 22px;
+        font-size: 20px;
         font-weight: normal;
-        width: 160px;
-        height: 60px;
+        width: 142px;
+        height: 55px;
         border-radius: 25px;
         cursor: pointer;
+        margin-right: 35px;
 }
 
 .best-movie-details-button:hover {
@@ -894,9 +927,8 @@ h1 {
         background-position: calc(100% - 20px) center;
         font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
         margin-top: 60px;
-        text-indent: 5px;
-        width: 395px;
-        height: 60px;
+        width: 325px;
+        height: 50px;
         margin-left: 135px;
 }
 
@@ -908,8 +940,5 @@ button.btn-show,
 button.btn-hide,
 a.btn-show,
 a.btn-hide {
-    display: none !important;
-}
-
-
+    display: none !important;}
 }

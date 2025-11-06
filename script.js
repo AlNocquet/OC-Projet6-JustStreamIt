@@ -921,13 +921,12 @@ function createModalCloseButton_X(modal) {
 
 
 // MEDIA QUERIES - Tablette et Mobile
-
 // Création et fonction du bouton "Voir plus" / "Voir moins":
 function createShowButton(section) {
-  // Récupérer tous les films de la catégorie <class="item"> :
-  const items = section.querySelectorAll('.item');
+  // Récupérer toutes les cartes
+  let items = Array.from(section.querySelectorAll('.item'));
 
-  // Créer le conteneur et le bouton
+  // Conteneur + bouton
   const containerFlex = document.createElement('div');
   containerFlex.classList.add('container', 'container-flex');
 
@@ -938,103 +937,95 @@ function createShowButton(section) {
   containerFlex.appendChild(button);
   section.appendChild(containerFlex);
 
-  // MatchMedia (responsive sans reload)
+  // Breakpoints corrigés
   const mqMobile  = window.matchMedia('(max-width: 767px)');
-  const mqTablet  = window.matchMedia('(min-width: 768px) and (max-width: 1024px)');
+  const mqTablet  = window.matchMedia('(min-width: 768px) and (max-width: 1280px)');
   const mqDesktop = window.matchMedia('(min-width: 1281px)');
 
   function mode() {
     if (mqMobile.matches) return 'mobile';
     if (mqTablet.matches) return 'tablet';
-    return 'desktopLike'; // >=1025 hors tablette stricte (y compris ≥1281)
+    return 'desktop'; // >=1281
   }
 
-  function showRange(start, end) {
-    for (let i = start; i < end && i < items.length; i++) {
-      items[i].classList.remove('hidden');
-    }
+  // Utilitaires d’affichage — utiliser .is-hidden
+  function hideFrom(startIdx) {
+    items.forEach((el, i) => el.classList.toggle('is-hidden', i >= startIdx));
   }
-  function hideRange(start, end) {
-    for (let i = start; i < end && i < items.length; i++) {
-      items[i].classList.add('hidden');
-    }
+  function showAll() {
+    items.forEach(el => el.classList.remove('is-hidden'));
   }
-  function showAll() { items.forEach(el => el.classList.remove('hidden')); }
 
   let expanded = false;
 
-  function applyState() {
-    const m = mode();
+  function quotaForMode(m) {
+    if (m === 'mobile') return 2;
+    if (m === 'tablet') return 4;
+    return 6; // desktop
+  }
 
-    if (m === 'mobile') {
-      // Repli par défaut : cacher items 3..6 (indices 2..5)
-      hideRange(2, 6);
-      // Bouton visible si quelque chose est caché
-      const hiddenCount = Array.from(items).slice(2, 6).filter(el => el.classList.contains('hidden')).length;
-      if (hiddenCount > 0) {
-        button.classList.remove('hidden');
-        button.textContent = expanded ? 'Voir moins' : 'Voir plus';
-      } else {
-        button.classList.add('hidden');
-      }
-    } else if (m === 'tablet') {
-      // Repli par défaut : cacher items 5..6 (indices 4..5)
-      hideRange(4, 6);
-      const hiddenCount = Array.from(items).slice(4, 6).filter(el => el.classList.contains('hidden')).length;
-      if (hiddenCount > 0) {
-        button.classList.remove('hidden');
-        button.textContent = expanded ? 'Voir moins' : 'Voir plus';
-      } else {
-        button.classList.add('hidden');
-      }
-    } else {
-      // Desktop-like : tout afficher et bouton masqué
+  function applyState() {
+    // Si la liste a été regénérée, resynchroniser
+    items = Array.from(section.querySelectorAll('.item'));
+
+    const m = mode();
+    const quota = quotaForMode(m);
+
+    if (m === 'desktop') {
+      // Desktop : tout afficher, bouton masqué (et de toute façon caché par ton CSS desktop)
       showAll();
-      button.classList.add('hidden'); // En plus, ton CSS masque ≥1281px
-      expanded = false;               // état neutre
+      button.classList.add('is-hidden');
+      expanded = false;
+      return;
+    }
+
+    // Mobile / Tablet
+    if (items.length <= quota) {
+      // Pas assez d’items pour justifier un bouton
+      showAll();
+      button.classList.add('is-hidden');
+      expanded = false;
+      return;
+    }
+
+    button.classList.remove('is-hidden');
+
+    if (expanded) {
+      showAll();
+      button.textContent = 'Voir moins';
+    } else {
+      hideFrom(quota);            // ⟵ clé : recacher TOUT ≥ quota
+      button.textContent = 'Voir plus';
     }
   }
 
-  // Etat initial selon le viewport courant (même si la page a été chargée en desktop)
-  applyState();
-
-  // S'adapter à la vue adaptive sans recharger
-  [mqMobile, mqTablet, mqDesktop].forEach(mq => {
-    mq.addEventListener('change', () => {
-      // Quand on change de breakpoint, on repasse en état replié par défaut (si mobile/tablet)
-      expanded = false;
-      applyState();
-    });
-  });
-
-  // Toggle au clic
-  button.addEventListener('click', function () {
+  // Toggle
+  button.addEventListener('click', () => {
     const m = mode();
+    const quota = quotaForMode(m);
+
     if (!expanded) {
-      if (m === 'mobile') {
-        // Afficher 3..6
-        showRange(2, 6);
-      } else if (m === 'tablet') {
-        // Afficher 5..6
-        showRange(4, 6);
-      }
+      showAll();
       button.textContent = 'Voir moins';
       expanded = true;
     } else {
-      if (m === 'mobile') {
-        hideRange(2, 6);
-      } else if (m === 'tablet') {
-        hideRange(4, 6);
-      }
+      hideFrom(quota);            // ⟵ clé : recacher TOUT ≥ quota
       button.textContent = 'Voir plus';
       expanded = false;
       section.scrollIntoView({ block: 'start', behavior: 'smooth' });
     }
   });
 
-  // Compatibilité avec appelant existant
+  // S’adapter aux changements de breakpoint
+  [mqMobile, mqTablet, mqDesktop].forEach(mq => {
+    mq.addEventListener('change', () => {
+      expanded = false;  // retour mode réduit en changeant de tranche
+      applyState();
+    });
+  });
+
+  // Initial
+  applyState();
+
   return button;
 }
-
-createModalMainInfos(movieData)
-
