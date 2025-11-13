@@ -5,7 +5,7 @@ Le projet respecte strictement les spécifications du **Projet 6 OpenClassrooms*
 
 ---
 
-## ## Présentation
+## Présentation
 
 JustStreamIt permet de naviguer parmi les films en vedette, les films les mieux notés, des catégories prédéfinies, et une catégorie libre sélectionnée via un menu déroulant.  
 Une modale affiche toutes les informations détaillées d’un film.  
@@ -13,28 +13,28 @@ L’interface s’adapte parfaitement à toutes les tailles d’écran.
 
 ---
 
-## ## Fonctionnalités
+## Fonctionnalités
 
-### ### Meilleur film
+### Meilleur film
 - Film le mieux noté toutes catégories confondues  
 - Affiche, titre, résumé et bouton **Détails** ouvrant la modale
 
-### ### Films les mieux notés
+### Films les mieux notés
 - Top 6 des films IMDb (toutes catégories)  
 - Affichage en grille responsive
 
-### ### Catégorie 1 & Catégorie 2
+### Catégorie 1 & Catégorie 2
 - Deux genres prédéfinis  
 - Données récupérées dynamiquement via l’API
 
-### ### Catégorie libre
+### Catégorie libre
 - Menu déroulant listant tous les genres disponibles via l’API  
 - Rechargement instantané de l’affichage des films  
 - Comportement responsive repli/affichage conservé
 
 ---
 
-## ## Comportement Responsive
+## Comportement Responsive
 
 Selon les spécifications officielles :
 
@@ -48,7 +48,7 @@ Le bouton “Voir plus / Voir moins” apparaît uniquement sur mobile/tablette.
 
 ---
 
-## ## Fenêtre Modale
+## Fenêtre Modale
 
 La modale d’un film inclut :
 
@@ -68,7 +68,7 @@ La modale d’un film inclut :
 
 ---
 
-## ## Technologies
+## Technologies
 
 - **HTML5**  
 - **CSS3** (mise en page responsive manuelle)  
@@ -78,7 +78,7 @@ La modale d’un film inclut :
 
 ---
 
-## ## Installation — API OCMovies (backend)
+## Installation — API OCMovies (backend)
 
 Dépôt API :  
 https://github.com/OpenClassrooms-Student-Center/OCMovies-API-EN-FR
@@ -93,6 +93,7 @@ source env/bin/activate          # Windows : env\Scripts\activate
 pip install -r requirements.txt
 python manage.py create_db
 python manage.py runserver
+```
 
 
 L’API tourne sur :
@@ -115,11 +116,11 @@ JustStreamIt.html
 
 ### Maquettes
 
-![FIGMA models](style/Maquettes-FIGMA.png)
+![FIGMA models](screenshots/Maquettes-FIGMA.png)
 
 ### Desktop
 
-![Desktop view](style/desktop.png)
+![Desktop view](screenshots/home-desktop.png)
 
 ### Tablette & Mobile
 
@@ -130,6 +131,7 @@ JustStreamIt.html
 
 ## Structure du Projet
 
+```text
 OC-Projet6-JustStreamIt/
 ├── oswald/
 ├── screenshots/
@@ -146,6 +148,7 @@ OC-Projet6-JustStreamIt/
 ├── script.js
 ├── README.md
 └── README_FR.md
+```
 
 ---
 
