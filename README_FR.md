@@ -95,16 +95,15 @@ python manage.py create_db
 python manage.py runserver
 ```
 
-
 L’API tourne sur :
-
 http://localhost:8000
 
 ---
 
 ## Installation — JustStreamIt (frontend)
 
-git clone https://github.com/<your-username>/OC-Projet6-JustStreamIt.git
+git clone :
+https://github.com/<your-username>/OC-Projet6-JustStreamIt.git
 
 Ouvrir dans votre navigateur :
 
@@ -122,10 +121,13 @@ JustStreamIt.html
 
 ![Desktop view](screenshots/home-desktop.png)
 
-### Tablette & Mobile
+### Tablette
 
-![Mobile](screenshots/home-tablet.png)
-![Mobile](screenshots/home-mobile.png)
+![Tablet view](screenshots/home-tablet.png)
+
+### Mobile
+
+![Mobile view](screenshots/home-mobile.png)
 
 ---
 
