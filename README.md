@@ -113,11 +113,11 @@ JustStreamIt.html
 
 #### Models
 
-![FIGMA models](style/Maquettes-FIGMA.png)
+![FIGMA models](screenshots/Maquettes-FIGMA.png)
 
 #### Desktop
 
-![Desktop view](style/home-desktop.png)
+![Desktop view](screenshots/home-desktop.png)
 
 #### Tablet
 
