@@ -5,7 +5,7 @@ The project strictly follows the **OpenClassrooms Project 6** specifications: va
 
 ---
 
-## ## Overview
+### Overview
 
 JustStreamIt allows users to browse featured and top-rated movies, explore predefined categories, and dynamically load films from any genre using a dropdown selector.  
 A modal displays complete information for each movie.  
@@ -13,28 +13,28 @@ The interface adapts smoothly to all screen sizes.
 
 ---
 
-## ## Features
+### Features
 
-### ### Featured movie
+#### Featured movie
 - Best-rated film across all categories  
 - Poster, title, summary, and **Details** button opening the modal
 
-### ### Top-rated movies
+#### Top-rated movies
 - Top 6 IMDb movies (all categories combined)  
 - Responsive grid display
 
-### ### Category 1 & Category 2
+#### Category 1 & Category 2
 - Two predefined genres  
 - Dynamically fetched from the API
 
-### ### User-selected category
+#### User-selected category
 - Dropdown listing all API genres  
 - Reloads displayed movies instantly  
 - Responsive fold/unfold behavior preserved
 
 ---
 
-## ## Responsive Behavior
+### Responsive Behavior
 
 Per the official specifications:
 
@@ -48,7 +48,7 @@ The “Show more / Show less” button appears only on mobile/tablet.
 
 ---
 
-## ## Modal Window
+### Modal Window
 
 The movie modal includes:
 
@@ -68,7 +68,7 @@ The movie modal includes:
 
 ---
 
-## ## Tech Stack
+### Tech Stack
 
 - **HTML5**  
 - **CSS3** (handcrafted responsive layout)  
@@ -78,7 +78,7 @@ The movie modal includes:
 
 ---
 
-## ## Installation — OCMovies API (backend)
+### Installation — OCMovies API (backend)
 
 API repository:  
 https://github.com/OpenClassrooms-Student-Center/OCMovies-API-EN-FR
@@ -93,6 +93,7 @@ source env/bin/activate          # Windows: env\Scripts\activate
 pip install -r requirements.txt
 python manage.py create_db
 python manage.py runserver
+```
 
 
 The API will run at:
@@ -101,7 +102,7 @@ http://localhost:8000
 
 ---
 
-## Installation — JustStreamIt (frontend)
+### Installation — JustStreamIt (frontend)
 
 git clone https://github.com/<your-username>/OC-Projet6-JustStreamIt.git
 
@@ -111,22 +112,22 @@ JustStreamIt.html
 
 ---
 
-## Models
+#### Models
 
 ![FIGMA models](style/Maquettes-FIGMA.png)
 
-### Desktop
+#### Desktop
 
 ![Desktop view](style/desktop.png)
 
-### Tablet & Mobile
+#### Tablet & Mobile
 
 ![Mobile](screenshots/home-tablet.png)
 ![Mobile](screenshots/home-mobile.png)
 
 ---
 
-## Project Structure
+### Project Structure
 
 OC-Projet6-JustStreamIt/
 ├── oswald/
@@ -147,7 +148,7 @@ OC-Projet6-JustStreamIt/
 
 ---
 
-## Requirements Compliance
+### Requirements Compliance
 
 - Vanilla JavaScript only
 - 100% responsive (mobile/tablet/desktop)
