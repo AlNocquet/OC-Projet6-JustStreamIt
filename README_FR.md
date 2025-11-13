@@ -80,9 +80,10 @@ La modale d’un film inclut :
 
 ## Installation — API OCMovies (backend)
 
-Dépôt API :  
+Dépôt API :
+```text
 https://github.com/OpenClassrooms-Student-Center/OCMovies-API-EN-FR
-
+```
 
 Installation locale :
 
@@ -97,15 +98,18 @@ python manage.py runserver
 ```
 
 L’API tourne sur :
+```text
 http://localhost:8000
+```
 
 ---
 
 ## Installation — JustStreamIt (frontend)
 
-git clone :
-
+git clone : 
+```text
 https://github.com/<your-username>/OC-Projet6-JustStreamIt.git
+```
 
 Ouvrir dans votre navigateur :
 
