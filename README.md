@@ -95,7 +95,6 @@ python manage.py create_db
 python manage.py runserver
 ```
 
-
 The API will run at:
 
 http://localhost:8000
@@ -118,12 +117,15 @@ JustStreamIt.html
 
 #### Desktop
 
-![Desktop view](style/desktop.png)
+![Desktop view](style/home-desktop.png)
 
-#### Tablet & Mobile
+#### Tablet
 
-![Mobile](screenshots/home-tablet.png)
-![Mobile](screenshots/home-mobile.png)
+![Tablet view](screenshots/home-tablet.png)
+
+#### Mobile
+
+![Mobile view](screenshots/home-mobile.png)
 
 ---
 
