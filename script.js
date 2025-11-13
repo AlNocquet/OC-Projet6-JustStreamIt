@@ -616,10 +616,10 @@ function createMovieModal(movieData) {
   modal.style.display = "flex"; // force l'affichage du modal
 
   // -------------------------------------------------
-  // 🔒 Blocage parfait du scroll du fond
+  // Blocage du scroll du fond
   // -------------------------------------------------
 
-  // 1) Ajoute la classe de lock (utile si CSS .modal-open gère pointer-events)
+  // 1) Ajoute la classe de lock
   document.body.classList.add("modal-open");
 
   // 2) Enregistre la position de scroll actuelle
@@ -921,21 +921,44 @@ function createModalCloseButton_X(modal) {
 
 
 // MEDIA QUERIES - Tablette et Mobile
-// Création et fonction du bouton "Voir plus" / "Voir moins":
+// Création et fonction du bouton "Voir plus" / "Voir moins" (idempotent)
 function createShowButton(section) {
-  // Récupérer toutes les cartes
+  // --- Anti-duplication: si déjà initialisé et le bouton existe, on rafraîchit et on sort
+  const existingBtn = section.querySelector('.js-toggle-container .btn-show');
+  if (section.__toggleInit === true && existingBtn) {
+    // Réapplique l’état (par ex. après changement de catégorie)
+    if (typeof section.__toggleApply === 'function') section.__toggleApply();
+    return existingBtn;
+  }
+  // Cas où l’init flag est à true mais le bouton a été retiré du DOM (ex: innerHTML recréé)
+  if (section.__toggleInit === true && !existingBtn) {
+    section.__toggleInit = false; // on autorise une réinitialisation propre
+  }
+
+  // Récupérer toutes les cartes (sera réévalué dans applyState)
   let items = Array.from(section.querySelectorAll('.item'));
 
-  // Conteneur + bouton
-  const containerFlex = document.createElement('div');
-  containerFlex.classList.add('container', 'container-flex');
+  // Conteneur + bouton (réutilise s'il existe déjà)
+  let containerFlex = section.querySelector('.js-toggle-container');
+  let button;
 
-  const button = document.createElement('button');
-  button.classList.add('btn-show');
-  button.textContent = 'Voir plus';
-
-  containerFlex.appendChild(button);
-  section.appendChild(containerFlex);
+  if (containerFlex) {
+    button = containerFlex.querySelector('.btn-show');
+    if (!button) {
+      button = document.createElement('button');
+      button.classList.add('btn-show');
+      button.textContent = 'Voir plus';
+      containerFlex.appendChild(button);
+    }
+  } else {
+    containerFlex = document.createElement('div');
+    containerFlex.classList.add('container', 'container-flex', 'js-toggle-container');
+    button = document.createElement('button');
+    button.classList.add('btn-show');
+    button.textContent = 'Voir plus';
+    containerFlex.appendChild(button);
+    section.appendChild(containerFlex);
+  }
 
   // Breakpoints corrigés
   const mqMobile  = window.matchMedia('(max-width: 767px)');
@@ -945,10 +968,10 @@ function createShowButton(section) {
   function mode() {
     if (mqMobile.matches) return 'mobile';
     if (mqTablet.matches) return 'tablet';
-    return 'desktop'; // >=1281
+    return 'desktop'; // ≥1281
   }
 
-  // Utilitaires d’affichage — utiliser .is-hidden
+  // Utilitaires d’affichage (utilise .is-hidden)
   function hideFrom(startIdx) {
     items.forEach((el, i) => el.classList.toggle('is-hidden', i >= startIdx));
   }
@@ -965,14 +988,14 @@ function createShowButton(section) {
   }
 
   function applyState() {
-    // Si la liste a été regénérée, resynchroniser
+    // Resynchronise la liste si le DOM a été régénéré
     items = Array.from(section.querySelectorAll('.item'));
 
     const m = mode();
     const quota = quotaForMode(m);
 
     if (m === 'desktop') {
-      // Desktop : tout afficher, bouton masqué (et de toute façon caché par ton CSS desktop)
+      // Desktop : tout afficher, bouton masqué (et déjà caché par le CSS desktop)
       showAll();
       button.classList.add('is-hidden');
       expanded = false;
@@ -981,7 +1004,6 @@ function createShowButton(section) {
 
     // Mobile / Tablet
     if (items.length <= quota) {
-      // Pas assez d’items pour justifier un bouton
       showAll();
       button.classList.add('is-hidden');
       expanded = false;
@@ -989,40 +1011,44 @@ function createShowButton(section) {
     }
 
     button.classList.remove('is-hidden');
-
     if (expanded) {
       showAll();
       button.textContent = 'Voir moins';
     } else {
-      hideFrom(quota);            // ⟵ clé : recacher TOUT ≥ quota
+      hideFrom(quota);
       button.textContent = 'Voir plus';
     }
   }
 
-  // Toggle
-  button.addEventListener('click', () => {
-    const m = mode();
-    const quota = quotaForMode(m);
+  // Écouteurs — ne les attache qu’une fois
+  if (!button.dataset.bound) {
+    button.addEventListener('click', () => {
+      const m = mode();
+      const quota = quotaForMode(m);
 
-    if (!expanded) {
-      showAll();
-      button.textContent = 'Voir moins';
-      expanded = true;
-    } else {
-      hideFrom(quota);            // ⟵ clé : recacher TOUT ≥ quota
-      button.textContent = 'Voir plus';
-      expanded = false;
-      section.scrollIntoView({ block: 'start', behavior: 'smooth' });
-    }
-  });
-
-  // S’adapter aux changements de breakpoint
-  [mqMobile, mqTablet, mqDesktop].forEach(mq => {
-    mq.addEventListener('change', () => {
-      expanded = false;  // retour mode réduit en changeant de tranche
-      applyState();
+      if (!expanded) {
+        showAll();
+        button.textContent = 'Voir moins';
+        expanded = true;
+      } else {
+        hideFrom(quota);
+        button.textContent = 'Voir plus';
+        expanded = false;
+        section.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      }
     });
-  });
+    [mqMobile, mqTablet, mqDesktop].forEach(mq => {
+      mq.addEventListener('change', () => {
+        expanded = false;     // retour au mode réduit au changement de tranche
+        applyState();
+      });
+    });
+    button.dataset.bound = '1';
+  }
+
+  // Marqueur d’initialisation + exposer un rafraîchissement
+  section.__toggleInit = true;
+  section.__toggleApply = applyState;
 
   // Initial
   applyState();
