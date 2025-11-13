@@ -129,6 +129,7 @@ JustStreamIt.html
 
 ### Project Structure
 
+```text
 OC-Projet6-JustStreamIt/
 ├── oswald/
 ├── screenshots/
@@ -145,6 +146,7 @@ OC-Projet6-JustStreamIt/
 ├── script.js
 ├── README.md
 └── README_FR.md
+```
 
 ---
 
