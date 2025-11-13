@@ -117,26 +117,6 @@ JustStreamIt.html
 
 ---
 
-## Captures d’écran
-
-### Maquettes
-
-![FIGMA models](screenshots/Maquettes-FIGMA.png)
-
-### Desktop
-
-![Desktop view](screenshots/home-desktop.png)
-
-### Tablette
-
-![Tablet view](screenshots/home-tablet.png)
-
-### Mobile
-
-![Mobile view](screenshots/home-mobile.png)
-
----
-
 ## Structure du Projet
 
 ```text
@@ -178,3 +158,23 @@ OC-Projet6-JustStreamIt/
 ## Auteur
 
 Alice Nocquet
+
+---
+
+## Captures d’écran
+
+### Maquettes
+
+![FIGMA models](screenshots/Maquettes-FIGMA.png)
+
+### Desktop
+
+![Desktop view](screenshots/home-desktop.png)
+
+### Tablette
+
+![Tablet view](screenshots/home-tablet.png)
+
+### Mobile
+
+![Mobile view](screenshots/home-mobile.png)
