@@ -940,4 +940,104 @@ button.btn-hide,
 a.btn-show,
 a.btn-hide {
     display: none !important;}
+
+
+/* ------------ MODAL DESKTOP ------------ */
+
+/* Panneau blanc : centré, plus large */
+.modal-content {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);   /* parfaitement centrée */
+    width: 720px;                       /* largeur proche de la maquette */
+    min-height: calc(98vh - 40px);      /* 40px = marge haut+bas, à ajuster */
+    max-height: calc(98vh - 40px);
+    border-width: 4px;
+  }
+
+
+/* Grille interne : texte + affiche (colonne image à la largeur de l'affiche) */
+.modal-grid-container {
+      display: grid;
+      grid-template-columns: 3fr auto;   /* ← auto = largeur de l'image */
+      grid-template-rows: auto 1fr auto auto;
+      grid-template-areas:
+        "a d"
+        "c c"
+        "e e"
+        "f f";
+      width: 92%;
+      max-width: 92%;
+      padding: 20px 24px 24px;
+      column-gap: 24px;
+  }
+
+.modal-main-infos-movie {
+    grid-area: a;
+    padding-right: 0;
+    width: 100%;     
+    max-width: 100%;
+  }
+
+
+.modal-summary {
+    grid-area: c;
+    margin-top: 12px;
+  }
+
+.modal-image-movie {
+      grid-area: d;
+      justify-self: flex-start;   /* accroché à gauche de sa colonne */
+      align-self: flex-start;
+  }
+
+.modal-image-movie img {
+      display: block;              /* taille d’affiche comme la maquette */
+      height: 284px;
+      width: auto; 
+      margin: 0;                  /* pas de centrage par les marges */
+      object-fit: cover;
+  }
+
+
+.modal-with {
+    grid-area: e;
+    margin-top: 18px;
+  }
+
+.modal-actors {
+    grid-area: f;
+    margin-top: 4px;
+  }
+
+
+/* Masque complètement la croix */
+.container-flex-MQ,
+.icon-close {
+    display: none !important;
+  }
+
+  
+/* Bouton "Fermer" en bas */
+.btn-close {
+  display: block !important;
+  margin: 18px auto 10px;
+  font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
+  background-color: #FA0B0B;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  cursor: pointer;
+  width: 180px;
+  height: 40px;
+  font-size: 16px;
+  font-weight: 400;
+  text-align: center;
 }
+
+.btn-close:hover {
+  background-color: darkred;
+}
+
+}
+
