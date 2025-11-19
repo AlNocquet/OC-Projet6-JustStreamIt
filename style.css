@@ -319,7 +319,7 @@ a.btn-hide {
 
 /* Panneau blanc */
 .modal-content {
-        position: fixed;                       /* fixé pour gérer viewport et centrage */
+        position: fixed;       /* fixé pour gérer viewport et centrage */
         /* Mobile: modale étroite centrée, avec respect des safe-areas */
         top: calc(env(safe-area-inset-top) + 8px);
         bottom: auto;
@@ -942,102 +942,170 @@ a.btn-hide {
     display: none !important;}
 
 
-/* ------------ MODAL DESKTOP ------------ */
+/* --------------------------------------------------- */
+/* ------------------ MODAL DESKTOP ------------------ */
 
-/* Panneau blanc : centré, plus large */
-.modal-content {
+  .modal-content {
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);   /* parfaitement centrée */
-    width: 720px;                       /* largeur proche de la maquette */
-    min-height: calc(98vh - 40px);      /* 40px = marge haut+bas, à ajuster */
-    max-height: calc(98vh - 40px);
-    border-width: 4px;
+    transform: translate(-50%, -50%);
+    width: 720px;
+    height: 520px;
+    max-height: 90vh;
+
+    /* layout en colonne */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;  /* enlève le overflow-y:auto du mobile */
   }
 
+  /* La grille remplit toute la hauteur de la modale */
+   .modal-grid-container {
+    display: grid;
+    /* ne plus forcer 100% de hauteur, flex va gérer */
+    flex: 1 1 auto;          /* prend toute la place dispo entre le haut et le bouton */
+    grid-template-columns: 3fr auto;
+    grid-template-rows: auto auto 1fr auto auto;
+    grid-template-areas:
+      "a d"
+      "c c"
+      "e e"
+      "f f";
+    width: 92%;
+    max-width: 92%;
+    column-gap: 16px;
 
-/* Grille interne : texte + affiche (colonne image à la largeur de l'affiche) */
-.modal-grid-container {
-      display: grid;
-      grid-template-columns: 3fr auto;   /* ← auto = largeur de l'image */
-      grid-template-rows: auto 1fr auto auto;
-      grid-template-areas:
-        "a d"
-        "c c"
-        "e e"
-        "f f";
-      width: 92%;
-      max-width: 92%;
-      padding: 20px 24px 24px;
-      column-gap: 24px;
+    overflow-y: auto;  /* le scroll se fait ici quand le contenu est trop grand */
+  }
+
+  .modal-main-infos-movie { grid-area: a; }
+  .modal-summary           { grid-area: c; }
+  .modal-with              { grid-area: e; }
+  .modal-actors            { grid-area: f; }
+
+
+
+/* Titre */
+.title::first-line {
+        font-size: 32px;
+
+  }
+
+/* Année, Catégorie, PG Rating, Temps, Pays, imdb-score, box-office */
+.year, 
+.category, 
+.age-pg, 
+.time, 
+.country, 
+.imdb-score, 
+.box-office { 
+        font-size: 18px;
+
   }
 
 .modal-main-infos-movie {
-    grid-area: a;
-    padding-right: 0;
-    width: 100%;     
-    max-width: 100%;
+        font-size: 18px;
   }
 
-
-.modal-summary {
-    grid-area: c;
-    margin-top: 12px;
-  }
 
 .modal-image-movie {
-      grid-area: d;
-      justify-self: flex-start;   /* accroché à gauche de sa colonne */
-      align-self: flex-start;
+        grid-area: d;
+        justify-self: flex-start;   /* accroché à gauche de sa colonne */
+        align-self: flex-start;
   }
 
 .modal-image-movie img {
-      display: block;              /* taille d’affiche comme la maquette */
-      height: 284px;
-      width: auto; 
-      margin: 0;                  /* pas de centrage par les marges */
-      object-fit: cover;
+        display: block;              /* taille d’affiche comme la maquette */
+        height: 284px;
+        width: auto; 
+        margin: 0;                  /* pas de centrage par les marges */
+        object-fit: cover;
   }
 
 
+/* label "Réalisé par" */
+.label {
+        display: flex;
+        flex-direction: column;   /* vertical */
+        justify-content: flex-end;/* aligne le contenu en bas */
+        font-size: 17px;
+        font-weight: normal;
+        height: 90px;
+}
+
+/* Réalisateur */
+.director {
+        font-size: 17px;
+        height: 35px;
+        margin-top: 3px;
+}
+
+.modal-summary {
+        grid-area: c;
+        font-size: 19px;
+        /* plus de hauteur fixe */
+        height: auto;
+        max-height: none;
+}
+
+
+/* "Avec" */
 .modal-with {
-    grid-area: e;
-    margin-top: 18px;
-  }
+        display: flex;
+        flex-direction: column;   /* vertical */
+        justify-content: flex-end;/* aligne le contenu en bas */
+        grid-area: e;
+        font-size: 16px;
+        font-weight: normal;
+        margin-top: 4px;
+}
 
 .modal-actors {
-    grid-area: f;
-    margin-top: 4px;
+        grid-area: f;
+        margin-top: 6px;
+        font-size: 16px;
   }
 
+
+/* Centrage du conteneur du bouton */
+.container-flex {
+        margin-top: 0px;
+        margin-bottom: 10px;
+}
+
+/* Bouton de la modale en bas */
+.modal-content .container-flex {
+        margin-top: 0;
+        margin-bottom: 10px;
+        flex: 0 0 auto;   /* ne rétrécit pas, reste collé en bas */
+}
 
 /* Masque complètement la croix */
-.container-flex-MQ,
 .icon-close {
-    display: none !important;
+        display: none !important;
   }
 
-  
+
 /* Bouton "Fermer" en bas */
 .btn-close {
-  display: block !important;
-  margin: 18px auto 10px;
-  font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
-  background-color: #FA0B0B;
-  color: #fff;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  width: 180px;
-  height: 40px;
-  font-size: 16px;
-  font-weight: 400;
-  text-align: center;
+        display: block !important;
+        margin: 18px auto 10px;
+        font-family: "Oswald", serif, 'Arial Narrow', Arial, sans-serif;
+        background-color: #FA0B0B;
+        color: #fff;
+        border: none;
+        border-radius: 25px;
+        cursor: pointer;
+        width: 180px;
+        height: 40px;
+        font-size: 16px;
+        font-weight: 400;
+        text-align: center;
 }
 
 .btn-close:hover {
-  background-color: darkred;
+        background-color: darkred;
 }
 
-}
 
+}

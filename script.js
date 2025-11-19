@@ -845,13 +845,25 @@ function createModalCloseButton(modal) {
     btnClose.textContent = "Fermer";
 
     btnClose.addEventListener("click", () => {
-        document.body.classList.remove('modal-open');
+        const savedY = parseInt(document.body.dataset.scrollY || "0", 10);
+
+        document.body.classList.remove("modal-open");
+        document.body.style.position = "";
+        document.body.style.top = "";
+        document.body.style.left = "";
+        document.body.style.right = "";
+        document.body.style.width = "";
+        delete document.body.dataset.scrollY;
+
+        window.scrollTo(0, savedY);
+
         modal.remove();
     });
 
     btnContainer.appendChild(btnClose);
     return btnContainer;
 }
+
 
 // Création du bouton de fermeture (Tablette/Mobile)
 function createModalCloseButton_X(modal) {
