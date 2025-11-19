@@ -263,6 +263,15 @@ function displayBestMovie(bestMovieData, section) {
         createMovieButton(bestMovieData)
     );
 
+    // CLIC SUR L’IMAGE = MODALE
+    const bestImg = bestMovieDiv.querySelector('.best-movie-img img');
+    if (bestImg) {
+        bestImg.style.cursor = 'pointer';
+        bestImg.addEventListener('click', () => {
+            createMovieModal(bestMovieData);
+        });
+    }
+
     // Ajouter la div 'best-movie' à 'container item-grid' :
     container.appendChild(bestMovieDiv);
 
@@ -540,6 +549,11 @@ function createMovieItem(movie) {
     movieImg.onerror = () => {
         movieImg.src = defaultImage;
     };
+
+    // CLIC SUR L’IMAGE = MODALE
+    movieImg.addEventListener('click', () => {
+    createMovieModal(movie);
+    });
 
     // Détails (Zone grise Détails contenant : Titre h3 dynamique ; Bouton détails pour Modal) :
     const detailDiv = document.createElement('div');
