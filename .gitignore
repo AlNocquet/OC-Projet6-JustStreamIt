@@ -1,3 +1,17 @@
 # Ignorer API
 OCMovies-API-EN-FR/
 
+# OS / système
+.DS_Store
+Thumbs.db
+
+# Éditeurs / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+
