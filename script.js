@@ -10,12 +10,28 @@
 
 // FETCH ET CHECK :
 
-// Récupère une liste de films depuis une URL donnée
+/**
+ * Fetches a list of movies from the API using the provided URL.
+ * Delegates the HTTP logic and error handling to makeRequest.
+ *
+ * @async
+ * @param {string} apiUrl - Absolute URL of the OCMovies API endpoint.
+ * @returns {Promise<Object>} Resolves to the parsed JSON response containing movie data.
+ */
 async function fetchMovies(apiUrl) {
     return await makeRequest(apiUrl);
 }
 
-// Effectue la requête HTTP et gère la conversion en JSON + vérification des erreurs
+
+/**
+ * Performs an HTTP GET request and converts the response to JSON
+ * after validating the HTTP status code.
+ *
+ * @async
+ * @param {string} apiUrl - Absolute URL to request.
+ * @returns {Promise<Object>} Resolves to the parsed JSON body of the response.
+ * @throws {Error} Throws if the HTTP status indicates an error.
+ */
 async function makeRequest(apiUrl) {
     const response = await fetch(apiUrl);
 
@@ -24,7 +40,15 @@ async function makeRequest(apiUrl) {
     return response.json(); 
 }
 
-// Vérifie le statut HTTP et lève une erreur en cas de problème
+
+/**
+ * Validates an HTTP response and throws a descriptive error
+ * for 404, 5xx, or any non-OK status.
+ *
+ * @async
+ * @param {Response} response - Fetch API response object to validate.
+ * @throws {Error} Throws an error describing the HTTP failure.
+ */
 async function checkResponseStatus(response) {
     if (response.status === 404) {
         throw new Error("Ressource non trouvée (404)");
@@ -35,16 +59,29 @@ async function checkResponseStatus(response) {
     }
 }
 
-// Récupère les 6 meilleurs films d’une catégorie donnée
+
+/**
+ * Fetches the top movies for a given genre from the OCMovies API,
+ * sorted by descending IMDb score and limited to 6 results.
+ *
+ * @async
+ * @param {string} category - Movie genre name to filter by.
+ * @returns {Promise<Object>} Resolves to the JSON payload containing the movies.
+ */
 async function fetchMoviesByCategory(category) {
     // Encodage valide caractères spéciaux et espaces :
     const apiUrl = `http://localhost:8000/api/v1/titles/?genre=${encodeURIComponent(category)}&sort_by=-imdb_score&page_size=6`;
     return await fetchMovies(apiUrl);
 }
 
-// Récupère toutes les catégories de films disponibles (gestion de la pagination) ; API : "v1/genres/"
-    // Appel dans createOtherCategory() pour <select>
-    // Appel dans getTop6MoviesByCategory() pour les catégories existantes
+
+/**
+ * Fetches all available movie genres from the OCMovies API,
+ * following pagination until all pages have been retrieved.
+ *
+ * @async
+ * @returns {Promise<Object[]>} Resolves to an array of genre objects.
+ */
 async function fetchAllGenres() {
     try {
         let allGenres = [];
@@ -69,7 +106,14 @@ async function fetchAllGenres() {
     }
 }
 
-// Récupère les détails d’un film spécifique via son ID ; API : "/v1/titles/"
+
+/**
+ * Fetches complete details for a single movie by its identifier.
+ *
+ * @async
+ * @param {number|string} movieId - Identifier of the movie to fetch.
+ * @returns {Promise<Object>} Resolves to the detailed movie object.
+ */
 async function fetchMovieDetails(movieId) {
     const apiUrl = `http://localhost:8000/api/v1/titles/${movieId}`;
     const movieDetails = await makeRequest(apiUrl);
@@ -81,7 +125,14 @@ async function fetchMovieDetails(movieId) {
 
 // LES GETS :
 
-// Récupère le meilleur film (le premier film trié par score IMDb) et affiche ses détails
+
+/**
+ * Retrieves the highest rated movie across all categories and
+ * renders its details in the "Best movie" section.
+ *
+ * @async
+ * @returns {Promise<void>}
+ */
 async function getBestMovie() {
     const apiUrl = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score";
     try {
@@ -108,7 +159,14 @@ async function getBestMovie() {
 }
 
 
-// Récupère les 6 meilleurs films (après le meilleur film) triés par score IMDb et affiche leurs détails
+/**
+ * Retrieves the top-rated movies across all categories, excluding the
+ * very best one, and displays the next 6 movies in a dedicated section.
+ * Also fetches full details for each movie to support the modal.
+ *
+ * @async
+ * @returns {Promise<void>}
+ */
 async function getTop6Movies() {
     const apiUrl = "http://localhost:8000/api/v1/titles/?sort_by=-imdb_score&page_size=7"; 
     try {
@@ -137,7 +195,14 @@ async function getTop6Movies() {
 }
 
 
-// Récupère les 6 meilleurs films d'une catégorie donnée dans main.js et affiche leurs détails.
+/**
+ * Retrieves and displays the top 6 movies for the given category.
+ * Fetches details for each movie so they can be shown in a modal.
+ *
+ * @async
+ * @param {string} category - Name of the category (e.g. "Fantasy", "Sci-Fi").
+ * @returns {Promise<void>}
+ */
 async function getTop6MoviesByCategory(category) {
     try {
         // Définir toutes les catégories disponibles dans l'API:
@@ -171,7 +236,15 @@ async function getTop6MoviesByCategory(category) {
 
 // LES DISPLAY :
 
-// Affiche les informations du meilleur film dans une section :
+
+/**
+ * Renders the “Best movie” block into the provided section using
+ * the given movie data (image, title, summary, details button).
+ *
+ * @param {Object} bestMovieData - Movie object containing basic info and description.
+ * @param {HTMLElement} section - Section element where the best movie must be displayed.
+ * @returns {void}
+ */
 function displayBestMovie(bestMovieData, section) {
 
     // Créer la div 'container item-grid':
@@ -198,7 +271,15 @@ function displayBestMovie(bestMovieData, section) {
 }
 
 
-// Affiche les informations de films dans une section (Entrées : Titre de section (sectionTitle) ; tableau de films (movies))
+/**
+ * Displays a list of movies in a section identified by the provided title.
+ * Ensures the section and container exist, then appends a grid of movie cards.
+ *
+ * @param {Object[]} movies - Array of movie objects to display.
+ * @param {string} sectionTitle - Human-readable title used to identify or create the section.
+ * @param {HTMLElement|null} [container=null] - Optional existing container for the movies grid.
+ * @returns {void}
+ */
 function displayMovies(movies, sectionTitle, container = null) {
     // Entrées des films : Titre, Img, Bouton "Détails" (> Ouverture Modal)
     // Section : MEDIA QUERIES - Bouton "Voir Plus"
@@ -237,7 +318,13 @@ function displayMovies(movies, sectionTitle, container = null) {
 }
 
 
-// Ajoute la section dans le DOM si elle n'existe pas déjà (<main class="main-container">)
+/**
+ * Appends the given section element to the main container if it is not
+ * already attached to the DOM.
+ *
+ * @param {HTMLElement} section - Section element to insert into the page.
+ * @returns {void}
+ */
 function appendSectionToPage(section) {
     if (!section.parentElement) {
         document.querySelector('.main-container').appendChild(section);
@@ -247,7 +334,13 @@ function appendSectionToPage(section) {
 
 // LES CREATE :
 
-// Créer <header>
+
+/**
+ * Creates and returns the page header element including the banner image.
+ * The caller is responsible for appending it to the document.
+ *
+ * @returns {HTMLElement} The constructed <header> element.
+ */
 function createHeader() {
     const header = document.createElement('header');
 
@@ -268,7 +361,13 @@ function createHeader() {
     window.addEventListener('resize', updateBannerImage);
 }
 
-// Gérer le logo selon DESKTOP & TABLET vs MOBILE
+
+/**
+ * Updates the banner image depending on the current viewport width.
+ * Uses the logo on mobile and the full banner on tablet/desktop.
+ *
+ * @returns {void}
+ */
 function updateBannerImage() {
     const bannerImg = document.querySelector('header .banner img');
     if (window.matchMedia("(max-width: 767px)").matches) {
@@ -278,7 +377,14 @@ function updateBannerImage() {
     }
 }
 
-// Créer <section>
+
+/**
+ * Creates a new section element with the provided title and appends it
+ * to the main container.
+ *
+ * @param {string} title - Text content of the section heading.
+ * @returns {HTMLElement} The newly created section element.
+ */
 function createSection(title) {
     const section = document.createElement('section');
     section.classList.add('section-container');
@@ -294,7 +400,13 @@ function createSection(title) {
 }
 
 
-// Vérifier ou créer une section avec titre Nom Catégorie (Gestion doublon DisplayMovies())
+/**
+ * Finds an existing section matching the given logical title (data-title)
+ * or creates a new one if none exists.
+ *
+ * @param {string} sectionTitle - Logical title used in the data-title attribute.
+ * @returns {HTMLElement} The existing or newly created section element.
+ */
 function getOrCreateSection(sectionTitle) {
     const existingSection = document.querySelector(`section[data-title="${sectionTitle}"]`);
 
@@ -310,7 +422,14 @@ function getOrCreateSection(sectionTitle) {
 }
 
 
-// Récupérer ou créer le conteneur <container item-grid> des films (Gestion doublon DisplayMovies())
+/**
+ * Retrieves or creates the grid container element used to display movies
+ * within a section.
+ *
+ * @param {HTMLElement} section - Section containing or receiving the container.
+ * @param {HTMLElement|null} container - Optional existing container reference.
+ * @returns {HTMLElement} The resolved container element for movie items.
+ */
 function getOrCreateContainer(section, container) {
     if (!container) {
         container = document.createElement('div');
@@ -324,7 +443,13 @@ function getOrCreateContainer(section, container) {
 }
 
 
-// (displayBestMovie()) Créer <div class="best-movie-img"> :
+/**
+ * Creates the “best movie” image container with a fallback image if
+ * the provided URL is missing or fails to load.
+ *
+ * @param {string} imageUrl - URL of the movie poster image.
+ * @returns {HTMLElement} A <div> element containing the <img>.
+ */
 function createMovieImage(imageUrl) {
     // Création d'un conteneur pour l'image :
     const movieImgDiv = document.createElement('div');
@@ -351,7 +476,12 @@ function createMovieImage(imageUrl) {
 }
 
 
-// (displayBestMovie()) Créer la div 'best-movie-title' - avec <h2> dynamique :
+/**
+ * Creates the “best movie” title block wrapping the title in an <h2>.
+ *
+ * @param {string} title - Movie title to display.
+ * @returns {HTMLElement} A <div> element containing the <h2> title.
+ */
 function createMovieTitle(title) {
     const movieTitleDiv = document.createElement('div');
     movieTitleDiv.classList.add('best-movie-title');
@@ -363,7 +493,14 @@ function createMovieTitle(title) {
     return movieTitleDiv;
 }
 
-// (displayBestMovie()) Créer la div 'best-movie-summary' - dynamique (avec un texte par défaut si absent) :
+
+/**
+ * Creates the “best movie” summary block with a paragraph that falls back
+ * to a default text when no description is available.
+ *
+ * @param {string} description - Movie description or synopsis.
+ * @returns {HTMLElement} A <div> element containing the summary paragraph.
+ */
 function createMovieSummary(description) {
     const movieSummaryDiv = document.createElement('div');
     movieSummaryDiv.classList.add('best-movie-summary');
@@ -376,7 +513,13 @@ function createMovieSummary(description) {
 }
 
 
-// (DisplayMovies()) Créer un élément représentant un film :
+/**
+ * Creates a single movie card for use in a category grid, including
+ * an image, title overlay, and a “Details” button that opens the modal.
+ *
+ * @param {Object} movie - Movie object containing at least title and image_url.
+ * @returns {HTMLElement} A <div class="item"> representing the movie.
+ */
 function createMovieItem(movie) {
 
     // <div 'item'> (Un film):
@@ -428,7 +571,14 @@ function createMovieItem(movie) {
     return itemDiv;
 }
 
-// (displayBestMovie()) Créer le bouton "Détails" > Ouverture Modal :
+
+/**
+ * Creates the “Details” button used in the best movie section and wires
+ * it to open the modal for the provided movie data.
+ *
+ * @param {Object} movieData - Movie object used to populate the modal.
+ * @returns {HTMLElement} A <div> containing the configured button element.
+ */
 function createMovieButton(movieData) {
     const movieButtonDiv = document.createElement('div');
     movieButtonDiv.classList.add('best-movie-button');
@@ -447,7 +597,15 @@ function createMovieButton(movieData) {
 
 // CATEGORIE A CHOIX :
 
-// Fonction principale : Afficher les films selon la catégorie sélectionnée.
+
+/**
+ * Builds the “Other categories” section with a dynamic <select> and
+ * loads the top 6 movies for the initially selected genre.
+ * Also wires the category change handler and the “Show more / less” button.
+ *
+ * @async
+ * @returns {Promise<void>}
+ */
 async function getTop6Movies_OthersCategories() {
 
     // Appel : crée la structure de la section avec ses éléments internes :
@@ -476,7 +634,13 @@ async function getTop6Movies_OthersCategories() {
     createShowButton(section);
 }
 
-// Créer HTML de la section "Autres catégories" (sans createSection, createContainer = conflit) :
+
+/**
+ * Creates the full DOM structure for the “Other categories” section,
+ * including the title, dropdown selector, and empty movies container.
+ *
+ * @returns {HTMLElement} The constructed section element for other categories.
+ */
 function buildOtherCategorySection() {
 
     // <section class="section-container" data-title="Autres catégories"> :
@@ -518,7 +682,15 @@ function buildOtherCategorySection() {
     return section;
 }
 
-// Récupère les genres via fetchAllGenres() et ajoute chaque genre dans <select>
+
+/**
+ * Populates a <select> element with movie genres fetched from the API,
+ * excluding the genres already used in predefined sections (e.g. Sci-Fi, Fantasy).
+ *
+ * @async
+ * @param {HTMLSelectElement} select - Select element to be filled with <option> entries.
+ * @returns {Promise<void>}
+ */
 async function populateGenreOptions(select) {
     let genres = [];
 
@@ -543,7 +715,17 @@ async function populateGenreOptions(select) {
     });
 }
 
-// MAJ du conteneur des films en fonction du genre sélectionné
+
+/**
+ * Refreshes the movies grid for the “Other categories” section according
+ * to the currently selected genre in the dropdown.
+ *
+ * @async
+ * @param {HTMLSelectElement} select - Select element containing the chosen genre.
+ * @param {HTMLElement} section - Section whose title and content are updated.
+ * @param {HTMLElement} moviesContainer - Container element where movie cards are rendered.
+ * @returns {Promise<void>}
+ */
 async function updateMoviesForGenre(select, section, moviesContainer) {
 
     // Vider le conteneur des films :
@@ -587,7 +769,14 @@ async function updateMoviesForGenre(select, section, moviesContainer) {
 
 // MODAL : 
 
-// Fonction principale de création et d'affichage du modal :
+
+/**
+ * Builds and displays the movie details modal using the provided movie data.
+ * Creates the layout, appends it to the document body, and locks the background scroll.
+ *
+ * @param {Object} movieData - Detailed movie object used to fill the modal content.
+ * @returns {void}
+ */
 function createMovieModal(movieData) {
 
   const modal = createModalSection(); // <section class="modal">
@@ -634,28 +823,53 @@ function createMovieModal(movieData) {
   document.body.style.width = "100%";
 }
 
-// Création de <section class="modal">
+
+/**
+ * Creates the root <section> element for the modal overlay.
+ *
+ * @returns {HTMLElement} The <section class="modal"> element.
+ */
 function createModalSection() {
     const modal = document.createElement("section");
     modal.className = "modal";
     return modal;
 }
 
-// Création de <div class="modal-content">
+
+/**
+ * Creates the main content container inside the modal which holds
+ * the grid, text, image, and close button.
+ *
+ * @returns {HTMLElement} The <div class="modal-content"> element.
+ */
 function createModalContent() {
     const modalContent = document.createElement("div");
     modalContent.className = "modal-content";
     return modalContent;
 }
 
-// Création de <div class="modal-grid-container">
+
+/**
+ * Creates the grid container that organizes all modal sub-sections
+ * (header, info, image, summary, actors, close icon).
+ *
+ * @returns {HTMLElement} The <div class="modal-grid-container"> element.
+ */
 function createModalGrid() {
     const modalGrid = document.createElement("div");
     modalGrid.className = "modal-grid-container";
     return modalGrid;
 }
 
-// Création de la partie des informations principales du film :
+
+/**
+ * Builds the main information block of the modal, including title,
+ * year, genres, rating, duration, country, IMDb score, box office,
+ * and director.
+ *
+ * @param {Object} movieData - Movie object providing metadata fields.
+ * @returns {HTMLElement} The <div class="modal-main-infos-movie"> element.
+ */
 function createModalMainInfos(movieData) {
 
     // Création de <div class="modal-main-infos-movie">
@@ -748,7 +962,14 @@ function createModalMainInfos(movieData) {
     return mainInfos;
     }
 
-// Création de la partie de l'image du film :
+
+/**
+ * Creates the block containing the movie poster image to be displayed
+ * inside the modal.
+ *
+ * @param {Object} movieData - Movie object providing the image URL.
+ * @returns {HTMLElement} The <div class="modal-image-movie"> element.
+ */
 function createModalMovieImage(movieData) {
 
     // <div class="modal-image-movie"> :
@@ -773,7 +994,12 @@ function createModalMovieImage(movieData) {
 }
 
 
-// Création de la partie Résumé du film :
+/**
+ * Creates the summary section of the modal containing the movie description.
+ *
+ * @param {Object} movieData - Movie object providing the long description.
+ * @returns {HTMLElement} The <div class="modal-summary"> element.
+ */
 function createModalMovieSummary(movieData) {
   const modalSummary = document.createElement("span");
   modalSummary.className = "modal-summary";
@@ -813,7 +1039,13 @@ function createModalMovieSummary(movieData) {
 }
 
 
-// Création de la partie des acteurs du film :
+/**
+ * Builds the actors section of the modal showing the label “With”
+ * and the formatted list of actors.
+ *
+ * @param {Object} movieData - Movie object providing the actors list.
+ * @returns {HTMLElement} The <div class="modal-with"> container with actors.
+ */
 function createModalActorsSection(movieData) {
 
     // <span class="modal-with"> avec <span class="modal-actors"> (En dynamique)
@@ -832,7 +1064,14 @@ function createModalActorsSection(movieData) {
     return actorsContainer;
 }
 
-// Création du bouton de fermeture (Desktop)
+
+/**
+ * Creates the bottom “Close” button for the modal (desktop usage),
+ * and wires it to fully close the modal and restore the scroll position.
+ *
+ * @param {HTMLElement} modal - Root modal element to be removed on close.
+ * @returns {HTMLElement} The button container element added to the modal content.
+ */
 function createModalCloseButton(modal) {
 
     // <div class="container container-flex"> :
@@ -865,7 +1104,13 @@ function createModalCloseButton(modal) {
 }
 
 
-// Création du bouton de fermeture (Tablette/Mobile)
+/**
+ * Creates the top-right “X” icon used to close the modal on mobile/tablet,
+ * including keyboard accessibility (Enter/Space/Escape).
+ *
+ * @param {HTMLElement} modal - Root modal element to be closed.
+ * @returns {HTMLElement} The container wrapping the clickable close icon.
+ */
 function createModalCloseButton_X(modal) {
   // <div class="container container-flex-MQ"> :
   const mobileContainer = document.createElement("div");
@@ -888,7 +1133,7 @@ function createModalCloseButton_X(modal) {
     // 1) retire la classe de lock (overflow hidden + pointer-events)
     document.body.classList.remove("modal-open");
 
-    // 2) si tu utilises un lock "parfait" via body fixed (optionnel)
+    // 2) si lock "parfait" via body fixed (optionnel)
     //    (à appliquer à l’ouverture : stocker scrollY dans data-scroll-y et fixer le body)
     const savedY = parseInt(document.body.dataset.scrollY || "0", 10);
     document.body.style.position = "";
@@ -933,9 +1178,18 @@ function createModalCloseButton_X(modal) {
 
 
 // MEDIA QUERIES - Tablette et Mobile
-// Création et fonction du bouton "Voir plus" / "Voir moins" (idempotent)
+
+
+/**
+ * Creates (or reuses) the responsive “Show more / Show less” button for a section.
+ * Applies the 2/4/6 visibility rule depending on viewport and keeps the
+ * initialization idempotent across re-renders.
+ *
+ * @param {HTMLElement} section - Section whose movie items should be toggled.
+ * @returns {HTMLButtonElement} The toggle button element.
+ */
 function createShowButton(section) {
-  // --- Anti-duplication: si déjà initialisé et le bouton existe, on rafraîchit et on sort
+  // Anti-duplication: si déjà initialisé et le bouton existe, on rafraîchit et on sort
   const existingBtn = section.querySelector('.js-toggle-container .btn-show');
   if (section.__toggleInit === true && existingBtn) {
     // Réapplique l’état (par ex. après changement de catégorie)
@@ -977,28 +1231,60 @@ function createShowButton(section) {
   const mqTablet  = window.matchMedia('(min-width: 768px) and (max-width: 1280px)');
   const mqDesktop = window.matchMedia('(min-width: 1281px)');
 
+    /**
+   * Determines the current responsive mode (mobile, tablet, or desktop)
+   * based on the configured media queries.
+   *
+   * @returns {('mobile'|'tablet'|'desktop')} The current display mode.
+   */
   function mode() {
     if (mqMobile.matches) return 'mobile';
     if (mqTablet.matches) return 'tablet';
     return 'desktop'; // ≥1281
   }
 
-  // Utilitaires d’affichage (utilise .is-hidden)
+  /**
+   * Hides all movie cards starting from the given index by applying
+   * the .is-hidden CSS class.
+   *
+   * @param {number} startIdx - Zero-based index from which items should be hidden.
+   * @returns {void}
+   */
   function hideFrom(startIdx) {
     items.forEach((el, i) => el.classList.toggle('is-hidden', i >= startIdx));
   }
+
+  /**
+   * Shows all movie cards by removing the .is-hidden CSS class.
+   *
+   * @returns {void}
+   */
   function showAll() {
     items.forEach(el => el.classList.remove('is-hidden'));
   }
 
   let expanded = false;
 
+  /**
+   * Returns the maximum number of visible movie cards for the given
+   * responsive mode, according to the 2/4/6 rule.
+   *
+   * @param {('mobile'|'tablet'|'desktop')} m - Current responsive mode.
+   * @returns {number} The maximum number of visible items for this mode.
+   */
   function quotaForMode(m) {
     if (m === 'mobile') return 2;
     if (m === 'tablet') return 4;
     return 6; // desktop
   }
 
+  /**
+   * Recomputes the items list, determines the current responsive mode,
+   * and applies the correct visibility state and button label.
+   * Also hides the button entirely on desktop.
+   *
+   * @returns {void}
+   */
   function applyState() {
     // Resynchronise la liste si le DOM a été régénéré
     items = Array.from(section.querySelectorAll('.item'));
@@ -1051,7 +1337,7 @@ function createShowButton(section) {
     });
     [mqMobile, mqTablet, mqDesktop].forEach(mq => {
       mq.addEventListener('change', () => {
-        expanded = false;     // retour au mode réduit au changement de tranche
+        expanded = false; // retour au mode réduit au changement de tranche
         applyState();
       });
     });
