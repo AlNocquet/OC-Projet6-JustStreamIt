@@ -254,7 +254,7 @@ a.btn-hide {
         border-radius: 30px;
         cursor: pointer;
         text-align: center;
-        position: center;
+        justify-content: center;
         text-decoration: none;
         padding: 2px 4px;
         margin-top: 20px;
